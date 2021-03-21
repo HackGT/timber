@@ -13,7 +13,7 @@ gulp.task('clean', () => del('dist'));
 gulp.task('build', () => tsProject.src()
   .pipe(sourcemaps.init())
   .pipe(tsProject())
-  .pipe(sourcemaps.write({ includeContent: false, sourceRoot: 'src/' }))
+  .pipe(sourcemaps.write(".", { includeContent: false, sourceRoot: '../src' }))
   .pipe(gulp.dest('dist')));
 
 // Default task
