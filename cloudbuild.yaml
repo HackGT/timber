@@ -1,0 +1,21 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "hackgt/$REPO_NAME:$COMMIT_SHA", "-t", "hackgt/$REPO_NAME:latest", "."]
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args: ["-c", "docker login --username=hackgt --password=$$DOCKER_PASSWORD"]
+    secretEnv: ["DOCKER_PASSWORD"]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "hackgt/$REPO_NAME:$COMMIT_SHA"]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "hackgt/$REPO_NAME:latest"]
+  - name: "hackgt/builder-trigger-beehive-build"
+    secretEnv: ["TRAVIS_TOKEN"]
+    env:
+      - "REPO_NAME=$REPO_NAME"
+timeout: 300s
+secrets:
+  - kmsKeyName: projects/hackgt-cluster/locations/global/keyRings/hackgt-build/cryptoKeys/hackgt-build-key
+    secretEnv:
+      DOCKER_PASSWORD: CiQATk4Dt7S6ki9JbJvw22WkKHsdyQhEOflZeK/1IJz/rJ18LmASNQD6KHO+IyjkNS/GHaDxJuLmbFXCr1kU5xzVVHaePe1CZeI1P1J/vyO3y1lXvSJpyID0hoXm
+      TRAVIS_TOKEN: CiQATk4Dt3x0+R2zKUvt090ul3dDhcZUnYsGoQfOzSjKquHVwiUSPwD6KHO+mVuFK9L8KYnFzg20D24Ih3FPujmuEiNPugBU0qTlTSQFcEMQrv93l8sLPlW8E8k0cg3v0mZqI721Rg==
