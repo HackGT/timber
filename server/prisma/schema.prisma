@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+enum AssignmentStatus {
+  QUEUED
+  STARTED
+  COMPLETED
+  SKIPPED
+}
+
+enum UserRole {
+  PARTICIPANT
+  JUDGE
+  SPONSOR
+  JUDGE_AND_SPONSOR
+  ADMIN
+}
+
+model Assignment {
+  id        Int              @id @default(autoincrement())
+  user      User             @relation(fields: [userId], references: [id])
+  project   Project          @relation(fields: [projectId], references: [id])
+  status    AssignmentStatus
+  priority  Int?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @default(now())
+
+  userId    Int
+  projectId Int
+  @@map("assignment")
+}
+
+model Ballot {
+  id        Int      @id @default(autoincrement())
+  project   Project  @relation(fields: [projectId], references: [id])
+  criteria  Criteria @relation(fields: [criteriaId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  score     Int
+  round     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  projectId  Int
+  criteriaId Int
+  userId     Int
+  @@map("ballot")
+}
+
+model Category {
+  id             Int             @id @default(autoincrement())
+  name           String
+  isDefault      Boolean         @default(false)
+  description    String
+  categoryGroups CategoryGroup[]
+  criterias      Criteria[]
+  projects       Project[]
+  hackathon      Hackathon       @relation(fields: [hackathonId], references: [id])
+
+  hackathonId Int
+  @@map("category")
+}
+
+model CategoryGroup {
+  id         Int        @id @default(autoincrement())
+  name       String
+  categories Category[]
+  hackathon  Hackathon  @relation(fields: [hackathonId], references: [id])
+  users      User[]
+
+  hackathonId Int
+  @@map("category_group")
+}
+
+model Config {
+  id                  Int       @id @default(autoincrement())
+  currentRound        Int
+  currentExpo         Int
+  currentHackathon    Hackathon @relation(fields: [currentHackathonId], references: [id])
+  isJudgingOn         Boolean
+  isProjectsPublished Boolean
+
+  currentHackathonId Int
+  @@map("config")
+}
+
+model Criteria {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  minScore    Int
+  maxScore    Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  ballots     Ballot[]
+  rubrics     Rubric[]
+
+  categoryId Int
+  @@map("criteria")
+}
+
+model Hackathon {
+  id             Int             @id @default(autoincrement())
+  name           String
+  categoryGroups CategoryGroup[]
+  categories     Category[]
+  notifications  Notification[]
+  config         Config?
+
+  @@map("hackathon")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  header    String
+  message   String
+  sender    User      @relation(fields: [senderId], references: [id])
+  hackathon Hackathon @relation(fields: [hackathonId], references: [id])
+  sentAt    DateTime  @default(now())
+
+  senderId    Int
+  hackathonId Int
+  @@map("notification")
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  devpostUrl  String?
+  githubUrl   String
+  roomUrl     String?
+  expo        Int?
+  round       Int?
+  table       Int?
+  tableGroup  TableGroup?  @relation(fields: [tableGroupId], references: [id])
+  categories  Category[]
+  ballots     Ballot[]
+  assignment  Assignment[]
+
+  tableGroupId Int?
+  @@map("project")
+}
+
+model Rubric {
+  id          Int      @id @default(autoincrement())
+  score       Int
+  description String
+  criteria    Criteria @relation(fields: [criteriaId], references: [id])
+
+  criteriaId Int
+  @@map("rubric")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  @@map("session")
+}
+
+model TableGroup {
+  id        Int       @id @default(autoincrement())
+  name      String
+  shortCode String
+  color     String
+  projects  Project[]
+
+  @@map("table_group")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  uuid          String         @unique
+  token         String
+  role          UserRole
+  categoryGroup CategoryGroup? @relation(fields: [categoryGroupId], references: [id])
+  ballots       Ballot[]
+  assignments   Assignment[]
+  notifications Notification[]
+
+  categoryGroupId Int?
+  @@map("user")
+}

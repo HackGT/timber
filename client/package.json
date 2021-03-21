@@ -1,0 +1,53 @@
+{
+  "name": "timber-client",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
+  },
+  "devDependencies": {
+    "@hex-labs/eslint-config-react": "^1.1.1",
+    "@hex-labs/prettier-config": "^1.1.1",
+    "@hex-labs/stylelint-config": "^1.1.1",
+    "eslint": "^7.22.0",
+    "prettier": "^2.2.1",
+    "stylelint": "^13.12.0"
+  },
+  "proxy": "http://localhost:3000",
+  "eslintConfig": {
+    "extends": "@hex-labs/eslint-config-react"
+  },
+  "prettier": "@hex-labs/prettier-config",
+  "stylelint": {
+    "extends": "@hex-labs/stylelint-config"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
