@@ -22,12 +22,14 @@ app.use(compression());
 
 import { isAuthenticated } from "./auth/auth";
 import { authRoutes } from "./routes/auth";
+import { projectRoutes } from "./routes/project";
 
 app.get("/status", (req, res) => {
   res.status(200).send("Success");
 });
 
 app.use("/auth", authRoutes);
+app.use("/projects", isAuthenticated, projectRoutes);
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
