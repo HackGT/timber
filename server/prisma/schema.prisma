@@ -129,7 +129,7 @@ model Notification {
 
 model Project {
   id          Int          @id @default(autoincrement())
-  name        String       @unique
+  name        String
   description String
   devpostUrl  String?
   githubUrl   String
