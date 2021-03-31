@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^2.19.0",
     "@quixo3/prisma-session-store": "^3.0.1",
+    "@types/uuid": "^8.3.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -31,7 +32,8 @@
     "passport-oauth2": "^1.5.0",
     "prettier": "^2.2.1",
     "prisma": "^2.19.0",
-    "source-map-support": "^0.5.19"
+    "source-map-support": "^0.5.19",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@hex-labs/eslint-config": "^1.1.1",
