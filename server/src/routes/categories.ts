@@ -15,10 +15,12 @@ categoryRoutes.route("/").get(async (req, res) => {
     filter.hackathonId = hackathonId
   }
   
-  // if (categoryGroup !== undefined) {
-  //   const categoryGroups = parseInt(categoryGroup as string);
-  //   filter.categoryGroups = categoryGroups
-  // }
+  if (categoryGroup !== undefined) {
+    const categoryGroupId = parseInt(categoryGroup as string);
+    filter.categoryGroups = {
+      some: {id: categoryGroupId}
+    }
+  }
 
   const categories = await prisma.category.findMany({ where: filter });
   res.status(200).send(categories);
@@ -75,6 +77,7 @@ categoryRoutes.route("/:id").delete(async (req, res) => {
     res.status(404).send(`Category with id: ${categoryID} not found`);
     return;
   }
+
   const deleteCategory = await prisma.category.delete({
     where: {
       id: categoryID,
