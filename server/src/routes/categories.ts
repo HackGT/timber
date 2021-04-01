@@ -42,23 +42,19 @@ categoryRoutes.route("/:id").patch(async (req, res) => {
     return;
   }
 
-  const categoryExists = await prisma.category.findUnique({
-    where: { id: categoryID },
-  });
-
-  if (categoryExists === null) {
-    res.status(404).send(`Category with id: ${categoryID} not found`);
-    return;
+  try {
+    const updateCategory = await prisma.category.update({
+      where: {
+        id: categoryID,
+      },
+      data: req.body
+    });
+  
+    res.status(200).send(updateCategory.id);
+  } catch (err) {
+    res.status(500).send({error: true, message: err})
   }
-
-  const updateCategory = await prisma.category.update({
-    where: {
-      id: categoryID,
-    },
-    data: req.body
-  });
-
-  res.status(200).send(updateCategory.id);
+  
 });
 
 categoryRoutes.route("/:id").delete(async (req, res) => {
@@ -69,20 +65,16 @@ categoryRoutes.route("/:id").delete(async (req, res) => {
     return;
   }
 
-  const categoryExists = await prisma.category.findUnique({
-    where: { id: categoryID },
-  });
-
-  if (categoryExists === null) {
-    res.status(404).send(`Category with id: ${categoryID} not found`);
-    return;
+  try {
+    const deleteCategory = await prisma.category.delete({
+      where: {
+        id: categoryID,
+      },
+    });
+  
+    res.status(200).send(deleteCategory);
+  } catch (err) {
+    res.status(500).send({error: true, message: err})
   }
-
-  const deleteCategory = await prisma.category.delete({
-    where: {
-      id: categoryID,
-    },
-  });
-
-  res.status(200).send(deleteCategory);
+  
 });
