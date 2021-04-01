@@ -39,6 +39,45 @@ userRoutes.route("/").get(async (req, res) => {
   res.status(200).send(userUuids);
 });
 
+// Update user
+userRoutes.route("/:uuid").patch(async (req, res) => {
+  const userExists = await prisma.user.findUnique({
+    where: {
+      uuid: req.params.uuid,
+    },
+  });
+  if (userExists === null) {
+    res.status(404).send("User with uuid does not exist");
+    return;
+  }
+
+  const updateableFields = [
+    "email",
+    "role",
+    "categoryGroup",
+    "ballots",
+    "assignments",
+    "notifications",
+  ];
+
+  // Only allow updates to certain fields
+  let updateBody: any = {};
+  updateableFields.forEach(field => {
+    if (req.body.hasOwnProperty(field)) {
+      updateBody[field] = req.body[field];
+    }
+  });
+
+  const updateUser = await prisma.user.update({
+    where: {
+      uuid: req.params.uuid,
+    },
+    data: updateBody,
+  });
+  console.log("UPDATED", updateUser);
+  res.status(200).send(updateUser.uuid);
+});
+
 // Create user
 userRoutes.route("/").post(async (req, res) => {
   const valid = ["name", "email", "role"].every(field => req.body.hasOwnProperty(field));
@@ -64,26 +103,4 @@ userRoutes.route("/").post(async (req, res) => {
   // })
   // console.log(req.body);
   res.status(200).send("successful");
-});
-
-// Update user
-userRoutes.route("/:uuid").patch(async (req, res) => {
-  console.log("UUID ", req.params.uuid);
-  const updateableFields = [
-    "name",
-    "role",
-    "categoryGroup",
-    "ballots",
-    "assignments",
-    "notifications",
-  ];
-  // req.body.filter(o => updateableFields.includes(o));
-  const updateUser = await prisma.user.update({
-    where: {
-      uuid: req.params.uuid,
-    },
-    data: req.body,
-  });
-  console.log("UPDATED", updateUser);
-  res.status(200).send({ success: "dank" });
 });
