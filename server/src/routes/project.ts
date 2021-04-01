@@ -37,6 +37,22 @@ projectRoutes.route("/").post(async (req, res) => {
   }
 });
 
+projectRoutes.route("/action/move").post(async (req, res) => {
+  try {
+    const { ids, ...updates } = req.body;
+    ids.forEach(async (id: number) => {
+      await prisma.project.update({
+        where: { id },
+        data: updates
+      });
+    });
+    res.status(200).send("Projects moved successfully!");
+  } catch (err) {
+    console.log(`[ERROR] ${err.message}`);
+    res.status(500).send({ error: true, message: err.message });
+  }
+});
+
 projectRoutes.route("/:id").patch(async (req, res) => {
   try {
     const updated = await prisma.project.update({
