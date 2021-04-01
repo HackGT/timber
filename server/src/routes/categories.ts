@@ -25,9 +25,9 @@ categoryRoutes.route("/").get(async (req, res) => {
 });
 
 categoryRoutes.route("/").post(async (req, res) => {
-  const { name, isDefault, description } = req.body.data;
+  const { name, isDefault, description } = req.body;
   const result = await prisma.category.create({
-    data: req.body.data,
+    data: req.body,
   });
   res.status(200).send(result);
 });
