@@ -1,6 +1,5 @@
 import { PrismaClient, UserRole } from "@prisma/client";
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
 
 export const userRoutes = express.Router();
 const prisma = new PrismaClient();
@@ -41,24 +40,7 @@ userRoutes.route("/").get(async (req, res) => {
 
 // Update user
 userRoutes.route("/:uuid").patch(async (req, res) => {
-  const userExists = await prisma.user.findUnique({
-    where: {
-      uuid: req.params.uuid,
-    },
-  });
-  if (userExists === null) {
-    res.status(404).send("User with uuid does not exist");
-    return;
-  }
-
-  const updateableFields = [
-    "email",
-    "role",
-    "categoryGroup",
-    "ballots",
-    "assignments",
-    "notifications",
-  ];
+  const updateableFields = ["role", "categoryGroup", "ballots", "assignments", "notifications"];
 
   // Only allow updates to certain fields
   let updateBody: any = {};
@@ -68,39 +50,19 @@ userRoutes.route("/:uuid").patch(async (req, res) => {
     }
   });
 
-  const updateUser = await prisma.user.update({
-    where: {
-      uuid: req.params.uuid,
-    },
-    data: updateBody,
-  });
-  console.log("UPDATED", updateUser);
-  res.status(200).send(updateUser.uuid);
-});
-
-// Create user
-userRoutes.route("/").post(async (req, res) => {
-  const valid = ["name", "email", "role"].every(field => req.body.hasOwnProperty(field));
-  if (!valid) {
-    res.status(400).send("Missing 'name', 'email', or 'role' fields");
-    return;
+  try {
+    const updateUser = await prisma.user.update({
+      where: {
+        uuid: req.params.uuid,
+      },
+      data: updateBody,
+    });
+    res.status(200).send(updateUser.uuid);
+  } catch (error) {
+    if (error.code === "P2025") {
+      res.status(404).send("User with uuid does not exist");
+    } else {
+      res.status(500).send(`Error: ${error.meta.cause}`);
+    }
   }
-  const uuid = uuidv4();
-  const token = "";
-
-  const newUser = {
-    ...req.body,
-    uuid,
-    token,
-  };
-
-  // const user = await prisma.user.create({ data: req.body });
-  // console.log("USER ", user);
-  // let name = req.body.name;
-  // let email = req.body.email;
-  // const user = await prisma.user.create({
-
-  // })
-  // console.log(req.body);
-  res.status(200).send("successful");
 });
