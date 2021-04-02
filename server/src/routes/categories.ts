@@ -1,5 +1,4 @@
 import express from "express";
-import { Category } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
