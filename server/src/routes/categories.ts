@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import { Category } from ".prisma/client";
+import express from "express";
+import { Category } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
@@ -7,7 +7,7 @@ import { prisma } from "../common";
 export const categoryRoutes = express.Router();
 
 categoryRoutes.route("/").get(
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req, res) => {
     const { hackathon, categoryGroup } = req.query;
     const filter: any = {};
 
@@ -23,14 +23,14 @@ categoryRoutes.route("/").get(
       };
     }
 
-    const categories: Category[] = await prisma.category.findMany({ where: filter });
+    const categories = await prisma.category.findMany({ where: filter });
     res.status(200).json(categories);
   })
 );
 
 categoryRoutes.route("/").post(
-  asyncHandler(async (req: Request, res: Response) => {
-    const createdCategory: Category = await prisma.category.create({
+  asyncHandler(async (req, res) => {
+    const createdCategory = await prisma.category.create({
       data: req.body,
     });
     res.status(201).json(createdCategory);
@@ -38,10 +38,10 @@ categoryRoutes.route("/").post(
 );
 
 categoryRoutes.route("/:id").patch(
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req, res) => {
     const categoryId: number = parseInt(req.params.id);
 
-    const updatedCategory: Category = await prisma.category.update({
+    const updatedCategory = await prisma.category.update({
       where: {
         id: categoryId,
       },
