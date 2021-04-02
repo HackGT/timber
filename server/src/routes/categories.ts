@@ -1,80 +1,67 @@
-import express from "express";
-import { PrismaClient } from "@prisma/client";
+import express, { Request, Response } from "express";
+import { Category } from ".prisma/client";
+
+import { asyncHandler } from "../utils/asyncHandler";
+import { prisma } from "../common";
 
 export const categoryRoutes = express.Router();
-const prisma = new PrismaClient();
 
-categoryRoutes.route("/").get(async (req, res) => {
-  const {hackathon, categoryGroup} = req.query
-  console.log(hackathon)
-  console.log(categoryGroup)
-  const filter: any = {}
+categoryRoutes.route("/").get(
+  asyncHandler(async (req: Request, res: Response) => {
+    const { hackathon, categoryGroup } = req.query;
+    const filter: any = {};
 
-  if (hackathon !== undefined) {
-    const hackathonId = parseInt(hackathon as string);
-    filter.hackathonId = hackathonId
-  }
-  
-  if (categoryGroup !== undefined) {
-    const categoryGroupId = parseInt(categoryGroup as string);
-    filter.categoryGroups = {
-      some: {id: categoryGroupId}
+    if (hackathon !== undefined) {
+      const hackathonId: number = parseInt(hackathon as string);
+      filter.hackathonId = hackathonId;
     }
-  }
 
-  const categories = await prisma.category.findMany({ where: filter });
-  res.status(200).send(categories);
-});
+    if (categoryGroup !== undefined) {
+      const categoryGroupId: number = parseInt(categoryGroup as string);
+      filter.categoryGroups = {
+        some: { id: categoryGroupId },
+      };
+    }
 
-categoryRoutes.route("/").post(async (req, res) => {
-  const { name, isDefault, description } = req.body;
-  const result = await prisma.category.create({
-    data: req.body,
-  });
-  res.status(200).send(result);
-});
+    const categories: Category[] = await prisma.category.findMany({ where: filter });
+    res.status(200).send(categories);
+  })
+);
 
-categoryRoutes.route("/:id").patch(async (req, res) => {
-  const categoryID = parseInt(req.params.id);
-
-  if (Number.isNaN(categoryID)) {
-    res.status(400).send(`Category id must be an integer`);
-    return;
-  }
-
-  try {
-    const updateCategory = await prisma.category.update({
-      where: {
-        id: categoryID,
-      },
-      data: req.body
+categoryRoutes.route("/").post(
+  asyncHandler(async (req: Request, res: Response) => {
+    const createdCategory: Category = await prisma.category.create({
+      data: req.body,
     });
-  
-    res.status(200).send(updateCategory.id);
-  } catch (err) {
-    res.status(500).send({error: true, message: err})
-  }
-  
-});
+    res.status(201).send(createdCategory);
+  })
+);
 
-categoryRoutes.route("/:id").delete(async (req, res) => {
-  const categoryID = parseInt(req.params.id);
+categoryRoutes.route("/:id").patch(
+  asyncHandler(async (req: Request, res: Response) => {
+    const categoryId: number = parseInt(req.params.id);
 
-  if (Number.isNaN(categoryID)) {
-    res.status(400).send(`Category id must be an integer`);
-    return;
-  }
-
-  try {
-    const deleteCategory = await prisma.category.delete({
+    const updatedCategory: Category = await prisma.category.update({
       where: {
-        id: categoryID,
+        id: categoryId,
+      },
+      data: req.body,
+    });
+
+    res.status(200).send(updatedCategory);
+  })
+);
+
+categoryRoutes.route("/:id").delete(
+  asyncHandler(async (req: Request, res: Response) => {
+    const categoryId: number = parseInt(req.params.id);
+
+    const deletedCategory: Category = await prisma.category.delete({
+      where: {
+        id: categoryId,
       },
     });
-  
-    res.status(200).send(deleteCategory);
-  } catch (err) {
-    res.status(500).send({error: true, message: err})
-  }
-  
-});
+
+    res.status(200).send(deletedCategory);
+  })
+);
