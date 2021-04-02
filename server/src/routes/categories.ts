@@ -51,17 +51,3 @@ categoryRoutes.route("/:id").patch(
     res.status(200).send(updatedCategory);
   })
 );
-
-categoryRoutes.route("/:id").delete(
-  asyncHandler(async (req: Request, res: Response) => {
-    const categoryId: number = parseInt(req.params.id);
-
-    const deletedCategory: Category = await prisma.category.delete({
-      where: {
-        id: categoryId,
-      },
-    });
-
-    res.status(200).send(deletedCategory);
-  })
-);
