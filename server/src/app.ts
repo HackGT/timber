@@ -23,6 +23,7 @@ app.use(compression());
 import { isAuthenticated } from "./auth/auth";
 import { authRoutes } from "./routes/auth";
 import { projectRoutes } from "./routes/project";
+import { handleError } from "./utils/handleError";
 
 app.get("/status", (req, res) => {
   res.status(200).send("Success");
@@ -35,6 +36,9 @@ app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build
 app.get("*", isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
+
+// Error handler middleware
+app.use(handleError);
 
 app.listen(process.env.PORT, () => {
   console.log(`Timber system started on port ${process.env.PORT}`);
