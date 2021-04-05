@@ -109,6 +109,7 @@ model Hackathon {
   categoryGroups CategoryGroup[]
   categories     Category[]
   notifications  Notification[]
+  tableGroups    TableGroup[]
   config         Config?
 
   @@map("hackathon")
@@ -171,7 +172,9 @@ model TableGroup {
   shortCode String
   color     String
   projects  Project[]
+  hackathon Hackathon @relation(fields: [hackathonId], references: [id])
 
+  hackathonId Int
   @@map("table_group")
 }
 
