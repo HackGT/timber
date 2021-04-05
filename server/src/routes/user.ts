@@ -1,6 +1,7 @@
 import { prisma } from "../common";
 import express from "express";
 import { asyncHandler } from "../utils/asyncHandler";
+import { User } from "@prisma/client";
 
 export const userRoutes = express.Router();
 
@@ -26,10 +27,7 @@ userRoutes.route("/").get(
     });
 
     let usersResponse: any = [];
-    users.forEach(user => {
-      const { token, ...userWithoutToken } = user;
-      usersResponse.push(userWithoutToken);
-    });
+    users.forEach(user => usersResponse.push(sanitizeUser(user)));
     res.status(200).json(usersResponse);
   })
 );
@@ -51,7 +49,11 @@ userRoutes.route("/:id").patch(
       data: data,
     });
 
-    const { token, ...userWithoutToken } = updatedUser;
-    res.status(200).json(userWithoutToken);
+    res.status(200).json(sanitizeUser(updatedUser));
   })
 );
+
+function sanitizeUser(user: User) {
+  const { token, ...sanitizedUser } = user;
+  return sanitizedUser;
+}
