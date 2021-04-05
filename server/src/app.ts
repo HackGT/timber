@@ -22,6 +22,7 @@ app.use(compression());
 
 import { isAuthenticated } from "./auth/auth";
 import { authRoutes } from "./routes/auth";
+import { userRoutes } from "./routes/user";
 import { projectRoutes } from "./routes/project";
 import { categoryRoutes } from "./routes/categories";
 import { tableGroupRoutes } from "./routes/tablegroups";
@@ -32,6 +33,7 @@ app.get("/status", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 app.use("/projects", isAuthenticated, projectRoutes);
 app.use("/categories", isAuthenticated, categoryRoutes);
 app.use("/tablegroups", isAuthenticated, tableGroupRoutes);
