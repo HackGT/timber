@@ -38,9 +38,9 @@ userRoutes.route("/").get(
 userRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     let data: any = {};
-    ["role", "categoryGroup"].forEach(field => {
-      if (req.body.hasOwnProperty(field)) {
-        data[field] = req.body[field];
+    Object.keys(req.body).forEach(key => {
+      if (["role", "categoryGroup"].includes(key)) {
+        data[key] = req.body[key];
       }
     });
 
