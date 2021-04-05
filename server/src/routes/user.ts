@@ -1,61 +1,57 @@
-import { UserRole } from "@prisma/client";
 import { prisma } from "../common";
 import express from "express";
+import { asyncHandler } from "../utils/asyncHandler";
 
 export const userRoutes = express.Router();
-// const prisma = new prisma();
 
 // Filter using query string in url with parameters role and category
-userRoutes.route("/").get(async (req, res) => {
-  let categoryFilter = (req.query.category as string) || null;
-  let roleFilter = (req.query.role as string) || null;
-  let filter: any = {};
+userRoutes.route("/").get(
+  asyncHandler(async (req, res) => {
+    let categoryFilter = (req.query.category as string) || null;
+    let roleFilter = (req.query.role as string) || null;
+    let filter: any = {};
 
-  if (categoryFilter !== null) {
-    const categoryId = parseInt(categoryFilter);
-    if (isNaN(categoryId)) {
-      res.status(400).send("Invalid category query parameter, must be an integer");
-      return;
-    } else {
+    if (categoryFilter !== null) {
+      const categoryId = parseInt(categoryFilter);
       filter.categoryGroupId = categoryId;
     }
-  }
 
-  if (roleFilter !== null) {
-    roleFilter = roleFilter.toUpperCase();
-    if (!(roleFilter in UserRole)) {
-      res.status(400).send("Invalid user role");
-      return;
-    } else {
+    if (roleFilter !== null) {
+      roleFilter = roleFilter.toUpperCase();
       filter.role = roleFilter;
     }
-  }
-  let users = await prisma.user.findMany({
-    where: filter,
-  });
 
-  let userUuids: string[] = [];
-  users.forEach(user => userUuids.push(user.uuid));
-  res.status(200).send(userUuids);
-});
+    const users = await prisma.user.findMany({
+      where: filter,
+    });
+
+    let usersResponse: any = [];
+    users.forEach(user => {
+      const { token, ...userWithoutToken } = user;
+      usersResponse.push(userWithoutToken);
+    });
+    res.status(200).json(usersResponse);
+  })
+);
 
 // Update user
-userRoutes.route("/:id").patch(async (req, res) => {
-  const data = req.body.filter((key: string) => ["role", "categoryGroup"].includes(key));
+userRoutes.route("/:id").patch(
+  asyncHandler(async (req, res) => {
+    let data: any = {};
+    ["role", "categoryGroup"].forEach(field => {
+      if (req.body.hasOwnProperty(field)) {
+        data[field] = req.body[field];
+      }
+    });
 
-  try {
-    const updateUser = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: {
-        uuid: req.params.uuid,
+        uuid: req.params.id,
       },
       data: data,
     });
-    res.status(200).send(updateUser.uuid);
-  } catch (error) {
-    if (error.code === "P2025") {
-      res.status(404).send("User with uuid does not exist");
-    } else {
-      res.status(500).send(`Error: ${error.meta.cause}`);
-    }
-  }
-});
+
+    const { token, ...userWithoutToken } = updatedUser;
+    res.status(200).json(userWithoutToken);
+  })
+);
