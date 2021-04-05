@@ -78,14 +78,14 @@ model CategoryGroup {
 }
 
 model Config {
-  id                  Int       @id @default(autoincrement())
+  id                  Int        @id @default(autoincrement())
   currentRound        Int
   currentExpo         Int
-  currentHackathon    Hackathon @relation(fields: [currentHackathonId], references: [id])
+  currentHackathon    Hackathon? @relation(fields: [currentHackathonId], references: [id])
   isJudgingOn         Boolean
   isProjectsPublished Boolean
 
-  currentHackathonId Int
+  currentHackathonId Int?
   @@map("config")
 }
 
