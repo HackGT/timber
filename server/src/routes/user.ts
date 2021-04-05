@@ -1,8 +1,9 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
+import { prisma } from "../common";
 import express from "express";
 
 export const userRoutes = express.Router();
-const prisma = new PrismaClient();
+// const prisma = new prisma();
 
 // Filter using query string in url with parameters role and category
 userRoutes.route("/").get(async (req, res) => {
@@ -39,23 +40,15 @@ userRoutes.route("/").get(async (req, res) => {
 });
 
 // Update user
-userRoutes.route("/:uuid").patch(async (req, res) => {
-  const updateableFields = ["role", "categoryGroup", "ballots", "assignments", "notifications"];
-
-  // Only allow updates to certain fields
-  let updateBody: any = {};
-  updateableFields.forEach(field => {
-    if (req.body.hasOwnProperty(field)) {
-      updateBody[field] = req.body[field];
-    }
-  });
+userRoutes.route("/:id").patch(async (req, res) => {
+  const data = req.body.filter((key: string) => ["role", "categoryGroup"].includes(key));
 
   try {
     const updateUser = await prisma.user.update({
       where: {
         uuid: req.params.uuid,
       },
-      data: updateBody,
+      data: data,
     });
     res.status(200).send(updateUser.uuid);
   } catch (error) {
