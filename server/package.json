@@ -10,6 +10,7 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "prisma-generate": "prisma format && prisma generate",
+    "seed": "prisma db seed --preview-feature",
     "start": "node dist/app.js",
     "start-migrate": "yarn migrate:deploy && yarn start"
   },

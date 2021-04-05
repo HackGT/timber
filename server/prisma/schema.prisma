@@ -79,11 +79,11 @@ model CategoryGroup {
 
 model Config {
   id                  Int        @id @default(autoincrement())
-  currentRound        Int
-  currentExpo         Int
+  currentRound        Int        @default(1)
+  currentExpo         Int        @default(1)
   currentHackathon    Hackathon? @relation(fields: [currentHackathonId], references: [id])
-  isJudgingOn         Boolean
-  isProjectsPublished Boolean
+  isJudgingOn         Boolean    @default(false)
+  isProjectsPublished Boolean    @default(false)
 
   currentHackathonId Int?
   @@map("config")
