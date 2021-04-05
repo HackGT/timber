@@ -26,9 +26,7 @@ userRoutes.route("/").get(
       where: filter,
     });
 
-    let usersResponse: any = [];
-    users.forEach(user => usersResponse.push(sanitizeUser(user)));
-    res.status(200).json(usersResponse);
+    res.status(200).json(users.map(user => sanitizeUser(user)));
   })
 );
 
