@@ -5,31 +5,6 @@ import { prisma } from "../common";
 
 export const criteriaRoutes = express.Router();
 
-// criteriaRoutes.route("/").get(
-//   asyncHandler(async (req, res) => {
-//     const { category } = req.query;
-//     const filter: any = {};
-
-//     if (category !== undefined) {
-//       const categoryId: number = parseInt(category as string);
-//       filter.categoryId = categoryId;
-//     }
-
-//     const criteria = await prisma.criteria.findMany({ where: filter });
-//     res.status(200).json(criteria);
-//   })
-// );
-
-// criteriaRoutes.route("/").post(
-//   asyncHandler(async (req, res) => {
-//     const createdCriteria = await prisma.criteria.create({
-//       data: req.body,
-//     });
-
-//     res.status(201).json(createdCriteria);
-//   })
-// );
-
 criteriaRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const criteriaId: number = parseInt(req.params.id);
