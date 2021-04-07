@@ -13,7 +13,7 @@ steps:
     secretEnv: ["TRAVIS_TOKEN"]
     env:
       - "REPO_NAME=$REPO_NAME"
-timeout: 300s
+timeout: 600s
 secrets:
   - kmsKeyName: projects/hackgt-cluster/locations/global/keyRings/hackgt-build/cryptoKeys/hackgt-build-key
     secretEnv:
