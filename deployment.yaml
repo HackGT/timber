@@ -1,0 +1,18 @@
+git:
+  branch: main
+
+wants:
+  postgres: true
+
+health:
+  path: /status
+
+secrets:
+  - SESSION_SECRET
+  - GROUND_TRUTH_CLIENT_ID
+  - GROUND_TRUTH_CLIENT_SECRET
+
+env:
+  GROUND_TRUTH_URL: https://login.hack.gt
+  DEBUG: false
+  PRODUCTION: true
