@@ -15,6 +15,13 @@ projectRoutes.route("/").get(
         req.query[key] = parseInt(req.query[key]);
       }
     });
+    const { categories } = req.query;
+    if (categories !== undefined) {
+      const categoryId: number = parseInt(categories as string);
+      req.query.categories = {
+        some: { id: categoryId },
+      };
+    }
     const matches = await prisma.project.findMany({
       where: req.query,
     });
