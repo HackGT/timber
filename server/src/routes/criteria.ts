@@ -32,11 +32,11 @@ criteriaRoutes.route("/").post(
 criteriaRoutes.route("/batch/create").post(
   asyncHandler(async (req, res) => {
     const createdCriterias = await prisma.criteria.createMany({
-      data: req.body
-    })
-    res.status(201).json(createdCriterias)
+      data: req.body,
+    });
+    res.status(201).json(createdCriterias);
   })
-)
+);
 
 criteriaRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
