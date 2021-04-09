@@ -26,6 +26,7 @@ import { userRoutes } from "./routes/user";
 import { projectRoutes } from "./routes/project";
 import { categoryRoutes } from "./routes/categories";
 import { tableGroupRoutes } from "./routes/tablegroups";
+import { criteriaRoutes } from "./routes/criteria";
 import { handleError } from "./utils/handleError";
 
 app.get("/status", (req, res) => {
@@ -37,6 +38,7 @@ app.use("/user", userRoutes);
 app.use("/projects", isAuthenticated, projectRoutes);
 app.use("/categories", isAuthenticated, categoryRoutes);
 app.use("/tablegroups", isAuthenticated, tableGroupRoutes);
+app.use("/criteria", isAuthenticated, criteriaRoutes);
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
