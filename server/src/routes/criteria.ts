@@ -63,6 +63,6 @@ criteriaRoutes.route("/:id").delete(
       },
     });
 
-    res.status(200).json(deletedCriteria);
+    res.status(204).end();
   })
 );

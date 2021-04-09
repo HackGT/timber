@@ -60,6 +60,12 @@ categoryRoutes.route("/:id").delete(
   asyncHandler(async (req, res) => {
     const categoryId: number = parseInt(req.params.id);
 
+    const deletedCriteria = await prisma.criteria.deleteMany({
+      where: {
+        categoryId,
+      },
+    });
+
     const deletedCategory = await prisma.category.delete({
       where: {
         id: categoryId,
@@ -67,6 +73,6 @@ categoryRoutes.route("/:id").delete(
       include: { criterias: true },
     });
 
-    res.status(200).json(deletedCategory);
+    res.status(204).end();
   })
 );
