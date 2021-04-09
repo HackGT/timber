@@ -26,7 +26,7 @@ projectRoutes.route("/").get(
 
     if (category !== undefined) {
       const categoryId: number = parseInt(category as string);
-      req.query.categories = {
+      filter.categories = {
         some: { id: categoryId },
       };
     }
