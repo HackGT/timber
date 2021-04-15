@@ -7,30 +7,33 @@ export const assignmentRoutes = express.Router();
 
 assignmentRoutes.route("/").get(
   asyncHandler(async (req, res) => {
-    const { hackathon, expo, round, category } = req.query;
+    const { hackathon, expo, round, categoryGroup } = req.query;
     const filter: any = {};
+    if (hackathon || expo || round) {
+      filter.project = {};
+    }
 
     if (hackathon !== undefined) {
       const hackathonId: number = parseInt(hackathon as string);
-      filter.hackathonId = hackathonId;
+      filter.project.hackathonId = hackathonId;
     }
 
     if (expo !== undefined) {
       const expoNumber: number = parseInt(expo as string);
-      filter.expo = expoNumber;
+      filter.project.expo = expoNumber;
     }
 
     if (round !== undefined) {
       const roundNumber: number = parseInt(round as string);
-      filter.round = roundNumber;
+      filter.project.round = roundNumber;
     }
 
-    // if (category !== undefined) {
-    //   const categoryId: number = parseInt(category as string);
-    //   filter.categories = {
-    //     some: { id: categoryId },
-    //   };
-    // }
+    if (categoryGroup !== undefined) {
+      const categoryGroupId: number = parseInt(categoryGroup as string);
+      filter.user = {
+        categoryGroupId,
+      };
+    }
 
     const assignments = await prisma.assignment.findMany({
       where: filter,
