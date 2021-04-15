@@ -7,25 +7,25 @@ export const configRoutes = express.Router();
 configRoutes.route("/currentRoundExpo").post(
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["currentRound", "currentExpo"]);
-    res.status(201).json(update);
+    res.status(200).json(update);
   })
 );
 configRoutes.route("/isJudgingOn").post(
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["isJudgingOn"]);
-    res.status(201).json(update);
+    res.status(200).json(update);
   })
 );
 configRoutes.route("/isProjectsPublished").post(
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["isProjectsPublished"]);
-    res.status(201).json(update);
+    res.status(200).json(update);
   })
 );
 configRoutes.route("/currentHackathonId").post(
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["currentHackathonId"]);
-    res.status(201).json(update);
+    res.status(200).json(update);
   })
 );
 
