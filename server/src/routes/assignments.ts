@@ -15,7 +15,7 @@ assignmentRoutes.route("/").get(
 
     if (hackathon !== undefined) {
       const hackathonId: number = parseInt(hackathon as string);
-      filter.project.hackathonId = hackathonId;
+      filter.project.categories = { every: { hackathonId } };
     }
 
     if (expo !== undefined) {
