@@ -22,7 +22,10 @@ categoryRoutes.route("/").get(
       };
     }
 
-    const categories = await prisma.category.findMany({ where: filter });
+    const categories = await prisma.category.findMany({
+      where: filter,
+      include: { criterias: true },
+    });
     res.status(200).json(categories);
   })
 );
@@ -31,6 +34,7 @@ categoryRoutes.route("/").post(
   asyncHandler(async (req, res) => {
     const createdCategory = await prisma.category.create({
       data: req.body,
+      include: { criterias: true },
     });
     res.status(201).json(createdCategory);
   })
@@ -45,8 +49,30 @@ categoryRoutes.route("/:id").patch(
         id: categoryId,
       },
       data: req.body,
+      include: { criterias: true },
     });
 
     res.status(200).json(updatedCategory);
+  })
+);
+
+categoryRoutes.route("/:id").delete(
+  asyncHandler(async (req, res) => {
+    const categoryId: number = parseInt(req.params.id);
+
+    const deletedCriteria = await prisma.criteria.deleteMany({
+      where: {
+        categoryId,
+      },
+    });
+
+    const deletedCategory = await prisma.category.delete({
+      where: {
+        id: categoryId,
+      },
+      include: { criterias: true },
+    });
+
+    res.status(204).end();
   })
 );

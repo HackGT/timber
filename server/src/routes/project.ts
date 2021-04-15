@@ -7,16 +7,32 @@ export const projectRoutes = express.Router();
 
 projectRoutes.route("/").get(
   asyncHandler(async (req: any, res) => {
-    // note: query params default to strings (e.g. 1 → '1'),
-    // thus numeric fields must be converted to numbers in
-    // order for prisma's queries to function as expected
-    Object.keys(req.query).forEach(key => {
-      if (["expo", "round", "table"].includes(key)) {
-        req.query[key] = parseInt(req.query[key]);
-      }
-    });
+    const { expo, round, table, category } = req.query;
+    const filter: any = {};
+    if (expo !== undefined) {
+      const expoNumber: number = parseInt(expo as string);
+      filter.expo = expoNumber;
+    }
+
+    if (round !== undefined) {
+      const roundNumber: number = parseInt(round as string);
+      filter.round = roundNumber;
+    }
+
+    if (table !== undefined) {
+      const tableNumber: number = parseInt(table as string);
+      filter.table = tableNumber;
+    }
+
+    if (category !== undefined) {
+      const categoryId: number = parseInt(category as string);
+      filter.categories = {
+        some: { id: categoryId },
+      };
+    }
+
     const matches = await prisma.project.findMany({
-      where: req.query,
+      where: filter,
     });
     res.status(200).json(matches);
   })
