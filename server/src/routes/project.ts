@@ -1,5 +1,6 @@
 import express from "express";
 
+import { validateTeam, validateDevpost } from "../utils/validationHelpers";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 
@@ -8,28 +9,12 @@ export const projectRoutes = express.Router();
 projectRoutes.route("/").get(
   asyncHandler(async (req: any, res) => {
     const { expo, round, table, category } = req.query;
+
     const filter: any = {};
-    if (expo !== undefined) {
-      const expoNumber: number = parseInt(expo as string);
-      filter.expo = expoNumber;
-    }
-
-    if (round !== undefined) {
-      const roundNumber: number = parseInt(round as string);
-      filter.round = roundNumber;
-    }
-
-    if (table !== undefined) {
-      const tableNumber: number = parseInt(table as string);
-      filter.table = tableNumber;
-    }
-
-    if (category !== undefined) {
-      const categoryId: number = parseInt(category as string);
-      filter.categories = {
-        some: { id: categoryId },
-      };
-    }
+    if (expo) filter.expo = parseInt(expo as string);
+    if (round) filter.round = parseInt(round as string);
+    if (table) filter.table = parseInt(table as string);
+    if (category) filter.category = parseInt(category as string);
 
     const matches = await prisma.project.findMany({
       where: filter,
@@ -40,10 +25,22 @@ projectRoutes.route("/").get(
 
 projectRoutes.route("/").post(
   asyncHandler(async (req, res) => {
-    const created = await prisma.project.create({
-      data: req.body,
-    });
-    res.status(201).json(created);
+    const { members, name, devpostUrl } = req.body;
+    const config = await prisma.config.findFirst();
+
+    if (config?.isProjectSubmissionOpen) {
+      const teamVal = await validateTeam(members, req.user!.email);
+      const devpostVal = await validateDevpost(name, devpostUrl);
+
+      if (teamVal.error)
+        return res.status(400).json({ error: true, message: "Invalid team composition." });
+      if (devpostVal.error)
+        return res.status(400).json({ error: true, message: "Invalid Devpost URL." });
+
+      const created = await prisma.project.create({ data: req.body });
+      return res.status(201).json(created);
+    }
+    return res.status(400).json({ error: true, message: "Submissions are currently closed." });
   })
 );
 
@@ -67,3 +64,18 @@ projectRoutes.route("/:id").patch(
     res.status(200).json(updated);
   })
 );
+
+projectRoutes.route("/team-validation").post(async (_req, _res) => {
+  asyncHandler(async (req, res) => {
+    const response = await validateTeam(req.body.members, req.user!.email);
+    res.status(200).json(response);
+  });
+});
+
+projectRoutes.route("/devpost-validation").post(async (_req, _res) => {
+  asyncHandler(async (req, res) => {
+    const { name, devpostUrl } = req.body;
+    const response = await validateDevpost(name, devpostUrl);
+    res.status(200).json(response);
+  });
+});
