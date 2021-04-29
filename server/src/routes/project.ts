@@ -32,10 +32,8 @@ projectRoutes.route("/").post(
       const teamVal = await validateTeam(members, req.user!.email);
       const devpostVal = await validateDevpost(name, devpostUrl);
 
-      if (teamVal.error)
-        return res.status(400).json({ error: true, message: "Invalid team composition." });
-      if (devpostVal.error)
-        return res.status(400).json({ error: true, message: "Invalid Devpost URL." });
+      if (teamVal.error) return res.status(400).json(teamVal);
+      if (devpostVal.error) return res.status(400).json(devpostVal);
 
       const created = await prisma.project.create({ data: req.body });
       return res.status(201).json(created);
@@ -65,17 +63,13 @@ projectRoutes.route("/:id").patch(
   })
 );
 
-projectRoutes.route("/team-validation").post(async (_req, _res) => {
-  asyncHandler(async (req, res) => {
-    const response = await validateTeam(req.body.members, req.user!.email);
-    res.status(200).json(response);
-  });
+projectRoutes.route("/team-validation").post(async (req, res) => {
+  const response = await validateTeam(req.body.members, req.user!.email);
+  res.status(200).json(response);
 });
 
-projectRoutes.route("/devpost-validation").post(async (_req, _res) => {
-  asyncHandler(async (req, res) => {
-    const { name, devpostUrl } = req.body;
-    const response = await validateDevpost(name, devpostUrl);
-    res.status(200).json(response);
-  });
+projectRoutes.route("/devpost-validation").post(async (req, res) => {
+  const { name, devpostUrl } = req.body;
+  const response = await validateDevpost(name, devpostUrl);
+  res.status(200).json(response);
 });

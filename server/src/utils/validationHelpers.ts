@@ -12,9 +12,6 @@ dotenv.config();
 // todo: integrate eligibility criteria & logic
 export const getEligiblePrizes = (users: User[]) => null;
 
-/////////////////////
-// team validation //
-/////////////////////
 export const validateTeam = async (members: User[], userEmail: string) => {
   if (!members || !members.length)
     return { error: true, message: "Teams must include at least one member." };
@@ -24,8 +21,7 @@ export const validateTeam = async (members: User[], userEmail: string) => {
     return { error: true, message: "Email doesn't match current user." };
 
   const emails = members.map((member: User) => member.email);
-  let errConfirmed = null;
-  let errSubmission = null;
+  let errConfirmed = null, errSubmission = null;
 
   const registrationUsers = await Promise.all(
     emails.map(async email => {
@@ -59,24 +55,27 @@ export const validateTeam = async (members: User[], userEmail: string) => {
         return;
       }
 
-      const user: any = await prisma.user.findUnique({ where: { email } });
-
+      const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
         await prisma.user.create({
           data: {
-            uuid: "",
-            token: "",
+            // todo: implement better unique generation method
+            uuid: Math.floor(Math.random() * 1000000).toString(),
+            token: Math.floor(Math.random() * 1000000).toString(),
             email,
             name: regUsers[0].name,
             role: UserRole.PARTICIPANT,
           },
         });
       } else {
-        const hackathon: any = await prisma.hackathon.findFirst({
+        const hackathon = await prisma.hackathon.findFirst({
           where: { name: process.env.HACKATHON },
         });
         const submissions = await prisma.project.findMany({
-          where: { members: user, hackathon },
+          where: {
+            members: { some: user },
+            hackathon: hackathon!
+          }
         });
         if (submissions.length > 0) {
           errSubmission = user.email;
@@ -95,19 +94,19 @@ export const validateTeam = async (members: User[], userEmail: string) => {
   return { error: false, eligiblePrizes: getEligiblePrizes(registrationUsers) };
 };
 
-////////////////////////
-// devpost validation //
-////////////////////////
 export const validateDevpost = async (name: string, devpostUrl: string) => {
-  if (!devpostUrl) return { error: true, message: "No Devpost URL specified." };
+  if (!devpostUrl)
+    return { error: true, message: "No Devpost URL specified." };
   if (new URL(devpostUrl).hostname !== "devpost.com")
     return { error: true, message: "URL is not a Devpost domain." };
 
-  const html = await rp(devpostUrl).catch(() => ({ error: true, message: "Invalid project URL." }));
+  const res = await rp(devpostUrl).catch(() => ({ error: true }));
+  if (res.error) return { error: true, message: "Invalid project URL." };
 
   let submitted = false;
   const devpostUrls = [];
-  const $ = cheerio.load(html);
+  const $ = cheerio.load(res);
+
   $("#submissions")
     .find("ul")
     .children("li")
@@ -121,15 +120,16 @@ export const validateDevpost = async (name: string, devpostUrl: string) => {
 
   const devpostCount = await prisma.project.count({ where: { devpostUrl } });
   const nameCount = await prisma.project.count({ where: { name } });
-  const eligible = submitted && devpostUrls.length === 1 && !devpostCount && !nameCount;
 
-  if (eligible) return { error: false };
+  if (submitted && devpostUrls.length === 1 && !devpostCount && !nameCount)
+    return { error: false };
   if (!submitted)
-    return { error: true, messsage: `Please submit your project to the Devpost and try again.` };
+    return { error: true, messsage: "Please submit your project to the Devpost and try again." };
   if (devpostUrls.length !== 1)
     return { error: true, message: "You cannot have multiple hackathon submissions." };
   if (devpostCount)
     return { error: true, message: "A submission with this Devpost URL already exists." };
-  if (nameCount) return { error: true, message: "A submission with this name already exists." };
+  if (nameCount)
+    return { error: true, message: "A submission with this name already exists." };
   return { error: true, message: "An unexpected error occurred. Please contact the help desk." };
 };
