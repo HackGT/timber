@@ -1,5 +1,7 @@
 import express from "express";
 
+import { User, UserRole, AssignmentStatus } from "@prisma/client";
+
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 
@@ -44,6 +46,32 @@ assignmentRoutes.route("/").get(
 
 assignmentRoutes.route("/").post(
   asyncHandler(async (req, res) => {
+    const user: User = req.body.user as User;
+    const projectId: number = parseInt(req.body.project.id);
+    const duplicateFilter: any = {};
+    const multipleProjectFilter: any = {};
+    if (user.role !== UserRole.JUDGE && user.role !== UserRole.JUDGE_AND_SPONSOR) {
+      res.status(500).json({ error: "User is not a judge" });
+      return;
+    }
+
+    duplicateFilter.projectId = projectId;
+    duplicateFilter.userId = user.id;
+
+    multipleProjectFilter.userId = user.id
+    multipleProjectFilter.status = AssignmentStatus.STARTED
+
+    const checkAssignment = await prisma.assignment.findMany({
+      where: {
+        OR: [duplicateFilter, multipleProjectFilter]
+      },
+    });
+
+    if (checkAssignment.length !== 0) {
+      res.status(500).json({ error: "Judge already has a project started or project is a duplicate" });
+      return
+    }
+
     const createdAssignment = await prisma.assignment.create({
       data: req.body,
     });
@@ -54,6 +82,11 @@ assignmentRoutes.route("/").post(
 assignmentRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const assignmentId: number = parseInt(req.params.id);
+    const user: User = req.body.user as User;
+    if (user.role !== UserRole.JUDGE && user.role !== UserRole.JUDGE_AND_SPONSOR) {
+      res.status(500).json({ error: "User is not a judge" });
+      return;
+    }
 
     const updatedAssignment = await prisma.assignment.update({
       where: {
