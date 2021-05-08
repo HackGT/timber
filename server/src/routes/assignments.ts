@@ -58,18 +58,22 @@ assignmentRoutes.route("/").post(
     duplicateFilter.projectId = projectId;
     duplicateFilter.userId = user.id;
 
-    multipleProjectFilter.userId = user.id
-    multipleProjectFilter.status = AssignmentStatus.STARTED
+    multipleProjectFilter.userId = user.id;
+    multipleProjectFilter.status = AssignmentStatus.STARTED;
 
     const checkAssignment = await prisma.assignment.findMany({
       where: {
-        OR: [duplicateFilter, multipleProjectFilter]
+        OR: [duplicateFilter, multipleProjectFilter],
       },
     });
 
     if (checkAssignment.length !== 0) {
-      res.status(500).json({ error: "Judge already has a project started or project assignment is a duplicate" });
-      return
+      res
+        .status(500)
+        .json({
+          error: "Judge already has a project started or project assignment is a duplicate",
+        });
+      return;
     }
 
     const createdAssignment = await prisma.assignment.create({
