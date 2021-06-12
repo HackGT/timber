@@ -96,7 +96,7 @@ assignmentRoutes.route("/:id").patch(
       where: {
         id: assignmentId,
       },
-      data: req.body,
+      data: req.body.data,
     });
 
     res.status(200).json(updatedAssignment);
