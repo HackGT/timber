@@ -77,7 +77,7 @@ assignmentRoutes.route("/").post(
     }
 
     const createdAssignment = await prisma.assignment.create({
-      data: req.body,
+      data: req.body.data,
     });
     res.status(201).json(createdAssignment);
   })
