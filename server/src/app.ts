@@ -26,6 +26,8 @@ import { userRoutes } from "./routes/user";
 import { projectRoutes } from "./routes/project";
 import { categoryRoutes } from "./routes/categories";
 import { tableGroupRoutes } from "./routes/tablegroups";
+import { hackathonRoutes } from "./routes/hackathon";
+import { configRoutes } from "./routes/config";
 import { criteriaRoutes } from "./routes/criteria";
 import { handleError } from "./utils/handleError";
 
@@ -38,6 +40,8 @@ app.use("/user", userRoutes);
 app.use("/projects", isAuthenticated, projectRoutes);
 app.use("/categories", isAuthenticated, categoryRoutes);
 app.use("/tablegroups", isAuthenticated, tableGroupRoutes);
+app.use("/hackathon", isAuthenticated, hackathonRoutes);
+app.use("/config", isAuthenticated, configRoutes);
 app.use("/criteria", isAuthenticated, criteriaRoutes);
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
