@@ -3,28 +3,20 @@ import express from "express";
 import fetch from "node-fetch";
 import passport from "passport";
 
-import { createLink, AuthenticateOptions } from "../auth/strategies";
-
 export const authRoutes = express.Router();
 
-authRoutes.route("/login").get((req, res, next) => {
-  const callbackURL = createLink(req, "auth/login/callback");
-  passport.authenticate("oauth2", { callbackURL } as AuthenticateOptions)(req, res, next);
-});
+authRoutes.get("/login", passport.authenticate("groundtruth"));
 
 authRoutes.route("/login/callback").get((req, res, next) => {
-  const callbackURL = createLink(req, "auth/login/callback");
-
   if (req.query.error === "access_denied") {
     res.redirect("/auth/login");
     return;
   }
 
-  passport.authenticate("oauth2", {
+  passport.authenticate("groundtruth", {
     failureRedirect: "/",
     successReturnToOrRedirect: "/",
-    callbackURL,
-  } as AuthenticateOptions)(req, res, next);
+  })(req, res, next);
 });
 
 authRoutes.route("/check").get((req, res) => {
