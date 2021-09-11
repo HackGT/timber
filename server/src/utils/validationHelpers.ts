@@ -21,7 +21,8 @@ export const validateTeam = async (members: User[], userEmail: string) => {
     return { error: true, message: "Email doesn't match current user." };
 
   const emails = members.map((member: User) => member.email);
-  let errConfirmed = null, errSubmission = null;
+  let errConfirmed = null,
+    errSubmission = null;
 
   const registrationUsers = await Promise.all(
     emails.map(async email => {
@@ -74,8 +75,8 @@ export const validateTeam = async (members: User[], userEmail: string) => {
         const submissions = await prisma.project.findMany({
           where: {
             members: { some: user },
-            hackathon: hackathon!
-          }
+            hackathon: hackathon!,
+          },
         });
         if (submissions.length > 0) {
           errSubmission = user.email;
@@ -95,8 +96,7 @@ export const validateTeam = async (members: User[], userEmail: string) => {
 };
 
 export const validateDevpost = async (name: string, devpostUrl: string) => {
-  if (!devpostUrl)
-    return { error: true, message: "No Devpost URL specified." };
+  if (!devpostUrl) return { error: true, message: "No Devpost URL specified." };
   if (new URL(devpostUrl).hostname !== "devpost.com")
     return { error: true, message: "URL is not a Devpost domain." };
 
@@ -121,15 +121,20 @@ export const validateDevpost = async (name: string, devpostUrl: string) => {
   const devpostCount = await prisma.project.count({ where: { devpostUrl } });
   const nameCount = await prisma.project.count({ where: { name } });
 
-  if (submitted && devpostUrls.length === 1 && !devpostCount && !nameCount)
+  if (submitted && devpostUrls.length === 1 && !devpostCount && !nameCount) {
     return { error: false };
-  if (!submitted)
+  }
+  if (!submitted) {
     return { error: true, messsage: "Please submit your project to the Devpost and try again." };
-  if (devpostUrls.length !== 1)
+  }
+  if (devpostUrls.length !== 1) {
     return { error: true, message: "You cannot have multiple hackathon submissions." };
-  if (devpostCount)
+  }
+  if (devpostCount) {
     return { error: true, message: "A submission with this Devpost URL already exists." };
-  if (nameCount)
+  }
+  if (nameCount) {
     return { error: true, message: "A submission with this name already exists." };
+  }
   return { error: true, message: "An unexpected error occurred. Please contact the help desk." };
 };

@@ -1,5 +1,6 @@
-import { prisma } from "../common";
 import express from "express";
+
+import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const configRoutes = express.Router();
@@ -30,7 +31,7 @@ configRoutes.route("/currentHackathonId").post(
 );
 
 function updateConfigFields(data: any, fields: string[]) {
-  let filtered: any = {};
+  const filtered: any = {};
 
   Object.keys(data).forEach(key => {
     if (fields.includes(key)) {
