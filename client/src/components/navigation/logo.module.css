@@ -1,0 +1,15 @@
+.container {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text {
+  padding-left: 0.5rem;
+  font-size: 1.9rem;
+  user-select: none;
+  color: #000;
+  font-weight: 500;
+}
