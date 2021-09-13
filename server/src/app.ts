@@ -23,7 +23,7 @@ app.use(compression());
 import { isAuthenticated } from "./auth/auth";
 import { authRoutes } from "./routes/auth";
 import { userRoutes } from "./routes/user";
-import { categoryGroupRoutes } from "./routes/categoryGroups";
+import { categoryGroupRoutes } from "./routes/categorygroups";
 import { projectRoutes } from "./routes/project";
 import { categoryRoutes } from "./routes/categories";
 import { tableGroupRoutes } from "./routes/tablegroups";

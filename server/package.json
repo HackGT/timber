@@ -35,6 +35,7 @@
     "passport-oauth2": "^1.5.0",
     "prettier": "^2.2.1",
     "prisma": "^2.20.1",
+    "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "source-map-support": "^0.5.19"
   },
