@@ -3,9 +3,10 @@ import passport from "passport";
 import session from "express-session";
 import dotenv from "dotenv";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import { Strategy as GroundTruthStrategy } from "passport-ground-truth";
+import { UserRole } from "@prisma/client";
 
 import { app } from "../app";
-import { GroundTruthStrategy } from "./strategies";
 import { prisma } from "../common";
 
 dotenv.config();
@@ -54,9 +55,47 @@ export function isAuthenticated(
   }
 }
 
-const groundTruthStrategy = new GroundTruthStrategy();
+passport.use(
+  new GroundTruthStrategy(
+    {
+      clientID: process.env.GROUND_TRUTH_CLIENT_ID,
+      clientSecret: process.env.GROUND_TRUTH_CLIENT_SECRET,
+      baseURL: process.env.GROUND_TRUTH_URL,
+      callbackURL: "/auth/login/callback",
+    },
+    async (req, accessToken, refreshToken, profile, done) => {
+      let user = await prisma.user.findUnique({
+        where: {
+          uuid: profile.uuid,
+        },
+      });
 
-passport.use(groundTruthStrategy);
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            name: profile.name,
+            uuid: profile.uuid,
+            email: profile.email,
+            token: profile.token,
+            role: UserRole.PARTICIPANT,
+          },
+        });
+      } else {
+        user = await prisma.user.update({
+          where: {
+            uuid: profile.uuid,
+          },
+          data: {
+            token: accessToken,
+          },
+        });
+      }
+
+      done(null, user);
+    }
+  )
+);
+
 passport.serializeUser<string>((user, done) => {
   done(null, user.uuid);
 });

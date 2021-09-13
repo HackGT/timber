@@ -1,16 +1,22 @@
-import { prisma } from "../common";
 import express from "express";
-import { asyncHandler } from "../utils/asyncHandler";
 import { User } from "@prisma/client";
 
+import { prisma } from "../common";
+import { asyncHandler } from "../utils/asyncHandler";
+
 export const userRoutes = express.Router();
+
+function sanitizeUser(user: User) {
+  const { token, ...sanitizedUser } = user;
+  return sanitizedUser;
+}
 
 // Filter using query string in url with parameters role and category
 userRoutes.route("/").get(
   asyncHandler(async (req, res) => {
-    let categoryFilter = (req.query.category as string) || null;
+    const categoryFilter = (req.query.category as string) || null;
     let roleFilter = (req.query.role as string) || null;
-    let filter: any = {};
+    const filter: any = {};
 
     if (categoryFilter !== null) {
       const categoryId = parseInt(categoryFilter);
@@ -33,7 +39,7 @@ userRoutes.route("/").get(
 // Update user
 userRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
-    let data: any = {};
+    const data: any = {};
     Object.keys(req.body).forEach(key => {
       if (["role", "categoryGroup"].includes(key)) {
         data[key] = req.body[key];
@@ -44,14 +50,9 @@ userRoutes.route("/:id").patch(
       where: {
         uuid: req.params.id,
       },
-      data: data,
+      data,
     });
 
     res.status(200).json(sanitizeUser(updatedUser));
   })
 );
-
-function sanitizeUser(user: User) {
-  const { token, ...sanitizedUser } = user;
-  return sanitizedUser;
-}

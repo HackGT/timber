@@ -1,0 +1,33 @@
+header {
+  color: #fff;
+  font-size: 18px;
+  padding: 0 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 15%);
+  margin-bottom: 10px;
+  height: 64px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #fff;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.link {
+  color: #000;
+  font-weight: 300;
+  text-underline-position: under;
+  padding-left: 48px;
+}
+
+.link_active {
+  font-weight: 500;
+}

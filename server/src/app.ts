@@ -7,6 +7,8 @@ import morgan from "morgan";
 import path from "path";
 import "source-map-support/register";
 
+import { scheduleJobs } from "./jobs";
+
 dotenv.config();
 
 process.on("unhandledRejection", err => {
@@ -56,6 +58,17 @@ app.get("*", isAuthenticated, (req, res) => {
 // Error handler middleware
 app.use(handleError);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Timber system started on port ${process.env.PORT}`);
-});
+async function runSetup() {
+  await scheduleJobs();
+}
+
+runSetup()
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Timber system started on port ${process.env.PORT}`);
+    });
+  })
+  .catch(error => {
+    console.log("App setup failed");
+    throw error;
+  });
