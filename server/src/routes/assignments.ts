@@ -1,5 +1,4 @@
 import express from "express";
-
 import { User, UserRole, AssignmentStatus } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
@@ -68,11 +67,9 @@ assignmentRoutes.route("/").post(
     });
 
     if (checkAssignment.length !== 0) {
-      res
-        .status(500)
-        .json({
-          error: "Judge already has a project started or project assignment is a duplicate",
-        });
+      res.status(500).json({
+        error: "Judge already has a project started or project assignment is a duplicate",
+      });
       return;
     }
 

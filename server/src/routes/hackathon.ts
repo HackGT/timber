@@ -1,5 +1,6 @@
-import { prisma } from "../common";
 import express from "express";
+
+import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const hackathonRoutes = express.Router();
