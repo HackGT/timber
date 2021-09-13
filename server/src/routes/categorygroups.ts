@@ -29,6 +29,7 @@ categoryGroupRoutes.route("/").get(
 
 categoryGroupRoutes.route("/").post(
   asyncHandler(async (req, res) => {
+    console.log(req.body);
     const createdCategoryGroup = await prisma.categoryGroup.create({
       data: req.body,
     });
