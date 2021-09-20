@@ -6,6 +6,9 @@ import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import "source-map-support/register";
+import { createServer } from "http";
+import * as socketio from 'socket.io';
+
 
 import { scheduleJobs } from "./jobs";
 
@@ -16,6 +19,8 @@ process.on("unhandledRejection", err => {
 });
 
 export const app = express();
+
+
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -55,6 +60,12 @@ app.get("*", isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
 
+const http = createServer(app);
+const io: socketio.Server = new socketio.Server();
+// TODO: Find a better way to handle cors
+io.attach(http, {cors: {
+  origin: "*"
+}})
 // Error handler middleware
 app.use(handleError);
 
@@ -64,11 +75,21 @@ async function runSetup() {
 
 runSetup()
   .then(() => {
-    app.listen(process.env.PORT, () => {
+    io.on("connection", (socket) => {
+      console.log("a user connected")
+      console.log(socket.id)
+    });
+    
+    http.listen(process.env.PORT, () => {
       console.log(`Timber system started on port ${process.env.PORT}`);
     });
+
+    
   })
   .catch(error => {
     console.log("App setup failed");
     throw error;
   });
+
+
+
