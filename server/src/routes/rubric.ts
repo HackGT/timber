@@ -8,12 +8,12 @@ export const rubricRoutes = express.Router();
 // route to get all rubrics for a specific criteria
 rubricRoutes.route("/:id").get(
   asyncHandler(async (req, res) => {
-    const criteriaId = parseInt(req.params.id);
+    const criteriaId: number = parseInt(req.params.id);
     console.log(criteriaId);
 
-    const criteria = prisma.criteria.findMany({
+    const rubrics = await prisma.rubric.findMany({
       where: {
-        id: criteriaId,
+        criteriaId,
       },
     });
 
@@ -25,7 +25,7 @@ rubricRoutes.route("/:id").get(
     */
 
     // const rubrics = await prisma.criteria.findMany({ where: filter });
-    res.status(200).json(criteria);
+    res.status(200).json(rubrics);
   })
 );
 
