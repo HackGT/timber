@@ -6,18 +6,26 @@ import { prisma } from "../common";
 export const rubricRoutes = express.Router();
 
 // route to get all rubrics for a specific criteria
-rubricRoutes.route("/").get(
+rubricRoutes.route("/:id").get(
   asyncHandler(async (req, res) => {
-    const { criteria } = req.query;
-    const filter: any = {};
+    const criteriaId = parseInt(req.params.id);
+    console.log(criteriaId);
 
+    const criteria = prisma.criteria.findMany({
+      where: {
+        id: criteriaId,
+      },
+    });
+
+    /*
     if (criteria !== undefined) {
       const criteriaId: number = parseInt(criteria as string);
       filter.criteriaId = criteriaId;
     }
+    */
 
-    const rubrics = await prisma.criteria.findMany({ where: filter });
-    res.status(200).json(rubrics);
+    // const rubrics = await prisma.criteria.findMany({ where: filter });
+    res.status(200).json(criteria);
   })
 );
 
