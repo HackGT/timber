@@ -9,7 +9,6 @@ export const rubricRoutes = express.Router();
 rubricRoutes.route("/:id").get(
   asyncHandler(async (req, res) => {
     const criteriaId: number = parseInt(req.params.id);
-    console.log(criteriaId);
 
     const rubrics = await prisma.rubric.findMany({
       where: {
