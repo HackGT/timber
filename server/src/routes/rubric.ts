@@ -17,25 +17,27 @@ rubricRoutes.route("/:id").get(
       },
     });
 
-    /*
-    if (criteria !== undefined) {
-      const criteriaId: number = parseInt(criteria as string);
-      filter.criteriaId = criteriaId;
-    }
-    */
-
-    // const rubrics = await prisma.criteria.findMany({ where: filter });
     res.status(200).json(rubrics);
   })
 );
 
 // route to add a rubric
-rubricRoutes.route("/create").post(
+rubricRoutes.route("/").post(
   asyncHandler(async (req, res) => {
-    const createdRubric = await prisma.rubric.createMany({
+    const createdRubric = await prisma.rubric.create({
       data: req.body.data,
     });
     res.status(201).json(createdRubric);
+  })
+);
+
+// route to add multiple rubrics
+rubricRoutes.route("/batch/create").post(
+  asyncHandler(async (req, res) => {
+    const createdRubrics = await prisma.rubric.createMany({
+      data: req.body.data,
+    });
+    res.status(201).json(createdRubrics);
   })
 );
 
@@ -44,7 +46,7 @@ rubricRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const rubricId: number = parseInt(req.params.id);
 
-    const updatedRubric = await prisma.criteria.update({
+    const updatedRubric = await prisma.rubric.update({
       where: {
         id: rubricId,
       },
@@ -60,7 +62,7 @@ rubricRoutes.route("/:id").delete(
   asyncHandler(async (req, res) => {
     const rubricId: number = parseInt(req.params.id);
 
-    const deletedRubric = await prisma.criteria.delete({
+    const deletedRubric = await prisma.rubric.delete({
       where: {
         id: rubricId,
       },
