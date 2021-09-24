@@ -38,6 +38,7 @@ import { hackathonRoutes } from "./routes/hackathon";
 import { configRoutes } from "./routes/config";
 import { criteriaRoutes } from "./routes/criteria";
 import { assignmentRoutes } from "./routes/assignments";
+import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
 
 app.get("/status", (req, res) => {
@@ -54,6 +55,7 @@ app.use("/hackathon", isAuthenticated, hackathonRoutes);
 app.use("/config", isAuthenticated, configRoutes);
 app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
+app.use("/rubric", isAuthenticated, rubricRoutes);
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
