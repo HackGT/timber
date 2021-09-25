@@ -14,7 +14,6 @@ const ProjectCard: React.FC<Props> = props => {
 
   return (
     <>
-      {/* Add key */}
       <Card key={props.key} title={props.project.name}>
         <p>Expo: #{props.project.expo}</p>
         <p>Table: {props.project.table}</p>
