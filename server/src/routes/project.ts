@@ -8,13 +8,14 @@ export const projectRoutes = express.Router();
 
 projectRoutes.route("/").get(
   asyncHandler(async (req: any, res) => {
-    const { expo, round, table, category } = req.query;
+    const { expo, round, table, category, hackathon } = req.query;
 
     const filter: any = {};
     if (expo) filter.expo = parseInt(expo as string);
     if (round) filter.round = parseInt(round as string);
     if (table) filter.table = parseInt(table as string);
     if (category) filter.category = parseInt(category as string);
+    if (hackathon) filter.hackathonId = parseInt(hackathon as string);
 
     const matches = await prisma.project.findMany({
       where: filter,
@@ -63,6 +64,22 @@ projectRoutes.route("/:id").patch(
       data: req.body,
     });
     res.status(200).json(updated);
+  })
+);
+
+projectRoutes.route("/dashboard").get(
+  asyncHandler(async (req, res) => {
+    const projects = await prisma.project.findMany({
+      where: {
+        members: {
+          some: {
+            id: req.user?.id,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(projects);
   })
 );
 
