@@ -43,6 +43,58 @@ assignmentRoutes.route("/").get(
   })
 );
 
+assignmentRoutes.route("/current-project").get(
+  asyncHandler(async (req, res) => {
+    const user: User = req.user as User;
+    const filter: any = {};
+    if (user.role !== UserRole.JUDGE && user.role !== UserRole.JUDGE_AND_SPONSOR) {
+      res.status(500).json({ error: "User is not a judge" });
+      return;
+    }
+    filter.userId = user.id;
+    filter.status = "STARTED"
+
+    const assignment = await prisma.assignment.findFirst({
+      where: filter,
+      orderBy: {
+        createdAt: "asc"
+      }
+    })
+
+    if (assignment === null) {
+      res.status(200).json([]);
+      return;
+    }
+
+    const projectFilter: any = {};
+    if (assignment) {
+      projectFilter.id = assignment.projectId
+    } else {
+      res.status(500).json({ error: "Project not found" });
+      return;
+    }
+    const project = await prisma.project.findUnique({
+      where: projectFilter,
+      include: {
+        categories: {include: {criterias: true}}
+      }
+    })
+    const categoryGroupFilter: any = {};
+    categoryGroupFilter.id = user.categoryGroupId
+    const categoryGroup = await prisma.categoryGroup.findUnique({
+      where: categoryGroupFilter,
+      include: {
+        categories: {include: {criterias: true}}
+      }
+    });
+    
+    const categoryGroupCategoryIdSet = new Set(categoryGroup?.categories.map(category => category.id))
+    const filteredCategories = project?.categories.filter(category => categoryGroupCategoryIdSet.has(category.id))
+    
+    res.status(200).json(filteredCategories);
+  })
+)
+
 assignmentRoutes.route("/").post(
   asyncHandler(async (req, res) => {
     const user: User = req.body.user as User;
