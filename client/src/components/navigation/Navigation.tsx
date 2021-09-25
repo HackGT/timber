@@ -26,7 +26,7 @@ export const routes = [
     UserRole.PARTICIPANT,
     UserRole.SPONSOR,
   ]),
-  new Page("Juding", "/judging", [UserRole.JUDGE, UserRole.JUDGE_AND_SPONSOR]),
+  new Page("Judging", "/judging", [UserRole.JUDGE, UserRole.JUDGE_AND_SPONSOR]),
   new Page("Admin", "/admin", [UserRole.ADMIN]),
 ];
 
