@@ -18,6 +18,7 @@ export class Page {
 
 export const routes = [
   new Page("Home", "/", [UserRole.PARTICIPANT]),
+  new Page("Create Submission", "/create", [UserRole.PARTICIPANT, UserRole.ADMIN]),
   new Page("Projects", "/projects", [
     UserRole.ADMIN,
     UserRole.JUDGE,

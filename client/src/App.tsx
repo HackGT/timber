@@ -8,28 +8,36 @@ import Projects from "./components/projects/Projects";
 import JudgingHome from "./components/judging/JudgingHome";
 import AdminHome from "./components/admin/AdminHome";
 import Footer from "./components/navigation/Footer";
+import SubmissionFormContainer from "./components/create/SubmissionFormContainer";
+import NotFoundDisplay from "./displays/NotFoundDisplay";
+import ErrorDisplay from "./displays/ErrorDisplay";
+import LoadingDisplay from "./displays/LoadingDisplay";
 
 function App() {
   const [{ data, loading, error }] = useAxios("/auth/check");
 
   if (loading) {
-    return <p>Loading</p>;
+    return <LoadingDisplay />;
   }
 
   if (error) {
-    return <p>Error</p>;
+    return <ErrorDisplay error={error} />;
   }
 
   return (
     <div>
       <Router>
         <Navigation user={data} />
-        <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route exact path="/projects" component={Projects} />
-          <Route exact path="/judging" component={JudgingHome} />
-          <Route exact path="/admin" component={AdminHome} />
-        </Switch>
+        <div style={{ padding: "20px" }}>
+          <Switch>
+            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
+            <Route exact path="/projects" component={Projects} />
+            <Route exact path="/judging" component={JudgingHome} />
+            <Route exact path="/admin/:activeTab?" component={AdminHome} />
+            <Route component={NotFoundDisplay} />
+          </Switch>
+        </div>
         <Footer />
       </Router>
     </div>
