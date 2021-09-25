@@ -32,8 +32,6 @@ const SubmissionFormContainer: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  const submissionsOpen = data.isProjectSubmissionOpen;
-
   const nextStep = () => {
     if ([0, 1, 2, 3].includes(current)) {
       setCurrent(current + 1);
@@ -110,7 +108,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
         width: "100%",
       }}
     >
-      {submissionsOpen && (
+      {data.isProjectSubmissionOpen ? (
         <div>
           <div>{renderComponent()}</div>
           <Steps current={current} style={{ marginBottom: "16px" }}>
@@ -120,8 +118,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
             <Step key={3} title="Review" />
           </Steps>
         </div>
-      )}
-      {!submissionsOpen && (
+      ) : (
         <div>
           <Title level={2}>Create Submission</Title>
           <Title level={5}>Submissions are closed</Title>

@@ -27,7 +27,7 @@ const AdminContentList: React.FC<Props> = props => {
   } as ModalState);
   const [searchText, setSearchText] = useState("");
 
-  const [{ loading, data, error }] = useAxios(props.queryUrl);
+  const [{ loading, data, error }, refetch] = useAxios(props.queryUrl);
 
   const openModal = (values: any) => {
     setModalState({
@@ -83,7 +83,7 @@ const AdminContentList: React.FC<Props> = props => {
           </List.Item>
         )}
       />
-      <Modal modalState={modalState} setModalState={setModalState} />
+      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </>
   );
 };
