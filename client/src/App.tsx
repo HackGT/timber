@@ -9,6 +9,7 @@ import JudgingHome from "./components/judging/JudgingHome";
 import AdminHome from "./components/admin/AdminHome";
 import Footer from "./components/navigation/Footer";
 
+
 function App() {
   const [{ data, loading, error }] = useAxios("/auth/check");
 
@@ -30,6 +31,7 @@ function App() {
           <Route exact path="/judging" component={JudgingHome} />
           <Route exact path="/admin" component={AdminHome} />
         </Switch>
+        <h1>hi</h1>
         <Footer />
       </Router>
     </div>
