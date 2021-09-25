@@ -18,6 +18,9 @@ projectRoutes.route("/").get(
 
     const matches = await prisma.project.findMany({
       where: filter,
+      include: {
+        categories: true,
+      },
     });
     res.status(200).json(matches);
   })
