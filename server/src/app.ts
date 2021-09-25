@@ -6,6 +6,8 @@ import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import "source-map-support/register";
+import { createServer } from "http";
+import * as socketio from "socket.io";
 
 import { scheduleJobs } from "./jobs";
 
@@ -33,6 +35,7 @@ import { hackathonRoutes } from "./routes/hackathon";
 import { configRoutes } from "./routes/config";
 import { criteriaRoutes } from "./routes/criteria";
 import { assignmentRoutes } from "./routes/assignments";
+import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
 
 app.get("/status", (req, res) => {
@@ -49,12 +52,21 @@ app.use("/hackathon", isAuthenticated, hackathonRoutes);
 app.use("/config", isAuthenticated, configRoutes);
 app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
+app.use("/rubric", isAuthenticated, rubricRoutes);
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
 
+const http = createServer(app);
+const io: socketio.Server = new socketio.Server();
+// TODO: Find a better way to handle cors
+io.attach(http, {
+  cors: {
+    origin: "*",
+  },
+});
 // Error handler middleware
 app.use(handleError);
 
@@ -64,7 +76,12 @@ async function runSetup() {
 
 runSetup()
   .then(() => {
-    app.listen(process.env.PORT, () => {
+    io.on("connection", socket => {
+      console.log("a user connected");
+      console.log(socket.id);
+    });
+
+    http.listen(process.env.PORT, () => {
       console.log(`Timber system started on port ${process.env.PORT}`);
     });
   })

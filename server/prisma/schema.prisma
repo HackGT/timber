@@ -81,12 +81,12 @@ model Config {
   id                      Int        @id @default(autoincrement())
   currentRound            Int        @default(1)
   currentExpo             Int        @default(1)
-  currentHackathon        Hackathon? @relation(fields: [currentHackathonId], references: [id])
+  currentHackathon        Hackathon @relation(fields: [currentHackathonId], references: [id])
   isJudgingOn             Boolean    @default(false)
   isProjectsPublished     Boolean    @default(false)
   isProjectSubmissionOpen Boolean    @default(true)
 
-  currentHackathonId Int?
+  currentHackathonId Int
   @@map("config")
 }
 

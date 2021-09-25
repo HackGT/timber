@@ -9,8 +9,6 @@ header {
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 15%);
   margin-bottom: 10px;
   height: 64px;
-  position: fixed;
-  top: 0;
   width: 100%;
   background-color: #fff;
 }

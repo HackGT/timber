@@ -18,6 +18,7 @@ export class Page {
 
 export const routes = [
   new Page("Home", "/", [UserRole.PARTICIPANT]),
+  new Page("Create Submission", "/create", [UserRole.PARTICIPANT, UserRole.ADMIN]),
   new Page("Projects", "/projects", [
     UserRole.ADMIN,
     UserRole.JUDGE,
@@ -25,7 +26,7 @@ export const routes = [
     UserRole.PARTICIPANT,
     UserRole.SPONSOR,
   ]),
-  new Page("Juding", "/judging", [UserRole.JUDGE, UserRole.JUDGE_AND_SPONSOR]),
+  new Page("Judging", "/judging", [UserRole.JUDGE, UserRole.JUDGE_AND_SPONSOR]),
   new Page("Admin", "/admin", [UserRole.ADMIN]),
 ];
 
