@@ -1,3 +1,5 @@
+import { Category } from "./Category";
+
 export type Project = {
   id: number;
   name: string;
@@ -8,11 +10,12 @@ export type Project = {
   expo: number;
   round: number;
   table: number;
+  categories: Category[];
   /*
     tableGroup: TableGroup?;
     hackathon: Hackathon?;
     members: User[];
-    categories: Category[];
+    
     ballots: Ballot[];
     assignment: Assignment[];
     */
