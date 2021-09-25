@@ -48,7 +48,7 @@ userRoutes.route("/:id").patch(
 
     const updatedUser = await prisma.user.update({
       where: {
-        uuid: req.params.id,
+        id: parseInt(req.params.id),
       },
       data,
     });
