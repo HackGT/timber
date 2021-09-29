@@ -26,6 +26,7 @@ export const routes = [
   ),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
+  new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
 ];
 
 interface Props {

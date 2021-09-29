@@ -6,7 +6,6 @@ import AdminContentList from "./AdminContentList";
 import UserFormModal from "./modals/UserFormModal";
 import CategoryList from "./modals/CategoryList";
 import ConfigEditContainer from "./ConfigEditContainer";
-import Judging from "./Judging";
 import CategoryGroupFormModal from "./modals/CategoryGroupFormModal";
 
 const { Title } = Typography;
@@ -57,9 +56,6 @@ const AdminHome: React.FC = () => {
           />
         </TabPane>
       </Tabs>
-
-      <Title>Judging</Title>
-      <Judging />
     </>
   );
 };

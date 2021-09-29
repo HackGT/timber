@@ -14,6 +14,7 @@ import NotFoundDisplay from "./displays/NotFoundDisplay";
 import ErrorDisplay from "./displays/ErrorDisplay";
 import LoadingDisplay from "./displays/LoadingDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
+import Epicenter from "./components/epicenter/Epicenter";
 
 const { Content } = Layout;
 
@@ -41,6 +42,7 @@ function App() {
               <Route exact path="/projects/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />
               <Route exact path="/admin/:activeTab?" component={AdminHome} />
+              <Route exact path="/epicenter" component={Epicenter} />
               <Route component={NotFoundDisplay} />
             </Switch>
           </Content>

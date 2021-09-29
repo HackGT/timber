@@ -1,12 +1,15 @@
 import React from "react";
 import useAxios from "axios-hooks";
+import { Typography } from "antd";
 
 import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 
-const Judging: React.FC = () => {
+const { Title } = Typography;
+
+const Epicenter: React.FC = () => {
   const [{ loading, data, error }] = useAxios("/projects");
 
   if (loading) {
@@ -21,7 +24,12 @@ const Judging: React.FC = () => {
     <JudgingBox key={project.id} project={project} />
   ));
 
-  return <div id="judging">{projects}</div>;
+  return (
+    <>
+      <Title level={2}>Epicenter</Title>
+      <div id="judging">{projects}</div>
+    </>
+  );
 };
 
-export default Judging;
+export default Epicenter;
