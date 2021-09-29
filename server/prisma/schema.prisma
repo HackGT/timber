@@ -107,6 +107,7 @@ model Criteria {
 model Hackathon {
   id             Int             @id @default(autoincrement())
   name           String
+  imageUrl       String?
   categoryGroups CategoryGroup[]
   categories     Category[]
   notifications  Notification[]
@@ -133,7 +134,7 @@ model Notification {
 model Project {
   id          Int          @id @default(autoincrement())
   name        String
-  description String
+  description String?
   devpostUrl  String?
   githubUrl   String
   roomUrl     String?
