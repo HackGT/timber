@@ -12,6 +12,7 @@ import SubmissionFormContainer from "./components/create/SubmissionFormContainer
 import NotFoundDisplay from "./displays/NotFoundDisplay";
 import ErrorDisplay from "./displays/ErrorDisplay";
 import LoadingDisplay from "./displays/LoadingDisplay";
+import ProjectDetails from "./components/dashboard/ProjectDetails";
 
 function App() {
   const [{ data, loading, error }] = useAxios("/auth/check");
@@ -33,6 +34,7 @@ function App() {
             <Route exact path="/" component={Dashboard} />
             <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
             <Route exact path="/projects" component={Projects} />
+            <Route exact path="/projects/:projectId" component={ProjectDetails} />
             <Route exact path="/judging" component={JudgingHome} />
             <Route exact path="/admin/:activeTab?" component={AdminHome} />
             <Route component={NotFoundDisplay} />

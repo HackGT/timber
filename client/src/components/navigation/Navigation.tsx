@@ -17,7 +17,7 @@ export class Page {
 }
 
 export const routes = [
-  new Page("Home", "/", user => [UserRole.GENERAL].includes(user.role)),
+  new Page("Home", "/", user => [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)),
   new Page("Create Submission", "/create", user =>
     [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)
   ),

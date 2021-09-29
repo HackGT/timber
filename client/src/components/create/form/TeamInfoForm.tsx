@@ -20,7 +20,7 @@ const TeamInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/projects/team-validation", values)
+      .post("/projects/special/team-validation", values)
       .then(res => {
         hide();
         props.updateData({ ...values, eligiblePrizes: res.data.eligiblePrizes });

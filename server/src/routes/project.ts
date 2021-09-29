@@ -28,7 +28,7 @@ projectRoutes.route("/").get(
   })
 );
 
-projectRoutes.route("/team-validation").post(async (req, res) => {
+projectRoutes.route("/special/team-validation").post(async (req, res) => {
   const resp = await validateTeam(req.user, req.body.members);
   if (resp.error) {
     res.status(400).json(resp);
@@ -38,11 +38,11 @@ projectRoutes.route("/team-validation").post(async (req, res) => {
 });
 
 // TODO: Fill in prize validation as needed
-projectRoutes.route("/prize-validation").post((req, res) => {
+projectRoutes.route("/special/prize-validation").post((req, res) => {
   res.status(200).send({ error: false });
 });
 
-projectRoutes.route("/devpost-validation").post(async (req, res) => {
+projectRoutes.route("/special/devpost-validation").post(async (req, res) => {
   const resp = await validateDevpost(req.body.devpostUrl, req.body.name);
   if (resp.error) {
     res.status(400).json(resp);
@@ -130,7 +130,21 @@ projectRoutes.route("/:id").patch(
   })
 );
 
-projectRoutes.route("/dashboard").get(
+projectRoutes.route("/:id").get(
+  asyncHandler(async (req, res) => {
+    const project = await prisma.project.findUnique({
+      where: { id: parseInt(req.params.id) },
+      include: {
+        members: true,
+        hackathon: true,
+        categories: true,
+      },
+    });
+    res.status(200).json(project);
+  })
+);
+
+projectRoutes.route("/special/dashboard").get(
   asyncHandler(async (req, res) => {
     const projects = await prisma.project.findMany({
       where: {

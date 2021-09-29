@@ -18,7 +18,7 @@ const PrizeInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/projects/prize-validation", values)
+      .post("/projects/special/prize-validation", values)
       .then(res => {
         hide();
         props.updateData(values);
