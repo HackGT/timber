@@ -2,6 +2,8 @@ import React from "react";
 import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import "./App.less";
+
 import Navigation from "./components/navigation/Navigation";
 import Dashboard from "./components/dashboard/Dashboard";
 import Projects from "./components/projects/Projects";

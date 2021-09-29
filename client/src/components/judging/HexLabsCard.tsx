@@ -12,7 +12,7 @@ interface Props {
   categoryId: number;
 }
 
-const CriteriaCard: React.FC<Props> = (props) => {
+const HexLabsCard: React.FC<Props> = (props) => {
   const hi = "hi";
   // const minScore = props.minScore;
   
@@ -23,12 +23,22 @@ const CriteriaCard: React.FC<Props> = (props) => {
   console.log(props)
   return (
     <div>
-      <Card title={props.name}>
+      <Card 
+        hoverable
+        style={{ width: 626 }}
+        title={props.name}
+      >
         <Paragraph>{props.description}</Paragraph>
-        <Slider marks={marks} min={props.minScore} max={props.maxScore} />
+        <Slider
+          defaultValue={0}
+          // color="7B69EC"
+          marks={marks}
+          min={props.minScore}
+          max={props.maxScore}
+        />
       </Card>
     </div>
   );
 };
 
-export default CriteriaCard;
+export default HexLabsCard;
