@@ -7,27 +7,25 @@ import Header from "./Header";
 export class Page {
   name: string;
   link: string;
-  allowedRoles: UserRole[];
+  isAllowed: (user: User) => boolean;
 
-  constructor(name: string, link: string, allowedRoles: UserRole[]) {
+  constructor(name: string, link: string, isAllowed: (user: User) => boolean) {
     this.name = name;
     this.link = link;
-    this.allowedRoles = allowedRoles;
+    this.isAllowed = isAllowed;
   }
 }
 
 export const routes = [
-  new Page("Home", "/", [UserRole.PARTICIPANT]),
-  new Page("Create Submission", "/create", [UserRole.PARTICIPANT, UserRole.ADMIN]),
-  new Page("Projects", "/projects", [
-    UserRole.ADMIN,
-    UserRole.JUDGE,
-    UserRole.JUDGE_AND_SPONSOR,
-    UserRole.PARTICIPANT,
-    UserRole.SPONSOR,
-  ]),
-  new Page("Judging", "/judging", [UserRole.JUDGE, UserRole.JUDGE_AND_SPONSOR]),
-  new Page("Admin", "/admin", [UserRole.ADMIN]),
+  new Page("Home", "/", user => [UserRole.GENERAL].includes(user.role)),
+  new Page("Create Submission", "/create", user =>
+    [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)
+  ),
+  new Page("Projects", "/projects", user =>
+    [UserRole.GENERAL, UserRole.SPONSOR, UserRole.ADMIN].includes(user.role)
+  ),
+  new Page("Judging", "/judging", user => user.isJudging),
+  new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
 ];
 
 interface Props {
@@ -46,7 +44,7 @@ const Navigation: React.FC<Props> = props => {
   //   };
   // });
 
-  const filteredRoutes = routes.filter((page: Page) => page.allowedRoles.includes(props.user.role));
+  const filteredRoutes = routes.filter((page: Page) => page.isAllowed(props.user));
 
   return <Header routes={filteredRoutes} />;
 };

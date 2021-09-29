@@ -15,10 +15,8 @@ enum AssignmentStatus {
 }
 
 enum UserRole {
-  PARTICIPANT
-  JUDGE
+  GENERAL
   SPONSOR
-  JUDGE_AND_SPONSOR
   ADMIN
 }
 
@@ -78,13 +76,13 @@ model CategoryGroup {
 }
 
 model Config {
-  id                      Int        @id @default(autoincrement())
-  currentRound            Int        @default(1)
-  currentExpo             Int        @default(1)
+  id                      Int       @id @default(autoincrement())
+  currentRound            Int       @default(1)
+  currentExpo             Int       @default(1)
   currentHackathon        Hackathon @relation(fields: [currentHackathonId], references: [id])
-  isJudgingOn             Boolean    @default(false)
-  isProjectsPublished     Boolean    @default(false)
-  isProjectSubmissionOpen Boolean    @default(true)
+  isJudgingOn             Boolean   @default(false)
+  isProjectsPublished     Boolean   @default(false)
+  isProjectSubmissionOpen Boolean   @default(true)
 
   currentHackathonId Int
   @@map("config")
@@ -190,7 +188,8 @@ model User {
   email         String         @unique
   uuid          String         @unique
   token         String
-  role          UserRole
+  role          UserRole       @default(GENERAL)
+  isJudging     Boolean        @default(false)
   categoryGroup CategoryGroup? @relation(fields: [categoryGroupId], references: [id])
   ballots       Ballot[]
   projects      Project[]

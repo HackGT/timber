@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal, Radio, Tooltip, Typography } from "antd";
+import { Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
 
 import { FORM_RULES } from "../../../util/util";
 import { FormModalProps } from "../FormModalProps";
 import { UserRole } from "../../../types/UserRole";
+import QuestionIconLabel from "../../../util/QuestionIconLabel";
 
 const { Text } = Typography;
 
@@ -40,20 +41,9 @@ const UserFormModal: React.FC<FormModalProps> = props => {
 
   const accessLevelOptions = [
     {
-      value: UserRole.PARTICIPANT,
-      label: "Participant",
-      helpText: "This means that a user is a participant and is allowed to submit projects.",
-    },
-    {
-      value: UserRole.JUDGE,
-      label: "Judge",
-      helpText: "This allows users to judge projects.",
-    },
-    {
-      value: UserRole.JUDGE_AND_SPONSOR,
-      label: "Judge and Sponsor",
-      helpText:
-        "This allows users to judge projects and view the sponsor page for their assigned company.",
+      value: UserRole.GENERAL,
+      label: "General",
+      helpText: "This is the general user role. It encompasses participants and judges.",
     },
     {
       value: UserRole.SPONSOR,
@@ -103,6 +93,18 @@ const UserFormModal: React.FC<FormModalProps> = props => {
               </Radio>
             ))}
           </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          name="isJudging"
+          label={
+            <QuestionIconLabel
+              label="Is Judging"
+              helpText="Set switch to yes if this user is judging projects. Any user role can be a judge."
+            />
+          }
+          valuePropName="checked"
+        >
+          <Switch />
         </Form.Item>
         <Text strong>Email</Text>
         <br />

@@ -77,7 +77,7 @@ passport.use(
             uuid: profile.uuid,
             email: profile.email,
             token: profile.token,
-            role: UserRole.PARTICIPANT,
+            role: UserRole.GENERAL,
           },
         });
       } else {

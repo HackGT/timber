@@ -130,7 +130,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
             email,
             uuid: "",
             token: "",
-            role: UserRole.PARTICIPANT,
+            role: UserRole.GENERAL,
           },
         });
       } else {

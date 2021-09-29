@@ -41,7 +41,7 @@ userRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const data: any = {};
     Object.keys(req.body).forEach(key => {
-      if (["role", "categoryGroup"].includes(key)) {
+      if (["name", "role", "categoryGroup", "isJudging"].includes(key)) {
         data[key] = req.body[key];
       }
     });
