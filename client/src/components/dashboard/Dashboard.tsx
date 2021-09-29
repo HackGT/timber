@@ -35,8 +35,8 @@ const Dashboard: React.FC = () => {
             <List.Item>
               <Link to={`/submission/${submission.id}`}>
                 <Card
-                  title={submission.hackathon}
-                  cover={<img alt="" src="/public/hackgt7.jpg" />}
+                  title={submission.hackathon.name}
+                  cover={<img alt="" src={submission.hackathon.imageUrl} />}
                   hoverable
                 >
                   <Meta

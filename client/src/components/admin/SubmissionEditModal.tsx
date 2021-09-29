@@ -39,7 +39,7 @@ const SubmissionEditModal: React.FC<Props> = props => {
 
     try {
       axios
-        .post("/submission/update", { id: props.initialValues.id, data: values })
+        .post("/projects/update", { id: props.initialValues.id, data: values })
         .then(res => {
           hide();
 

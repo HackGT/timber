@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Alert, Button, Col, Form, message, Row, Select, Typography } from "antd";
 
-import { FORM_LAYOUT } from "../../../util/util";
+import { FORM_LAYOUT, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
 
@@ -18,21 +18,15 @@ const PrizeInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/submission/prize-validation", values)
+      .post("/projects/prize-validation", values)
       .then(res => {
         hide();
-
-        if (res.data.error) {
-          message.error(res.data.message, 2);
-        } else {
-          props.updateData(values);
-          props.nextStep();
-        }
+        props.updateData(values);
+        props.nextStep();
       })
       .catch(err => {
         hide();
-        message.error("Error: Please ask for help", 2);
-        console.log(err);
+        handleAxiosError(err);
       });
   };
 

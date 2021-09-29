@@ -4,7 +4,7 @@ import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 import { User } from "../../../types/User";
-import { FORM_LAYOUT, FORM_RULES } from "../../../util/util";
+import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
 
@@ -20,21 +20,15 @@ const TeamInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/submission/team-validation", values)
+      .post("/projects/team-validation", values)
       .then(res => {
         hide();
-
-        if (res.data.error) {
-          message.error(res.data.message, 2);
-        } else {
-          props.updateData({ ...values, eligiblePrizes: res.data.eligiblePrizes });
-          props.nextStep();
-        }
+        props.updateData({ ...values, eligiblePrizes: res.data.eligiblePrizes });
+        props.nextStep();
       })
       .catch(err => {
         hide();
-        message.error("Error: Please ask for help", 2);
-        console.log(err);
+        handleAxiosError(err);
       });
   };
 
