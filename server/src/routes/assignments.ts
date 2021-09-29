@@ -1,5 +1,5 @@
 import express from "express";
-import { User, UserRole, AssignmentStatus } from "@prisma/client";
+import { User, AssignmentStatus } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";

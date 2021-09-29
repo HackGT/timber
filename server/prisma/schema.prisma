@@ -136,8 +136,8 @@ model Project {
   devpostUrl  String?
   githubUrl   String
   roomUrl     String?
-  expo        Int?
-  round       Int?
+  expo        Int?         @default(1)
+  round       Int?         @default(1)
   table       Int?
   tableGroup  TableGroup?  @relation(fields: [tableGroupId], references: [id])
   hackathon   Hackathon    @relation(fields: [hackathonId], references: [id])
