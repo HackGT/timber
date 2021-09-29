@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import MaterialUILink from "@material-ui/core/Link";
 
 import styles from "./header.module.css";
 import { Page } from "./Navigation";
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const Header: React.FC<Props> = props => {
-  const location = useLocation()?.pathname;
+  const location = `/${useLocation()?.pathname.split("/")[1]}`;
 
   return (
     <header>
@@ -21,14 +20,14 @@ const Header: React.FC<Props> = props => {
       </div>
       <div className={styles.right}>
         {props.routes.map(route => (
-          <MaterialUILink
+          <Link
+            to={route.link}
             className={
               location === route.link ? `${styles.link} ${styles.link_active}` : `${styles.link}`
             }
-            color="textPrimary"
           >
-            <Link to={route.link}>{route.name}</Link>
-          </MaterialUILink>
+            {route.name}
+          </Link>
         ))}
       </div>
     </header>

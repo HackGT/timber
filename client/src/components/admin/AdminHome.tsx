@@ -6,7 +6,7 @@ import AdminContentList from "./AdminContentList";
 import UserFormModal from "./modals/UserFormModal";
 import CategoryList from "./modals/CategoryList";
 import ConfigEditContainer from "./ConfigEditContainer";
-import Judging from "./Judging";
+import CategoryGroupFormModal from "./modals/CategoryGroupFormModal";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -15,7 +15,7 @@ const AdminHome: React.FC = () => {
   const { activeTab } = useParams<any>();
   const history = useHistory();
 
-  const tabKeys = ["users", "categories"];
+  const tabKeys = ["users", "categories", "categorygroups"];
 
   if (!tabKeys.includes(activeTab)) {
     history.replace(`/admin/${tabKeys[0]}`);
@@ -45,10 +45,17 @@ const AdminHome: React.FC = () => {
         <TabPane tab="Categories" key={tabKeys[1]}>
           <CategoryList />
         </TabPane>
+        <TabPane tab="Category Groups" key={tabKeys[2]}>
+          <AdminContentList
+            queryUrl="/categorygroups"
+            title="Category Groups"
+            sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+            name={item => `${item.name}`}
+            modal={CategoryGroupFormModal}
+            searchFilterField="name"
+          />
+        </TabPane>
       </Tabs>
-
-      <Title>Judging</Title>
-      <Judging />
     </>
   );
 };

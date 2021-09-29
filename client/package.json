@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+<<<<<<< HEAD
     "@babel/runtime": "^7.15.4",
     "@material-ui/core": "^4.12.3",
     "@mui/material": "^5.0.1",
+=======
+>>>>>>> 00b4119096191a8f34a91e4b5d1738acbf513bb0
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { getCurrentHackathon } from "../utils/utils";
 
 export const categoryGroupRoutes = express.Router();
 
@@ -21,6 +22,10 @@ categoryGroupRoutes.route("/").get(
 
     const categoryGroups = await prisma.categoryGroup.findMany({
       where: filter,
+      include: {
+        categories: true,
+        users: true,
+      },
     });
 
     res.status(200).json(categoryGroups);
@@ -29,9 +34,12 @@ categoryGroupRoutes.route("/").get(
 
 categoryGroupRoutes.route("/").post(
   asyncHandler(async (req, res) => {
-    console.log(req.body);
+    const currentHackathon = await getCurrentHackathon();
     const createdCategoryGroup = await prisma.categoryGroup.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        hackathonId: currentHackathon.id,
+      },
     });
     res.status(201).json(createdCategoryGroup);
   })

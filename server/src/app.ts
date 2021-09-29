@@ -54,6 +54,8 @@ app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
 app.use("/rubric", isAuthenticated, rubricRoutes);
 
+app.use("/public", isAuthenticated, express.static(path.join(__dirname, "/public")));
+
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
