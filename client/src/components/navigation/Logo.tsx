@@ -23,7 +23,7 @@ const Logo: React.FC = () => (
         </linearGradient>
       </defs>
     </svg>
-    <p className={styles.text}>timber</p>
+    <p className={styles.text}>expo</p>
   </div>
 );
 

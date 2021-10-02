@@ -41,14 +41,14 @@ userRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const data: any = {};
     Object.keys(req.body).forEach(key => {
-      if (["role", "categoryGroup"].includes(key)) {
+      if (["name", "role", "categoryGroup", "isJudging"].includes(key)) {
         data[key] = req.body[key];
       }
     });
 
     const updatedUser = await prisma.user.update({
       where: {
-        uuid: req.params.id,
+        id: parseInt(req.params.id),
       },
       data,
     });

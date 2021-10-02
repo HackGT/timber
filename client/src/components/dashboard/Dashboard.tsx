@@ -1,13 +1,54 @@
 import React from "react";
 import { io } from "socket.io-client";
+import { ConfigProvider, List, Empty, Card, Typography } from "antd";
+import useAxios from "axios-hooks";
+import { Link } from "react-router-dom";
+
+import LoadingDisplay from "../../displays/LoadingDisplay";
+import ErrorDisplay from "../../displays/ErrorDisplay";
+
+const { Meta } = Card;
+const { Title } = Typography;
 
 const Dashboard: React.FC = () => {
-  const hi = "hi";
-  const socket = io(`http://localhost:3000/`); 
-  socket.connect()
+  const [{ data, loading, error }] = useAxios("/projects/special/dashboard", { useCache: false });
+
+  const socket = io(`http://localhost:3000/`);
+  socket.connect();
+
+  if (loading) {
+    return <LoadingDisplay />;
+  }
+
+  if (error) {
+    return <ErrorDisplay error={error} />;
+  }
+
   return (
-    <div style={{ height: "500px" }}>
-      <p>hi</p>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <Title level={2}>Your Submissions</Title>
+      <ConfigProvider renderEmpty={() => <Empty description="You have no past Submissions" />}>
+        <List
+          grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
+          dataSource={data}
+          renderItem={(project: any) => (
+            <List.Item>
+              <Link to={`/projects/${project.id}`}>
+                <Card
+                  title={project.hackathon.name}
+                  cover={<img alt="" src={project.hackathon.imageUrl} />}
+                  hoverable
+                >
+                  <Meta
+                    title={project.name}
+                    description={project.members.map((item: any) => item.name).join(", ")}
+                  />
+                </Card>
+              </Link>
+            </List.Item>
+          )}
+        />
+      </ConfigProvider>
     </div>
   );
 };

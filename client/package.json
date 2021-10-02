@@ -9,7 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@material-ui/core": "^4.12.3",
+    "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -19,6 +19,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.8",
     "@types/socket.io-client": "^3.0.0",
+    "antd": "^4.16.13",
     "axios": "^0.21.4",
     "axios-hooks": "^2.7.0",
     "react": "^17.0.1",

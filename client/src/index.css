@@ -13,6 +13,41 @@ code {
 html {
   box-sizing: border-box;
 }
+
+#judging {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: flex-start;
+  font-weight: bold;
+  flex-wrap: wrap;
+}
+
+.judging-boxes {
+  padding: 12px 9px;
+  color: white;
+  position: static;
+  width: 86px;
+  height: 86px;
+  left: 990px;
+  top: 0px;
+  margin: 5px;
+  background: #212121;
+}
+
+.judging-box-top-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin: 3px;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.judging-box-project-id {
+  line-height: 0;
+  font-size: 18px;
+}
 *,
 *:before,
 *:after {

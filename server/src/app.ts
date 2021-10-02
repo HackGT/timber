@@ -36,6 +36,7 @@ import { configRoutes } from "./routes/config";
 import { criteriaRoutes } from "./routes/criteria";
 import { ballotsRoutes } from "./routes/ballots";
 import { assignmentRoutes } from "./routes/assignments";
+import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
 
 app.get("/status", (req, res) => {
@@ -53,6 +54,9 @@ app.use("/config", isAuthenticated, configRoutes);
 app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/ballots", isAuthenticated, ballotsRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
+app.use("/rubric", isAuthenticated, rubricRoutes);
+
+app.use("/public", isAuthenticated, express.static(path.join(__dirname, "/public")));
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
 app.get("*", isAuthenticated, (req, res) => {
