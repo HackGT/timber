@@ -38,8 +38,8 @@ function App() {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
-              <Route exact path="/projects" component={Projects} />
-              <Route exact path="/projects/:projectId" component={ProjectDetails} />
+              <Route exact path="/projectgallery" component={Projects} />
+              <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />
               <Route exact path="/admin/:activeTab?" component={AdminHome} />
               <Route exact path="/epicenter" component={Epicenter} />
