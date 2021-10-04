@@ -1,3 +1,4 @@
+import { Ballot } from "./Ballot";
 import { Category } from "./Category";
 
 export type Project = {
@@ -11,6 +12,7 @@ export type Project = {
   round: number;
   table: number;
   categories: Category[];
+  ballots: Ballot[];
   /*
     tableGroup: TableGroup?;
     hackathon: Hackathon?;
