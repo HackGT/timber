@@ -3,19 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-<<<<<<< HEAD
     "@babel/runtime": "^7.15.4",
-    "@material-ui/core": "^4.12.3",
-    "@mui/material": "^5.0.1",
-=======
->>>>>>> 00b4119096191a8f34a91e4b5d1738acbf513bb0
+    "@craco/craco": "^6.3.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -37,9 +33,9 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
-    "@hex-labs/eslint-config-react": "^1.1.1",
-    "@hex-labs/prettier-config": "^1.1.1",
-    "@hex-labs/stylelint-config": "^1.1.1",
+    "@hex-labs/eslint-config-react": "^1.1.12",
+    "@hex-labs/prettier-config": "^1.1.12",
+    "@hex-labs/stylelint-config": "^1.1.12",
     "eslint": "^7.22.0",
     "prettier": "^2.2.1",
     "stylelint": "^13.12.0"

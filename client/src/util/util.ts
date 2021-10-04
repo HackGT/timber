@@ -5,16 +5,16 @@ import axios, { AxiosError } from "axios";
 export const FORM_RULES = {
   requiredRule: {
     required: true,
-    message: "This field is required.",
+    message: "This field is required."
   },
   urlRule: {
     type: "url",
-    message: "Please enter a valid URL.",
+    message: "Please enter a valid URL."
   } as Rule,
   emailRule: {
     type: "email",
-    message: "Please enter a valid email.",
-  } as Rule,
+    message: "Please enter a valid email."
+  } as Rule
 };
 
 export const FORM_LAYOUT = {
