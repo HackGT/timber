@@ -1,6 +1,7 @@
 import React from "react";
 import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Layout } from "antd";
 
 import Navigation from "./components/navigation/Navigation";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -12,6 +13,10 @@ import SubmissionFormContainer from "./components/create/SubmissionFormContainer
 import NotFoundDisplay from "./displays/NotFoundDisplay";
 import ErrorDisplay from "./displays/ErrorDisplay";
 import LoadingDisplay from "./displays/LoadingDisplay";
+import ProjectDetails from "./components/dashboard/ProjectDetails";
+import Epicenter from "./components/epicenter/Epicenter";
+
+const { Content } = Layout;
 
 function App() {
   const [{ data, loading, error }] = useAxios("/auth/check");
@@ -27,18 +32,22 @@ function App() {
   return (
     <div>
       <Router>
-        <Navigation user={data} />
-        <div style={{ padding: "20px" }}>
-          <Switch>
-            <Route exact path="/" component={Dashboard} />
-            <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
-            <Route exact path="/projects" component={Projects} />
-            <Route exact path="/judging" component={JudgingHome} />
-            <Route exact path="/admin/:activeTab?" component={AdminHome} />
-            <Route component={NotFoundDisplay} />
-          </Switch>
-        </div>
-        <Footer />
+        <Layout style={{ minHeight: "100vh" }}>
+          <Navigation user={data} />
+          <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
+            <Switch>
+              <Route exact path="/" component={Dashboard} />
+              <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
+              <Route exact path="/projectgallery" component={Projects} />
+              <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
+              <Route exact path="/judging" component={JudgingHome} />
+              <Route exact path="/admin/:activeTab?" component={AdminHome} />
+              <Route exact path="/epicenter" component={Epicenter} />
+              <Route component={NotFoundDisplay} />
+            </Switch>
+          </Content>
+          <Footer />
+        </Layout>
       </Router>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Col, Form, InputNumber, message, Row, Switch } from "antd";
 import useAxios from "axios-hooks";
+import axios from "axios";
 
 import { FORM_RULES } from "../../util/util";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -19,26 +20,19 @@ const ConfigEditContainer: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-
     console.log("Submission values:", values);
 
-    // axios
-    //   .post("/submission/devpost-validation", values)
-    //   .then(res => {
-    //     hide();
-
-    //     if (res.data.error) {
-    //       message.error(res.data.message, 2);
-    //     } else {
-    //       props.updateData(values);
-    //       props.nextStep();
-    //     }
-    //   })
-    //   .catch(err => {
-    //     hide();
-    //     message.error("Error: Please ask for help", 2);
-    //     console.log(err);
-    //   });
+    axios
+      .post("/config", values)
+      .then(res => {
+        hide();
+        message.success("Config successfully updated", 2);
+      })
+      .catch(err => {
+        hide();
+        message.error("Error: Please ask for help", 2);
+        console.log(err);
+      });
   };
 
   return (

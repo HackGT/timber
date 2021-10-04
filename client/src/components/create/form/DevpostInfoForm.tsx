@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
 
-import { FORM_LAYOUT, FORM_RULES } from "../../../util/util";
+import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
 
@@ -18,21 +18,15 @@ const DevpostInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/submission/devpost-validation", values)
+      .post("/projects/special/devpost-validation", values)
       .then(res => {
         hide();
-
-        if (res.data.error) {
-          message.error(res.data.message, 2);
-        } else {
-          props.updateData(values);
-          props.nextStep();
-        }
+        props.updateData(values);
+        props.nextStep();
       })
       .catch(err => {
         hide();
-        message.error("Error: Please ask for help", 2);
-        console.log(err);
+        handleAxiosError(err);
       });
   };
 
@@ -75,7 +69,7 @@ const DevpostInfoForm: React.FC<Props> = props => {
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
             <Form.Item
-              name="devpost"
+              name="devpostUrl"
               rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
               label="Devpost URL"
             >

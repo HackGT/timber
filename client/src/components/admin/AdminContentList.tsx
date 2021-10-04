@@ -12,7 +12,7 @@ const { Search } = Input;
 interface Props {
   title: string;
   queryUrl: string;
-  tag: (item: any) => JSX.Element;
+  tag?: (item: any) => JSX.Element;
   sortData: (data: any) => any;
   name: (item: any) => string;
   modal: React.FC<FormModalProps>;
@@ -27,7 +27,7 @@ const AdminContentList: React.FC<Props> = props => {
   } as ModalState);
   const [searchText, setSearchText] = useState("");
 
-  const [{ loading, data, error }] = useAxios(props.queryUrl);
+  const [{ loading, data, error }, refetch] = useAxios(props.queryUrl);
 
   const openModal = (values: any) => {
     setModalState({
@@ -75,7 +75,7 @@ const AdminContentList: React.FC<Props> = props => {
         style={{ maxWidth: "800px", margin: "15px auto 0 auto" }}
         renderItem={(item: any) => (
           <List.Item>
-            {props.tag(item)}
+            {props.tag ? props.tag(item) : <div />}
             <Text style={{ textAlign: "center", maxWidth: "33%", wordBreak: "break-word" }}>
               {props.name(item)}
             </Text>
@@ -83,7 +83,7 @@ const AdminContentList: React.FC<Props> = props => {
           </List.Item>
         )}
       />
-      <Modal modalState={modalState} setModalState={setModalState} />
+      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </>
   );
 };

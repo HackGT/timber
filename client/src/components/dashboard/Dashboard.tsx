@@ -11,7 +11,7 @@ const { Meta } = Card;
 const { Title } = Typography;
 
 const Dashboard: React.FC = () => {
-  const [{ data, loading, error }] = useAxios("/projects/dashboard", { useCache: false });
+  const [{ data, loading, error }] = useAxios("/projects/special/dashboard", { useCache: false });
 
   const socket = io(`http://localhost:3000/`);
   socket.connect();
@@ -31,17 +31,17 @@ const Dashboard: React.FC = () => {
         <List
           grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
           dataSource={data}
-          renderItem={(submission: any) => (
+          renderItem={(project: any) => (
             <List.Item>
-              <Link to={`/submission/${submission.id}`}>
+              <Link to={`/projects/${project.id}`}>
                 <Card
-                  title={submission.hackathon}
-                  cover={<img alt="" src="/public/hackgt7.jpg" />}
+                  title={project.hackathon.name}
+                  cover={<img alt="" src={project.hackathon.imageUrl} />}
                   hoverable
                 >
                   <Meta
-                    title={submission.name}
-                    description={submission.members.map((item: any) => item.name).join(", ")}
+                    title={project.name}
+                    description={project.members.map((item: any) => item.name).join(", ")}
                   />
                 </Card>
               </Link>

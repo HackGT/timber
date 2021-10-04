@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Form, Row, Col, message, Input, Button, Typography, Select, Alert } from "antd";
 
-import { FORM_LAYOUT, FORM_RULES } from "../../../util/util";
+import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
 
@@ -18,20 +18,14 @@ const ReviewForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/submission/create", { submission: props.data })
+      .post("/projects", { submission: props.data })
       .then(res => {
         hide();
-
-        if (res.data.error) {
-          message.error(res.data.message, 2);
-        } else {
-          props.nextStep();
-        }
+        props.nextStep();
       })
       .catch(err => {
         hide();
-        message.error("Error: Please ask for help", 2);
-        console.log(err);
+        handleAxiosError(err);
       });
   };
 
@@ -104,7 +98,7 @@ const ReviewForm: React.FC<Props> = props => {
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
             <Form.Item
-              name="devpost"
+              name="devpostUrl"
               rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
               label="Devpost URL"
             >
