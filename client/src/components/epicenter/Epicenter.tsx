@@ -6,6 +6,7 @@ import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import Dashboard from "./Dashboard";
 
 const { Title } = Typography;
 
@@ -28,6 +29,7 @@ const Epicenter: React.FC = () => {
     <>
       <Title level={2}>Epicenter</Title>
       <div id="judging">{projects}</div>
+      <Dashboard />
     </>
   );
 };
