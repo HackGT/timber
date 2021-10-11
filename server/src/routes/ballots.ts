@@ -3,7 +3,7 @@ import express from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 
-import { Ballot } from ".prisma/client";
+import { Ballot, User } from ".prisma/client";
 
 export const ballotsRoutes = express.Router();
 
@@ -51,13 +51,14 @@ ballotsRoutes.route("/").get(
 ballotsRoutes.route("/").post(
   asyncHandler(async (req, res) => {
     const { criterium } = req.body;
-
-    const data = criterium.map((criteria: number) => ({
-      score: req.body.score || 0,
-      criteriaId: criteria,
+    const user: User = req.user as User;
+    
+    const data = Object.keys(criterium).map((key) => ({
+      score: criterium[key] || 0,
+      criteriaId: parseInt(key),
       round: req.body.round,
       projectId: req.body.projectId,
-      userId: req.body.userId,
+      userId: user.id,
     }));
 
     const createdBallots = await prisma.ballot.createMany({

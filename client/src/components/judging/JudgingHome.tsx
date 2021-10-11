@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxios from "axios-hooks";
+import axios from "axios";
 
 import CriteriaCard from "./CriteriaCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { Button, message } from "antd";
+import { Criteria } from "../../types/Criteria";
+import { handleAxiosError } from "../../util/util";
 
 const JudgingHome: React.FC = () => {
   const [{ data, loading, error }] = useAxios("/assignments/current-project");
+  const [projectScores, setProjectScores] = useState({});
+
+  const onSubmit = async () => {
+    const hide = message.loading("Loading...", 0);
+    const ballots: any = {}
+    ballots.criterium = projectScores
+    ballots.round = data.round
+    ballots.projectId = data.id
+    console.log(ballots)
+    axios
+      .post("/ballots", ballots)
+      .then(res => {
+        hide();
+        axios.patch(`/assignments/${data.assignmentId}`, {data: {status: "COMPLETED"}})
+      })
+      .catch(err => {
+        hide();
+        handleAxiosError(err);
+      });
+  };
 
   if (loading) {
     return <LoadingDisplay />;
@@ -21,17 +45,32 @@ const JudgingHome: React.FC = () => {
   }
 
   const criteriaArray: any = [];
-  data.forEach((category: any) => {
+  data.categories.forEach((category: any) => {
     category.criterias.map((criteria: any) => criteriaArray.push(criteria));
   });
-  console.log(criteriaArray);
-  // return <CriteriaCard {...criteriaArray[0]}/>;
+
+  if (criteriaArray.length !== Object.keys(projectScores).length) {
+    const mapping: any = {}
+    criteriaArray.forEach((criteria: Criteria) => {
+      mapping[criteria.id] = criteria.minScore
+    });
+    setProjectScores(mapping)
+  }
+
+  function changeScore(value: number, id: number) {
+    const objectValue = {
+      ...projectScores,
+      [id]: value,
+    };
+    setProjectScores(objectValue);
+  }
 
   return (
     <>
       {criteriaArray.map((criteria: any) => (
-        <CriteriaCard {...criteria} />
+        <CriteriaCard {...criteria} changeScore={changeScore}/>
       ))}
+      <Button onClick={() => onSubmit()}> Submit </Button>
     </>
   );
 };
