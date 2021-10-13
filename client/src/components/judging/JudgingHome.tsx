@@ -25,6 +25,7 @@ const JudgingHome: React.FC = () => {
       .then(res => {
         hide();
         axios.patch(`/assignments/${data.assignmentId}`, {data: {status: "COMPLETED"}})
+        window.location.reload();
       })
       .catch(err => {
         hide();
