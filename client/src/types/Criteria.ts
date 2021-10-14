@@ -1,3 +1,5 @@
+import { Ballot } from "./Ballot";
+
 export type Criteria = {
   id: number;
   name: string;
@@ -5,4 +7,5 @@ export type Criteria = {
   minScore: number;
   maxScore: number;
   categoryId: number;
+  ballots: Ballot[];
 };

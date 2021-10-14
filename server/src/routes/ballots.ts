@@ -22,8 +22,15 @@ ballotsRoutes.route("/").get(
               criteriaId: parseInt(criterium[i] as string),
               deleted: false,
             },
+            include: {
+              criteria: true,
+              project: {
+                select: {
+                  name: true,
+                },
+              },
+            },
           });
-          console.log(newBallots);
           ballots.push(...newBallots);
         }
 

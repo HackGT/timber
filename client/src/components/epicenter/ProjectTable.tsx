@@ -1,25 +1,25 @@
-import { Table } from 'antd';
-import React from 'react';
+import { Table } from "antd";
+import React from "react";
 
 const columns = [
-    {
-        title: 'Judge',
-        dataIndex: 'judge',
-        key: 'judge'
-    },
-    {
-        title: 'Total',
-        dataIndex: 'total',
-        key: 'total'
-    }
-]
+  {
+    title: "Judge",
+    dataIndex: "judge",
+    key: "judge",
+  },
+  {
+    title: "Total",
+    dataIndex: "total",
+    key: "total",
+  },
+];
 
 type ProjectTableType = {
-    data: any
-}
+  data: any;
+};
 
 const ProjectTable = ({ data }: ProjectTableType) => (
-        <Table columns={columns} dataSource={data} />
-    )
+  <Table columns={columns} dataSource={data} pagination={false} />
+);
 
 export default ProjectTable;
