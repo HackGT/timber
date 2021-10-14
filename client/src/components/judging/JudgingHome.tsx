@@ -25,6 +25,7 @@ const JudgingHome: React.FC = () => {
     try {
       await axios.post("/ballots", ballots)
       await axios.patch(`/assignments/${data.assignmentId}`, {data: {status: "COMPLETED"}})
+      hide();
       window.location.reload();
     } catch (err: any) {
       hide();
