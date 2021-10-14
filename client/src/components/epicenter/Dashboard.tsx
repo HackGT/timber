@@ -15,12 +15,18 @@ const Dashboard = () => {
   return (
     <div>
       {projects.map((project: Project) => {
-        const generateData = () => {
+        const generateData = (categoryId: number) => {
           const data: any = {};
+          let total = 0;
           project.ballots.map((ballot: Ballot) => {
-            data[ballot.user.name] = (data[ballot.user.name] || 0) + ballot.score;
+            if (ballot.criteria.categoryId === categoryId) {
+              data[ballot.user.name] = (data[ballot.user.name] || 0) + ballot.score;
+              total += ballot.score;
+            }
           });
-          return Object.entries(data).map(e => ({ judge: e[0], total: e[1] }));
+          const newData = Object.entries(data).map(e => ({ judge: e[0], total: e[1] }));
+          newData.push({ judge: "Average", total: total / newData.length });
+          return newData;
         };
 
         return (
@@ -32,7 +38,7 @@ const Dashboard = () => {
                   <Title level={5} key={category.id}>
                     {category.name}
                   </Title>
-                  <ProjectTable data={generateData()} />
+                  <ProjectTable data={generateData(category.id)} />
                 </>
               ))}
             </>

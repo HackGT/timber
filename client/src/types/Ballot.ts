@@ -7,7 +7,7 @@ export type Ballot = {
   user: User;
   score: number;
   criteriaId: number;
-  criteria: Criteria[];
+  criteria: Criteria;
   projectId: number;
   userId: number;
   project: Project;
