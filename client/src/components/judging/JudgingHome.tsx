@@ -15,22 +15,21 @@ const JudgingHome: React.FC = () => {
 
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
-    const ballots: any = {}
-    ballots.criterium = projectScores
-    ballots.round = data.round
-    ballots.projectId = data.id
-    console.log(ballots)
-    axios
-      .post("/ballots", ballots)
-      .then(res => {
-        hide();
-        axios.patch(`/assignments/${data.assignmentId}`, {data: {status: "COMPLETED"}})
-        window.location.reload();
-      })
-      .catch(err => {
-        hide();
-        handleAxiosError(err);
-      });
+    const ballots: any = {
+      criterium: projectScores, 
+      round: data.round, 
+      projectId: data.id,
+    }
+    
+
+    try {
+      await axios.post("/ballots", ballots)
+      await axios.patch(`/assignments/${data.assignmentId}`, {data: {status: "COMPLETED"}})
+      window.location.reload();
+    } catch (err: any) {
+      hide();
+      handleAxiosError(err);
+    }
   };
 
   if (loading) {
