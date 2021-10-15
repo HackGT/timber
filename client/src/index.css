@@ -18,9 +18,18 @@ html {
   display: flex;
   flex-direction: row;
   text-align: center;
-  align-items: flex-start;
+  align-items: center;
   font-weight: bold;
   flex-wrap: wrap;
+}
+
+.placeholder-box {
+  width: 86px;
+  height: 86px;
+  position: static;
+  border: 3px dashed #808080;
+  left: 990px;
+  margin: 5px;
 }
 
 .judging-boxes {
