@@ -10,6 +10,7 @@ interface Props {
   minScore: number;
   maxScore: number;
   categoryId: number;
+  changeScore: (value: number, id: number) => void;
 }
 
 const CriteriaCard: React.FC<Props> = (props) => {
@@ -20,12 +21,12 @@ const CriteriaCard: React.FC<Props> = (props) => {
     [props.minScore]: `${props.minScore}`,
     [props.maxScore]: `${props.maxScore}`,
   }
-  console.log(props)
+  
   return (
     <div>
       <Card title={props.name}>
         <Paragraph>{props.description}</Paragraph>
-        <Slider marks={marks} min={props.minScore} max={props.maxScore} />
+        <Slider marks={marks} min={props.minScore} max={props.maxScore} onChange={(value: any) => props.changeScore(value, props.id)}/>
       </Card>
     </div>
   );

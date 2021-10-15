@@ -22,6 +22,13 @@ projectRoutes.route("/").get(
       where: filter,
       include: {
         categories: true,
+        ballots: {
+          select: {
+            score: true,
+            user: true,
+            criteria: true,
+          },
+        },
       },
     });
     res.status(200).json(matches);
