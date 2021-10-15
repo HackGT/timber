@@ -1,4 +1,4 @@
-import React, { useState }  from "react";
+import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { List, Typography, Input, Select } from "antd";
 
@@ -16,7 +16,7 @@ const Projects: React.FC = () => {
   const [{ data: categoryData }] = useAxios("/categories");
 
   const [searchText, setSearchText] = useState("");
-  const [categoriesSelected, setCategoriesSelected] = useState([] as any)
+  const [categoriesSelected, setCategoriesSelected] = useState([] as any);
   const [sortCondition, setSortCondition] = useState("");
 
   if (loading) {
@@ -27,17 +27,26 @@ const Projects: React.FC = () => {
     return <ErrorDisplay error={error} />;
   }
 
-  let updatedData = data ? data.filter((item: any) =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  ) : [];
+  let updatedData = data
+    ? data.filter((item: any) => item.name.toLowerCase().includes(searchText.toLowerCase()))
+    : [];
 
-  updatedData = categoriesSelected.length !== 0 ? updatedData.filter((item: any) => item.categories.some((category: any) => categoriesSelected.includes(category.name))) : updatedData;
+  updatedData =
+    categoriesSelected.length !== 0
+      ? updatedData.filter((item: any) =>
+          item.categories.some((category: any) => categoriesSelected.includes(category.name))
+        )
+      : updatedData;
 
-  const categoryChoices = categoryData ? categoryData.map((item: any) => 
-    (<Option key={item.name} value={item.name}>{item.name}</Option>)
-  ) : []
+  const categoryChoices = categoryData
+    ? categoryData.map((item: any) => (
+        <Option key={item.name} value={item.name}>
+          {item.name}
+        </Option>
+      ))
+    : [];
 
-  const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name))
+  const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
@@ -52,16 +61,16 @@ const Projects: React.FC = () => {
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
       />
-      <Select 
-        mode="multiple" 
-        placeholder="Filter by Categories" 
+      <Select
+        mode="multiple"
+        placeholder="Filter by Categories"
         style={{ width: "200px" }}
-        onChange={(value) => setCategoriesSelected(value)}
+        onChange={value => setCategoriesSelected(value)}
       >
         {categoryChoices}
       </Select>
       <Select
-        placeholder="Sort" 
+        placeholder="Sort"
         style={{ width: "200px" }}
         onChange={(value: any) => setSortCondition(value)}
       >

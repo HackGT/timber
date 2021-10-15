@@ -164,6 +164,7 @@ projectRoutes.route("/special/dashboard").get(
       include: {
         members: true,
         hackathon: true,
+        assignment: true,
       },
     });
 

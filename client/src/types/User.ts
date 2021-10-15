@@ -1,3 +1,5 @@
+import { Assignment } from "./Assignment";
+import { Project } from "./Project";
 import { UserRole } from "./UserRole";
 
 export type User = {
@@ -6,4 +8,6 @@ export type User = {
   email: string;
   role: UserRole;
   isJudging: boolean;
+  projects: Project[];
+  assignments: Assignment[];
 };
