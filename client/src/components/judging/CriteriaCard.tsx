@@ -31,7 +31,6 @@ const CriteriaCard: React.FC<Props> = (props) => {
         <Paragraph>{props.description}</Paragraph>
         <Slider
           defaultValue={0}
-          // color="7B69EC"
           marks={marks}
           min={props.minScore}
           max={props.maxScore}

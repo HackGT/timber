@@ -163,3 +163,38 @@ projectRoutes.route("/special/dashboard").get(
     res.status(200).json(projects);
   })
 );
+
+
+projectRoutes.route("/special/category-group/:id").get(
+  asyncHandler(async (req, res) => {
+    const categories = await prisma.category.findMany({
+      where: {
+        categoryGroups: {
+          some: {
+            id: parseInt(req.params.id),
+          }
+        }
+      },
+    });
+
+    const categoriesIds = categories.map(category => category.id);
+
+    const projects = await prisma.project.findMany({
+      where: {
+        categories: {
+          every: {
+            id: {
+              in: categoriesIds
+            }
+          }
+        }
+      },
+      include: {
+        members: true,
+        categories: true,
+      }
+    });
+
+    res.status(200).json(projects);
+  })
+);

@@ -9,11 +9,14 @@ interface Props {
   project: Project;
 }
 
+
 const ProjectCard: React.FC<Props> = props => {
   const tags = props.project.categories.map((category: Category) => category.name);
 
   return (
     <>
+      {console.log(props)}
+      {/* {console.log(project.id)} */}
       <Card key={props.key} title={props.project.name}>
         <p>Expo: #{props.project.expo}</p>
         <p>Table: {props.project.table}</p>
