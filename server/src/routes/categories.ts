@@ -24,7 +24,14 @@ categoryRoutes.route("/").get(
 
     const categories = await prisma.category.findMany({
       where: filter,
-      include: { criterias: true },
+      include: {
+        criterias: {
+          include: {
+            ballots: true,
+          },
+        },
+        projects: true,
+      },
     });
     res.status(200).json(categories);
   })

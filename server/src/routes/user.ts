@@ -30,6 +30,10 @@ userRoutes.route("/").get(
 
     const users = await prisma.user.findMany({
       where: filter,
+      include: {
+        assignments: true,
+        projects: true,
+      },
     });
 
     res.status(200).json(users.map(user => sanitizeUser(user)));

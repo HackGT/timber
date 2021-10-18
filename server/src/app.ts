@@ -34,6 +34,7 @@ import { tableGroupRoutes } from "./routes/tablegroups";
 import { hackathonRoutes } from "./routes/hackathon";
 import { configRoutes } from "./routes/config";
 import { criteriaRoutes } from "./routes/criteria";
+import { ballotsRoutes } from "./routes/ballots";
 import { assignmentRoutes } from "./routes/assignments";
 import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
@@ -51,6 +52,7 @@ app.use("/tablegroups", isAuthenticated, tableGroupRoutes);
 app.use("/hackathon", isAuthenticated, hackathonRoutes);
 app.use("/config", isAuthenticated, configRoutes);
 app.use("/criteria", isAuthenticated, criteriaRoutes);
+app.use("/ballots", isAuthenticated, ballotsRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
 app.use("/rubric", isAuthenticated, rubricRoutes);
 

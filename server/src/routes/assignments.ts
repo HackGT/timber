@@ -94,8 +94,13 @@ assignmentRoutes.route("/current-project").get(
     const filteredCategories = project?.categories.filter(category =>
       categoryGroupCategoryIdSet.has(category.id)
     );
-
     res.status(200).json(filteredCategories);
+    const updatedProject = {
+      ...project,
+      categories: filteredCategories,
+      assignmentId: assignment.id,
+    }
+    res.status(200).json(updatedProject);
   })
 );
 
@@ -139,7 +144,7 @@ assignmentRoutes.route("/").post(
 assignmentRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     const assignmentId: number = parseInt(req.params.id);
-    const user: User = req.body.user as User;
+    const user: User = req.user as User;
     if (!user.isJudging) {
       res.status(500).json({ error: "User is not a judge" });
       return;
