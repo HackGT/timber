@@ -59,8 +59,8 @@ ballotsRoutes.route("/").post(
   asyncHandler(async (req, res) => {
     const { criterium } = req.body;
     const user: User = req.user as User;
-    
-    const data = Object.keys(criterium).map((key) => ({
+
+    const data = Object.keys(criterium).map(key => ({
       score: criterium[key] || 0,
       criteriaId: parseInt(key),
       round: req.body.round,

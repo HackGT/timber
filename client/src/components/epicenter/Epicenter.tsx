@@ -1,7 +1,7 @@
 import React from "react";
 import useAxios from "axios-hooks";
+import { Typography, List, Tabs, Button } from "antd";
 import axios from "axios";
-import { List, Typography, Tabs, Button } from "antd";
 
 import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
@@ -32,7 +32,7 @@ const Epicenter: React.FC = () => {
       return;
     }
 
-    axios.post("/assignments/autoAssign", {judge: parseInt(judgeId)}).then((assignment) => {
+    axios.post("/assignments/autoAssign", { judge: parseInt(judgeId) }).then(assignment => {
       console.log(assignment);
     });
   };
@@ -59,7 +59,6 @@ const Epicenter: React.FC = () => {
     <>
       <Title level={2}>Epicenter</Title>
       <div id="judging">{projects}</div>
-
       <List
         grid={{ gutter: 16, column: 4 }}
         loading={projectsLoading}
@@ -74,7 +73,7 @@ const Epicenter: React.FC = () => {
         Dashboard
       </Title>
       <Button type="primary" htmlType="submit" onClick={autoAssign}>
-          Auto-assign
+        Auto-assign
       </Button>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">

@@ -52,7 +52,7 @@ assignmentRoutes.route("/current-project").get(
       return;
     }
     filter.userId = user.id;
-    filter.status = {in: ["STARTED", "QUEUED"]};
+    filter.status = { in: ["STARTED", "QUEUED"] };
 
     const assignments = await prisma.assignment.findMany({
       where: filter,
@@ -64,17 +64,20 @@ assignmentRoutes.route("/current-project").get(
     const assignment: Assignment | null = await new Promise(async (resolve, reject) => {
       // call auto assign if there are no assignments
       if (assignments.length === 0) {
-        await autoAssign(user.id, true).then(newAssignment => {
-          resolve(newAssignment);
-        }).catch(err => {
-          reject(err);
-        });
-
+        await autoAssign(user.id, true)
+          .then(newAssignment => {
+            resolve(newAssignment);
+          })
+          .catch(err => {
+            reject(err);
+          });
       } else {
         // return the started assignment if it exists
         // otherwise, return the first queued assignment (after changing its status to started)
-        const started_assignments = assignments.filter(assignment => assignment.status === AssignmentStatus.STARTED);
-        
+        const started_assignments = assignments.filter(
+          assignment => assignment.status === AssignmentStatus.STARTED
+        );
+
         if (started_assignments.length > 0) {
           resolve(started_assignments[0]);
         } else {
@@ -83,10 +86,10 @@ assignmentRoutes.route("/current-project").get(
               id: assignments[0].id,
             },
             data: {
-              status: AssignmentStatus.STARTED
+              status: AssignmentStatus.STARTED,
             },
           });
-          resolve(startedAssignment)
+          resolve(startedAssignment);
         }
       }
     });
@@ -124,11 +127,12 @@ assignmentRoutes.route("/current-project").get(
     const filteredCategories = project?.categories.filter(category =>
       categoryGroupCategoryIdSet.has(category.id)
     );
+    res.status(200).json(filteredCategories);
     const updatedProject = {
       ...project,
       categories: filteredCategories,
       assignmentId: assignment.id,
-    }
+    };
     res.status(200).json(updatedProject);
   })
 );
@@ -191,7 +195,6 @@ assignmentRoutes.route("/:id").patch(
 );
 
 const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment | null> => {
-
   // We are not selecting a random judge for auto-assign
   // Instead, auto-assign is called when a judge has no projects currently assigned
   /*
@@ -246,8 +249,8 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
     select: {
       currentExpo: true,
       currentRound: true,
-      isJudgingOn: true
-    }
+      isJudgingOn: true,
+    },
   });
 
   if (!config?.isJudgingOn) {
@@ -261,14 +264,14 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
       categoryGroup: {
         select: {
           id: true,
-          categories: true
-        }
-      }
+          categories: true,
+        },
+      },
     },
     where: {
       id: judge,
       isJudging: true,
-    }
+    },
   });
 
   // ensure judge exists
@@ -284,26 +287,27 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   // get categoryIds from the judge's category group
   const judgeCategoryIds = judgeToAssign.categoryGroup.categories.map(category => category.id);
 
-
   // where clause for finding projects
-  let project_filter: any = {
+  const project_filter: any = {
     expo: config?.currentExpo,
     round: config?.currentRound,
     categories: {
       some: {
-        id: { in: judgeCategoryIds }
-      }
+        id: { in: judgeCategoryIds },
+      },
     },
     assignment: {
       none: {
-        userId: judgeToAssign.id
-      }
-    }
-  }
+        userId: judgeToAssign.id,
+      },
+    },
+  };
 
   // if the judge is aligned to a default category, then the judge can judge any project
   // so we do not need to filter projects by category anymore
-  const defaultCategories = judgeToAssign.categoryGroup.categories.filter(category => category.isDefault);
+  const defaultCategories = judgeToAssign.categoryGroup.categories.filter(
+    category => category.isDefault
+  );
   if (defaultCategories.length > 0) {
     delete project_filter.categories;
   }
@@ -317,17 +321,17 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
       // get assignments where at least some of the project's categories match the judge's categories
       assignment: {
         select: {
-          categoryIds: true
+          categoryIds: true,
         },
         where: {
           categoryIds: {
-            hasSome: judgeCategoryIds
-          }
-        }
+            hasSome: judgeCategoryIds,
+          },
+        },
       },
-      categories: true
+      categories: true,
     },
-    where: project_filter
+    where: project_filter,
   });
 
   if (projectsWithMatchingCategories.length == 0) {
@@ -335,12 +339,12 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   }
 
   // sort projects by number of assignments that match the judge's categories
-  projectsWithMatchingCategories.sort((p1, p2) => {
-    return p1.assignment.length - p2.assignment.length;
-  });
+  projectsWithMatchingCategories.sort((p1, p2) => p1.assignment.length - p2.assignment.length);
 
   // pick the highest priority project based on sorting above
-  let categoriesToJudge = projectsWithMatchingCategories[0].categories.filter(category => judgeCategoryIds.includes(category.id));
+  let categoriesToJudge = projectsWithMatchingCategories[0].categories.filter(category =>
+    judgeCategoryIds.includes(category.id)
+  );
 
   // add default categories (if any)
   if (defaultCategories.length > 0) {
@@ -351,23 +355,25 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
       userId: judgeToAssign.id,
       projectId: projectsWithMatchingCategories[0].id,
       status: isStarted ? AssignmentStatus.STARTED : AssignmentStatus.QUEUED,
-      categoryIds: categoriesToJudge.map(category => category.id)
+      categoryIds: categoriesToJudge.map(category => category.id),
     },
   });
   return createdAssignment;
-}
+};
 
 assignmentRoutes.route("/autoAssign").post(
   asyncHandler(async (req, res) => {
-    autoAssign(req.body.judge, false).then(createdAssignment => {
-      if (createdAssignment === null) {
-        return res.status(200).json(createdAssignment);
-      }
-      return res.status(201).json(createdAssignment);
-    }).catch(err => {
-      return res.status(500).json({
-        error: err.message
-      });
-    });
+    autoAssign(req.body.judge, false)
+      .then(createdAssignment => {
+        if (createdAssignment === null) {
+          return res.status(200).json(createdAssignment);
+        }
+        return res.status(201).json(createdAssignment);
+      })
+      .catch(err =>
+        res.status(500).json({
+          error: err.message,
+        })
+      );
   })
 );
