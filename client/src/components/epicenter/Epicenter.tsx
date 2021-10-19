@@ -1,6 +1,7 @@
 import React from "react";
 import useAxios from "axios-hooks";
-import { List, Typography, Tabs } from "antd";
+import axios from "axios";
+import { List, Typography, Tabs, Button } from "antd";
 
 import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
@@ -23,6 +24,18 @@ const Epicenter: React.FC = () => {
     { loading: assignmentsLoading, data: assignmentsData, error: assignmentsError },
   ] = useAxios("/assignments");
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
+
+  // adding auto-assign button and function for testing purposes
+  const autoAssign = () => {
+    const judgeId = prompt("Enter judge ID to auto-assign", "");
+    if (judgeId === null || judgeId == "") {
+      return;
+    }
+
+    axios.post("/assignments/autoAssign", {judge: parseInt(judgeId)}).then((assignment) => {
+      console.log(assignment);
+    });
+  };
 
   if (projectsLoading || assignmentsLoading || userLoading) {
     return <LoadingDisplay />;
@@ -60,6 +73,9 @@ const Epicenter: React.FC = () => {
       <Title level={2} style={{ textAlign: "center" }}>
         Dashboard
       </Title>
+      <Button type="primary" htmlType="submit" onClick={autoAssign}>
+          Auto-assign
+      </Button>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">
           <Dashboard />
