@@ -21,13 +21,14 @@ enum UserRole {
 }
 
 model Assignment {
-  id        Int              @id @default(autoincrement())
-  user      User             @relation(fields: [userId], references: [id])
-  project   Project          @relation(fields: [projectId], references: [id])
-  status    AssignmentStatus
-  priority  Int?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @default(now())
+  id          Int              @id @default(autoincrement())
+  user        User             @relation(fields: [userId], references: [id])
+  project     Project          @relation(fields: [projectId], references: [id])
+  status      AssignmentStatus
+  priority    Int?
+  categoryIds Int[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now())
 
   userId    Int
   projectId Int
