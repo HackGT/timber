@@ -17,7 +17,6 @@ import ErrorDisplay from "./displays/ErrorDisplay";
 import LoadingDisplay from "./displays/LoadingDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
 import Epicenter from "./components/epicenter/Epicenter";
-
 import CategoryGroup from "./components/categoryGroup/CategoryGroup";
 
 const { Content } = Layout;
@@ -44,7 +43,11 @@ function App() {
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
               <Route exact path="/projects" component={Projects} />
               <Route exact path="/projects/:projectId" component={ProjectDetails} />
-              <Route exact path="/projects/special/category-group/:categoryGroupId" component={CategoryGroup}/>
+              <Route
+                exact
+                path="/projects/special/category-group/:categoryGroupId"
+                component={CategoryGroup}
+              />
               <Route exact path="/projectgallery" component={Projects} />
               <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />

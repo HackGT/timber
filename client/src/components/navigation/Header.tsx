@@ -5,7 +5,6 @@ import styles from "./header.module.css";
 import { Page } from "./Navigation";
 import Logo from "./Logo";
 
-
 interface Props {
   routes: Page[];
 }

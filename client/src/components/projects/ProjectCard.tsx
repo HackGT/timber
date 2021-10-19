@@ -9,7 +9,6 @@ interface Props {
   project: Project;
 }
 
-
 const ProjectCard: React.FC<Props> = props => {
   const tags = props.project.categories.map((category: Category) => category.name);
 

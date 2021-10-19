@@ -17,30 +17,30 @@ html {
 #judging {
   display: flex;
   flex-direction: row;
-  text-align: center;
+  flex-wrap: wrap;
   align-items: center;
   font-weight: bold;
-  flex-wrap: wrap;
+  text-align: center;
 }
 
 .placeholder-box {
+  position: static;
+  left: 990px;
   width: 86px;
   height: 86px;
-  position: static;
-  border: 3px dashed #808080;
-  left: 990px;
   margin: 5px;
+  border: 3px dashed #808080;
 }
 
 .judging-boxes {
-  padding: 12px 9px;
-  color: white;
   position: static;
+  top: 0;
+  left: 990px;
   width: 86px;
   height: 86px;
-  left: 990px;
-  top: 0px;
   margin: 5px;
+  padding: 12px 9px;
+  color: white;
   background: #212121;
 }
 
@@ -48,17 +48,17 @@ html {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  margin: 3px;
   justify-content: space-between;
+  margin: 3px;
   font-size: 15px;
 }
 
 .judging-box-project-id {
-  line-height: 0;
   font-size: 18px;
+  line-height: 0;
 }
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }

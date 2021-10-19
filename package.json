@@ -6,14 +6,5 @@
     "build": "yarn build:client && yarn build:server",
     "build:client": "cd client && yarn install && yarn build",
     "build:server": "cd server && yarn install && yarn prisma-generate && yarn build"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
-    "@mui/material": "^5.0.1",
-    "@types/material-ui": "^0.21.9"
-  },
-  "devDependencies": {
-    "@types/react-tap-event-plugin": "0.0.31"
   }
 }

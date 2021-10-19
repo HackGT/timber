@@ -1,8 +1,6 @@
 import React from "react";
 import useAxios from "axios-hooks";
-import { Typography } from "antd";
-
-import { List, Typography, Tabs } from "antd";
+import { Typography, List, Typography, Tabs } from "antd";
 
 import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
@@ -18,12 +16,10 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectData, error: projectsError }] = useAxios(
-    "/projects"
-  );
-  const [
-    { loading: assignmentsLoading, data: assignmentsData, error: assignmentsError },
-  ] = useAxios("/assignments");
+  const [{ loading: projectsLoading, data: projectData, error: projectsError }] =
+    useAxios("/projects");
+  const [{ loading: assignmentsLoading, data: assignmentsData, error: assignmentsError }] =
+    useAxios("/assignments");
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
 
   if (projectsLoading || assignmentsLoading || userLoading) {
