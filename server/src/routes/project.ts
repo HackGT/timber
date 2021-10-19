@@ -179,27 +179,32 @@ projectRoutes.route("/special/category-group/:id").get(
         categoryGroups: {
           some: {
             id: parseInt(req.params.id),
-          }
-        }
+          },
+        },
       },
     });
 
     const categoriesIds = categories.map(category => category.id);
 
+    if (categoriesIds.length === 0) {
+      res.status(200).json([]);
+      return;
+    }
+
     const projects = await prisma.project.findMany({
       where: {
         categories: {
-          every: {
+          some: {
             id: {
-              in: categoriesIds
-            }
-          }
-        }
+              in: categoriesIds,
+            },
+          },
+        },
       },
       include: {
         members: true,
         categories: true,
-      }
+      },
     });
 
     res.status(200).json(projects);

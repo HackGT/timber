@@ -58,13 +58,13 @@ const JudgingHome: React.FC = () => {
     setProjectScores(mapping);
   }
 
-  function changeScore(value: number, id: number) {
+  const changeScore = (value: number, id: number) => {
     const objectValue = {
       ...projectScores,
       [id]: value,
     };
     setProjectScores(objectValue);
-  }
+  };
 
   return (
     <>
