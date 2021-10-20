@@ -32,7 +32,18 @@ userRoutes.route("/").get(
       where: filter,
       include: {
         assignments: true,
-        projects: true,
+        projects: {
+          include: {
+            categories: true,
+            ballots: {
+              select: {
+                score: true,
+                user: true,
+                criteria: true,
+              },
+            },
+          },
+        },
       },
     });
 
