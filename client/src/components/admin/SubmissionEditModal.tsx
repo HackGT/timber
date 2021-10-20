@@ -1,31 +1,32 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Input, message, Modal, Row, Select } from "antd";
+import { Button, Col, Form, Input, message, Modal, Row, Select, InputNumber } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
 import useAxios from "axios-hooks";
 import axios from "axios";
 
 import { FORM_LAYOUT, FORM_RULES } from "../../util/util";
+import { FormModalProps } from "./FormModalProps";
+import { Category } from "../../types/Category";
+// interface Props {
+//   visible: boolean;
+//   closeModal: () => void;
+//   initialValues: any;
+// }
 
-interface Props {
-  visible: boolean;
-  closeModal: () => void;
-  initialValues: any;
-}
-
-const SubmissionEditModal: React.FC<Props> = props => {
-  console.log(props);
+const SubmissionEditModal: React.FC<FormModalProps> = props => {
+  // console.log(props);
   const [form] = Form.useForm();
-  const [{ data: prizeData, loading }] = useAxios("/submission/all-prizes", { useCache: false });
+  const [{ data: categoryData, loading }] = useAxios("/categories", { useCache: false });
 
-  useEffect(() => form.resetFields(), [form, props.initialValues]); // github.com/ant-design/ant-design/issues/22372
-
-  const prizeOptions = loading
+  useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+  console.log(categoryData);
+  const categoryOptions = loading
     ? []
-    : prizeData.prizes.map((prize: string) => ({
-        label: prize,
-        value: prize,
+    : categoryData.map((category: Category) => ({
+        label: category.name,
+        value: category.name,
       }));
-
+  
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
     label: round,
     value: round,
@@ -36,10 +37,12 @@ const SubmissionEditModal: React.FC<Props> = props => {
     const values = await form.validateFields();
 
     console.log(values);
-
+    const formattedMembers = values.members.map((member: any) => ({email: member.email}))
+    values.members = formattedMembers;
+    console.log(props.modalState.initialValues.id)
     try {
       axios
-        .post("/projects/update", { id: props.initialValues.id, data: values })
+        .patch(`/projects/${props.modalState.initialValues.id}`, {...values})
         .then(res => {
           hide();
 
@@ -47,6 +50,8 @@ const SubmissionEditModal: React.FC<Props> = props => {
             message.error(res.data.message, 2);
           } else {
             message.success("Success!", 2);
+            props.setModalState({ visible: false, initialValues: null });
+            props.refetch();
           }
         })
         .catch(err => {
@@ -62,15 +67,15 @@ const SubmissionEditModal: React.FC<Props> = props => {
   return (
     <>
       <Modal
-        visible={props.visible}
+        visible={props.modalState.visible}
         title="Edit Modal"
         okText="Update"
         cancelText="Cancel"
-        onCancel={props.closeModal}
+        onCancel={() => props.setModalState({ visible: false, initialValues: null })}
         onOk={onSubmit}
         bodyStyle={{ paddingBottom: 0 }}
       >
-        <Form form={form} layout="vertical" autoComplete="off" initialValues={props.initialValues}>
+        <Form form={form} layout="vertical" autoComplete="off" initialValues={props.modalState.initialValues}>
           <Form.List name="members">
             {(fields, { add, remove }) => (
               <div>
@@ -121,11 +126,11 @@ const SubmissionEditModal: React.FC<Props> = props => {
 
           <Row justify="center">
             <Col {...FORM_LAYOUT.full}>
-              <Form.Item name="prizes" label="Prizes">
+              <Form.Item name="categories" label="Categories">
                 <Select
-                  placeholder="Select prizes"
+                  placeholder="Select categories"
                   mode="multiple"
-                  options={prizeOptions}
+                  options={categoryOptions}
                   loading={loading}
                   showSearch
                   optionFilterProp="label"
@@ -137,7 +142,7 @@ const SubmissionEditModal: React.FC<Props> = props => {
           <Row justify="center">
             <Col {...FORM_LAYOUT.full}>
               <Form.Item
-                name="devpost"
+                name="devpostUrl"
                 rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
                 label="Devpost URL"
               >
@@ -156,12 +161,15 @@ const SubmissionEditModal: React.FC<Props> = props => {
 
           <Row justify="center">
             <Col {...FORM_LAYOUT.full}>
-              <Form.Item name="round" rules={[FORM_RULES.requiredRule]} label="Round">
+              {/* <Form.Item name="round" rules={[FORM_RULES.requiredRule]} label="Round">
                 <Select
                   placeholder="Select round"
                   options={roundOptions}
                   optionFilterProp="label"
                 />
+              </Form.Item> */}
+              <Form.Item name="round" label="Round">
+                <InputNumber defaultValue={1} />
               </Form.Item>
             </Col>
           </Row>
@@ -169,7 +177,15 @@ const SubmissionEditModal: React.FC<Props> = props => {
           <Row justify="center">
             <Col {...FORM_LAYOUT.full}>
               <Form.Item name="expo" label="Expo">
-                <Input placeholder="1" type="number" />
+                <InputNumber defaultValue={1}  />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row justify="center">
+            <Col {...FORM_LAYOUT.full}>
+              <Form.Item name="table" label="Table Number">
+                <InputNumber defaultValue={1} />
               </Form.Item>
             </Col>
           </Row>

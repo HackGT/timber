@@ -6,18 +6,39 @@ import { Project } from "../../types/Project";
 import ProjectCard from "./ProjectCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { User } from "../../types/User";
+import { FormModalProps, ModalState } from "../admin/FormModalProps";
+import SubmissionEditModal from "../admin/SubmissionEditModal";
 
 const { Title } = Typography;
 const { Search } = Input;
 const { Option } = Select;
+interface Props {
+  user: User;
+}
 
-const Projects: React.FC = () => {
-  const [{ loading, data, error }] = useAxios("/projects");
+const Projects: React.FC<Props> = (props) => {
+  const [{ loading, data, error }, refetch] = useAxios("/projects");
   const [{ data: categoryData }] = useAxios("/categories");
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
   const [sortCondition, setSortCondition] = useState("");
+
+  const [modalState, setModalState] = useState({
+    visible: false,
+    initialValues: null,
+  } as ModalState);
+
+  const openModal = (values: any) => {
+    
+    const newCategories = values.categories.map((category: any) => category.name)
+    console.log(values)
+    setModalState({
+      visible: true,
+      initialValues: {...values, categories: newCategories},
+    });
+  };
 
   if (loading) {
     return <LoadingDisplay />;
@@ -51,7 +72,7 @@ const Projects: React.FC = () => {
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
-
+  const Modal = SubmissionEditModal;
   return (
     <>
       <Title level={2}>Projects</Title>
@@ -83,10 +104,11 @@ const Projects: React.FC = () => {
         dataSource={updatedData}
         renderItem={(project: Project) => (
           <List.Item>
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} user={props.user} onClick={() => openModal(project)}/>
           </List.Item>
         )}
       />
+      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </>
   );
 };
