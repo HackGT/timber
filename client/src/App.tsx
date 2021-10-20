@@ -3,6 +3,8 @@ import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Layout } from "antd";
 
+import "./App.less";
+
 import Navigation from "./components/navigation/Navigation";
 import Dashboard from "./components/dashboard/Dashboard";
 import Projects from "./components/projects/Projects";
@@ -15,6 +17,7 @@ import ErrorDisplay from "./displays/ErrorDisplay";
 import LoadingDisplay from "./displays/LoadingDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
 import Epicenter from "./components/epicenter/Epicenter";
+import CategoryGroup from "./components/categoryGroup/CategoryGroup";
 
 const { Content } = Layout;
 
@@ -38,6 +41,9 @@ function App() {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
+              <Route exact path="/projects" component={Projects} />
+              <Route exact path="/projects/:projectId" component={ProjectDetails} />
+              <Route exact path="/category-group/:categoryGroupId" component={CategoryGroup} />
               <Route exact path="/projectgallery" component={Projects} />
               <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />

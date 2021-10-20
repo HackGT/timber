@@ -29,9 +29,8 @@ const columns = [
 ];
 
 const Ranking = () => {
-  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios(
-    "/categories"
-  );
+  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
+    useAxios("/categories");
   const [{ data: ballotData, loading: ballotLoading, error: ballotError }] = useAxios("/ballots");
 
   return (

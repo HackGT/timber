@@ -1,11 +1,15 @@
 import React from "react";
 import useAxios from "axios-hooks";
-import { Typography, Tabs } from "antd";
+import { Typography, List, Tabs, Button } from "antd";
+import axios from "axios";
 
 import JudgingBox from "./JudgingBox";
 import { Project } from "../../types/Project";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { Assignment } from "../../types/Assignment";
+import JudgeCard from "./JudgeCard";
+import { User } from "../../types/User";
 import Dashboard from "./Dashboard";
 import Ranking from "./Ranking";
 
@@ -13,27 +17,64 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading, data, error }] = useAxios("/projects");
+  const [{ loading: projectsLoading, data: projectData, error: projectsError }] = useAxios(
+    "/projects"
+  );
+  const [
+    { loading: assignmentsLoading, data: assignmentsData, error: assignmentsError },
+  ] = useAxios("/assignments");
+  const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
 
-  if (loading) {
+  // adding auto-assign button and function for testing purposes
+  const autoAssign = () => {
+    const judgeId = prompt("Enter judge ID to auto-assign", "");
+    if (judgeId === null || judgeId == "") {
+      return;
+    }
+
+    axios.post("/assignments/autoAssign", { judge: parseInt(judgeId) }).then(assignment => {
+      console.log(assignment);
+    });
+  };
+
+  if (projectsLoading || assignmentsLoading || userLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
-    return <ErrorDisplay error={error} />;
+  if (projectsError || assignmentsError || userError) {
+    return <ErrorDisplay error={projectsError} />;
   }
 
-  const projects = data.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} />
+  console.log(projectData);
+
+  const projects = projectData.map((project: Project) => (
+    <JudgingBox key={project.id} project={project} assignments={[]} />
   ));
+
+  const judges = userData
+    .filter((user: User) => user.isJudging)
+    .sort((a: Assignment, b: Assignment) => (a.priority > b.priority ? 1 : -1));
 
   return (
     <>
       <Title level={2}>Epicenter</Title>
       <div id="judging">{projects}</div>
+      <List
+        grid={{ gutter: 16, column: 4 }}
+        loading={projectsLoading}
+        dataSource={judges}
+        renderItem={(user: User) => (
+          <List.Item>
+            <JudgeCard key={user.id} user={user} />
+          </List.Item>
+        )}
+      />
       <Title level={2} style={{ textAlign: "center" }}>
         Dashboard
       </Title>
+      <Button type="primary" htmlType="submit" onClick={autoAssign}>
+        Auto-assign
+      </Button>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">
           <Dashboard />

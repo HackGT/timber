@@ -1,16 +1,16 @@
 .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: fit-content;
   height: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .text {
+  margin: 0 auto;
   padding-left: 0.5rem;
-  font-size: 1.9rem;
-  user-select: none;
   color: #000;
   font-weight: 500;
-  margin: 0 auto;
+  font-size: 1.9rem;
+  user-select: none;
 }
