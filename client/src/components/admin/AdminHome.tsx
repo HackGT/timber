@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Layout, Menu, Button, List } from "antd";
+import { Typography, Layout, Menu, Button, List, Tag } from "antd";
 import { useParams, useHistory, Redirect } from "react-router-dom";
 import {
   UserOutlined,
@@ -15,7 +15,7 @@ import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModa
 import CategoryFormModal from "./panes/categories/CategoryModal";
 import CategoryCard from "./panes/categories/CategoryCard";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
@@ -45,8 +45,18 @@ const AdminHome: React.FC = () => {
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
-                title={item.name}
-                description={item.email}
+                title={`${item.name} (${item.email})`}
+                description={
+                  <div>
+                    <Text style={{ display: "block" }}>
+                      Category Group: {item.categoryGroup?.name || "N/A"}
+                    </Text>
+                    <div>
+                      <Tag>{item.role}</Tag>
+                      {item.isJudging && <Tag>Judging</Tag>}
+                    </div>
+                  </div>
+                }
                 avatar={<UserOutlined />}
               />
               <Button onClick={() => openModal(item)}>Edit</Button>

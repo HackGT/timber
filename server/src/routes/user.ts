@@ -32,6 +32,7 @@ userRoutes.route("/").get(
       where: filter,
       include: {
         assignments: true,
+        categoryGroup: true,
         projects: {
           include: {
             categories: true,
