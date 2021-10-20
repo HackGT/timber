@@ -29,6 +29,7 @@ projectRoutes.route("/").get(
             criteria: true,
           },
         },
+        members: true,
       },
     });
     res.status(200).json(matches);
@@ -129,11 +130,67 @@ projectRoutes.route("/batch/update").post(
 
 projectRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
+    let members: any[] = [];
+    let categories: any[] = [];
+    if (req.body.members) {
+      members = req.body.members;
+      delete req.body.members;
+    }
+
+    if (req.body.categories) {
+      categories = req.body.categories;
+      delete req.body.categories;
+    }
+
+    const dbCategories = await prisma.category.findMany({
+      where: {name: { in: categories }}
+    })
+
+    categories = dbCategories.map((category: any) => ({id: category.id}))
+    
     const updated = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
-      data: req.body,
+      data: {
+        ...req.body,
+        members: {
+          connect: members
+        },
+        categories: {
+          connect: categories,
+        }
+      },
+      include: {
+        categories: true,
+        members: true
+      }
     });
-    res.status(200).json(updated);
+    const membersToDisconnect: any[] = [];
+    const categoriesToDisconnect: any[] = [];
+    const memberEmailArr = members.map((member: any) => member.email)
+    updated.members.forEach((member: any) => {
+      if (!memberEmailArr.includes(member.email)) {
+        membersToDisconnect.push({email: member.email});
+      }
+    })
+    const categoryIdArr = categories.map((category: any) => category.id)
+    updated.categories.forEach((category: any) => {
+      if (!categoryIdArr.includes(category.id)) {
+        categoriesToDisconnect.push({id: category.id});
+      }
+    })
+
+    const disconnect = await prisma.project.update({
+      where: { id: parseInt(req.params.id) },
+      data: {
+        members: {
+          disconnect: membersToDisconnect
+        },
+        categories: {
+          disconnect: categoriesToDisconnect
+        }
+      }
+    })
+    res.status(200).json(disconnect);
   })
 );
 
