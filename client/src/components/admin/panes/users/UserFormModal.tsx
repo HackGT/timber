@@ -3,10 +3,10 @@ import { Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from 
 import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
 
-import { FORM_RULES } from "../../../util/util";
-import { FormModalProps } from "../FormModalProps";
-import { UserRole } from "../../../types/UserRole";
-import QuestionIconLabel from "../../../util/QuestionIconLabel";
+import { FORM_RULES } from "../../../../util/util";
+import { FormModalProps } from "../../FormModalProps";
+import { UserRole } from "../../../../types/UserRole";
+import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 
 const { Text } = Typography;
 

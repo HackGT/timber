@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { getConfig } from "../utils/utils";
 
 export const categoryRoutes = express.Router();
 
@@ -39,8 +40,16 @@ categoryRoutes.route("/").get(
 
 categoryRoutes.route("/").post(
   asyncHandler(async (req, res) => {
+    const config = await getConfig();
+
     const createdCategory = await prisma.category.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        criterias: {
+          create: req.body.criterias,
+        },
+        hackathonId: config.currentHackathonId,
+      },
       include: { criterias: true },
     });
     res.status(201).json(createdCategory);
@@ -49,13 +58,72 @@ categoryRoutes.route("/").post(
 
 categoryRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
-    const categoryId: number = parseInt(req.params.id);
+    const categoryId = parseInt(req.params.id);
+
+    const originalCategory = await prisma.category.findUnique({
+      where: {
+        id: categoryId,
+      },
+      include: {
+        criterias: true,
+      },
+    });
+
+    if (!originalCategory) {
+      res.status(400).send({ error: true, message: "This category does not exist." });
+      return;
+    }
+
+    const criteriaUpdate: any = {};
+    const oldCriteriaIds: number[] = originalCategory.criterias
+      .map((criteria: any) => criteria.id)
+      .filter((id: any) => id);
+    const newCriteriaIds: number[] = req.body.criterias
+      .map((criteria: any) => criteria.id)
+      .filter((id: any) => id);
+
+    for (const criteria of req.body.criterias) {
+      if (oldCriteriaIds.includes(criteria.id)) {
+        criteriaUpdate.updateMany = criteriaUpdate.updateMany || [];
+        criteriaUpdate.updateMany.push({
+          where: {
+            id: criteria.id,
+          },
+          data: {
+            name: criteria.name,
+            description: criteria.description,
+            minScore: criteria.minScore,
+            maxScore: criteria.maxScore,
+          },
+        });
+      } else {
+        criteriaUpdate.create = criteriaUpdate.create || [];
+        criteriaUpdate.create.push({
+          name: criteria.name,
+          description: criteria.description,
+          minScore: criteria.minScore,
+          maxScore: criteria.maxScore,
+        });
+      }
+    }
+
+    for (const oldCriteriaId of oldCriteriaIds) {
+      if (!newCriteriaIds.includes(oldCriteriaId)) {
+        criteriaUpdate.delete = criteriaUpdate.update || [];
+        criteriaUpdate.delete.push({
+          id: oldCriteriaId,
+        });
+      }
+    }
 
     const updatedCategory = await prisma.category.update({
       where: {
         id: categoryId,
       },
-      data: req.body,
+      data: {
+        ...req.body,
+        criterias: criteriaUpdate,
+      },
       include: { criterias: true },
     });
 

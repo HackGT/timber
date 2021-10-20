@@ -1,61 +1,152 @@
 import React from "react";
-import { Typography, Tag, Tabs } from "antd";
-import { useParams, useHistory } from "react-router-dom";
+import { Typography, Layout, Menu, Button, List } from "antd";
+import { useParams, useHistory, Redirect } from "react-router-dom";
+import {
+  UserOutlined,
+  SettingOutlined,
+  ContainerOutlined,
+  FolderOutlined,
+} from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
-import UserFormModal from "./modals/UserFormModal";
-import CategoryList from "./modals/CategoryList";
-import ConfigEditContainer from "./ConfigEditContainer";
-import CategoryGroupFormModal from "./modals/CategoryGroupFormModal";
+import UserFormModal from "./panes/users/UserFormModal";
+import ConfigEditPane from "./panes/config/ConfigEditPane";
+import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
+import CategoryFormModal from "./panes/categories/CategoryModal";
+import CategoryCard from "./panes/categories/CategoryCard";
 
 const { Title } = Typography;
-const { TabPane } = Tabs;
+const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
-  const { activeTab } = useParams<any>();
+  const paneKeys = ["config", "users", "categories", "categorygroups"];
+  const { activePane } = useParams<any>();
   const history = useHistory();
 
-  const tabKeys = ["users", "categories", "categorygroups"];
-
-  if (!tabKeys.includes(activeTab)) {
-    history.replace(`/admin/${tabKeys[0]}`);
+  if (!paneKeys.includes(activePane)) {
+    return <Redirect to={`/admin/${paneKeys[0]}`} />;
   }
+
+  let content = null;
+
+  switch (activePane) {
+    case "config":
+      content = <ConfigEditPane />;
+      break;
+    case "users":
+      content = (
+        <AdminContentList
+          queryUrl="/user"
+          title="Users"
+          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+          modal={UserFormModal}
+          searchFilterField="name"
+          hideAddButton
+          renderItem={(item, index, openModal) => (
+            <List.Item style={{ backgroundColor: "white" }}>
+              <List.Item.Meta
+                title={item.name}
+                description={item.email}
+                avatar={<UserOutlined />}
+              />
+              <Button onClick={() => openModal(item)}>Edit</Button>
+            </List.Item>
+          )}
+          key="users"
+          listBordered
+        />
+      );
+      break;
+    case "categories":
+      content = (
+        <AdminContentList
+          queryUrl="/categories"
+          title="Categories"
+          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+          modal={CategoryFormModal}
+          searchFilterField="name"
+          renderItem={(item, index, openModal) => (
+            <CategoryCard category={item} openModal={openModal} />
+          )}
+          key="categories"
+          listGrid={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }}
+        />
+      );
+      break;
+    case "categorygroups":
+      content = (
+        <AdminContentList
+          queryUrl="/categorygroups"
+          title="Category Groups"
+          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+          modal={CategoryGroupFormModal}
+          searchFilterField="name"
+          renderItem={(item, index, openModal) => (
+            <List.Item style={{ backgroundColor: "white" }}>
+              <List.Item.Meta
+                title={item.name}
+                description={item.categories.map((category: any) => category.name).join(", ")}
+                avatar={<FolderOutlined />}
+              />
+              <Button onClick={() => openModal(item)}>Edit</Button>
+            </List.Item>
+          )}
+          key="categorygroups"
+          listBordered
+        />
+      );
+      break;
+  }
+
+  const handleMenuClick = (event: any) => {
+    history.push(`/admin/${event.key}`);
+  };
 
   return (
     <>
       <Title>Admin Panel</Title>
-      <ConfigEditContainer />
-      <Tabs
-        activeKey={activeTab}
-        defaultActiveKey="users"
-        onTabClick={key => history.push(`/admin/${key}`)}
-      >
-        <TabPane tab="Users" key={tabKeys[0]}>
-          <AdminContentList
-            queryUrl="/user"
-            title="Users"
-            tag={item => <Tag>{item.role}</Tag>}
-            sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
-            name={item => `${item.name} (${item.email})`}
-            modal={UserFormModal}
-            searchFilterField="name"
-            hideAddButton
-          />
-        </TabPane>
-        <TabPane tab="Categories" key={tabKeys[1]}>
-          <CategoryList />
-        </TabPane>
-        <TabPane tab="Category Groups" key={tabKeys[2]}>
-          <AdminContentList
-            queryUrl="/categorygroups"
-            title="Category Groups"
-            sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
-            name={item => `${item.name}`}
-            modal={CategoryGroupFormModal}
-            searchFilterField="name"
-          />
-        </TabPane>
-      </Tabs>
+      <Layout className="ant-layout-has-sider">
+        <Sider
+          breakpoint="md"
+          collapsedWidth="0"
+          width={200}
+          theme="dark"
+          className="site-layout-background"
+        >
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={["config"]}
+            selectedKeys={[activePane]}
+            style={{ height: "100%", borderRight: 0 }}
+            onClick={handleMenuClick}
+          >
+            <Menu.Item key="config" icon={<SettingOutlined />}>
+              Config
+            </Menu.Item>
+            <Menu.Item key="users" icon={<UserOutlined />}>
+              Users
+            </Menu.Item>
+            <Menu.Item key="categories" icon={<ContainerOutlined />}>
+              Categories
+            </Menu.Item>
+            <Menu.Item key="categorygroups" icon={<FolderOutlined />}>
+              Category Groups
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout style={{ padding: "0 24px 24px" }}>
+          <Content
+            className="site-layout-background"
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 500,
+            }}
+          >
+            {content}
+          </Content>
+        </Layout>
+      </Layout>
     </>
   );
 };

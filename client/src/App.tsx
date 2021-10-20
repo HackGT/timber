@@ -47,7 +47,7 @@ function App() {
               <Route exact path="/projectgallery" component={Projects} />
               <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />
-              <Route exact path="/admin/:activeTab?" component={AdminHome} />
+              <Route exact path="/admin/:activePane?" component={AdminHome} />
               <Route exact path="/epicenter" component={Epicenter} />
               <Route component={NotFoundDisplay} />
             </Switch>

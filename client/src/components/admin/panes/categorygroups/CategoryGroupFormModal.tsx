@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Form, Input, message, Modal, Typography } from "antd";
 import axios from "axios";
 
-import { FORM_RULES, handleAxiosError } from "../../../util/util";
-import { FormModalProps } from "../FormModalProps";
+import { FORM_RULES, handleAxiosError } from "../../../../util/util";
+import { FormModalProps } from "../../FormModalProps";
 
 const { Text } = Typography;
 
@@ -72,16 +72,12 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
         {props.modalState.initialValues && (
           <>
             <Text strong>Categories</Text>
-            <br />
             <ul>
               {props.modalState.initialValues.categories.map((category: any) => (
                 <li>{category.name}</li>
               ))}
             </ul>
-            <br />
-            <br />
             <Text strong>Users</Text>
-            <br />
             <ul>
               {props.modalState.initialValues.users.map((user: any) => (
                 <li>
@@ -89,8 +85,6 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
                 </li>
               ))}
             </ul>
-            <br />
-            <br />
           </>
         )}
       </Form>

@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { Button, List, Typography, Input } from "antd";
+import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 
 import { FormModalProps, ModalState } from "./FormModalProps";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Search } = Input;
 
 interface Props {
   title: string;
   queryUrl: string;
-  tag?: (item: any) => JSX.Element;
   sortData: (data: any) => any;
-  name: (item: any) => string;
   modal: React.FC<FormModalProps>;
   hideAddButton?: boolean;
   searchFilterField: string;
+  renderItem: (item: any, index: number, openModal: (values: any) => void) => React.ReactNode;
+  listGrid?: ListGridType;
+  listBordered?: boolean;
 }
 
 const AdminContentList: React.FC<Props> = props => {
@@ -57,31 +59,24 @@ const AdminContentList: React.FC<Props> = props => {
   return (
     <>
       <Title level={3}>{props.title}</Title>
-      {!props.hideAddButton && (
-        <Button style={{ marginRight: "10px" }} onClick={() => openModal(null)}>
-          Add +
-        </Button>
-      )}
       <Search
         placeholder="Search"
-        style={{ width: "200px" }}
+        style={{ width: "300px" }}
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
       />
+      {!props.hideAddButton && (
+        <Button style={{ marginLeft: "10px" }} onClick={() => openModal(null)}>
+          Add +
+        </Button>
+      )}
       <List
-        bordered
         loading={loading}
         dataSource={updatedData}
-        style={{ maxWidth: "800px", margin: "15px auto 0 auto" }}
-        renderItem={(item: any) => (
-          <List.Item>
-            {props.tag ? props.tag(item) : <div />}
-            <Text style={{ textAlign: "center", maxWidth: "33%", wordBreak: "break-word" }}>
-              {props.name(item)}
-            </Text>
-            <Button onClick={() => openModal(item)}>Edit</Button>
-          </List.Item>
-        )}
+        style={{ margin: "15px auto 0 auto" }}
+        renderItem={(item: any, index: any) => props.renderItem(item, index, openModal)}
+        grid={props.listGrid}
+        bordered={props.listBordered}
       />
       <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </>
