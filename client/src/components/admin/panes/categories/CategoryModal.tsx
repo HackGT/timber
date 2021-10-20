@@ -4,7 +4,7 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
-import { FormModalProps } from "../../FormModalProps";
+import { FormModalProps } from "../../../../util/FormModalProps";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import CriteriaModalCard from "./CriteriaModalCard";
 

@@ -3,7 +3,7 @@ import { Button, List, Typography, Input } from "antd";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 
-import { FormModalProps, ModalState } from "./FormModalProps";
+import { FormModalProps, ModalState } from "../../util/FormModalProps";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 

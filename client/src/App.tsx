@@ -7,7 +7,7 @@ import "./App.less";
 
 import Navigation from "./components/navigation/Navigation";
 import Dashboard from "./components/dashboard/Dashboard";
-import Projects from "./components/projects/Projects";
+import ProjectGallery from "./components/projectGallery/ProjectGallery";
 import JudgingHome from "./components/judging/JudgingHome";
 import AdminHome from "./components/admin/AdminHome";
 import Footer from "./components/navigation/Footer";
@@ -42,7 +42,7 @@ function App() {
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
               <Route exact path="/category-group/:categoryGroupId" component={CategoryGroup} />
-              <Route exact path="/projectgallery" render={() => <Projects user={data} />} />
+              <Route exact path="/projectgallery" render={() => <ProjectGallery user={data} />} />
               <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />
               <Route exact path="/admin/:activePane?" component={AdminHome} />

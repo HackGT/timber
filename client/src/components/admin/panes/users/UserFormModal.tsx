@@ -4,7 +4,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
 
 import { FORM_RULES } from "../../../../util/util";
-import { FormModalProps } from "../../FormModalProps";
+import { FormModalProps } from "../../../../util/FormModalProps";
 import { UserRole } from "../../../../types/UserRole";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 

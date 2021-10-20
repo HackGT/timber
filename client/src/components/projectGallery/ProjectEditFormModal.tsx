@@ -5,7 +5,7 @@ import useAxios from "axios-hooks";
 import axios from "axios";
 
 import { FORM_LAYOUT, FORM_RULES } from "../../util/util";
-import { FormModalProps } from "./FormModalProps";
+import { FormModalProps } from "../../util/FormModalProps";
 import { Category } from "../../types/Category";
 // interface Props {
 //   visible: boolean;
@@ -13,7 +13,7 @@ import { Category } from "../../types/Category";
 //   initialValues: any;
 // }
 
-const SubmissionEditModal: React.FC<FormModalProps> = props => {
+const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   // console.log(props);
   const [form] = Form.useForm();
   const [{ data: categoryData, loading }] = useAxios("/categories", { useCache: false });
@@ -26,7 +26,7 @@ const SubmissionEditModal: React.FC<FormModalProps> = props => {
         label: category.name,
         value: category.name,
       }));
-  
+
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
     label: round,
     value: round,
@@ -37,12 +37,12 @@ const SubmissionEditModal: React.FC<FormModalProps> = props => {
     const values = await form.validateFields();
 
     console.log(values);
-    const formattedMembers = values.members.map((member: any) => ({email: member.email}))
+    const formattedMembers = values.members.map((member: any) => ({ email: member.email }));
     values.members = formattedMembers;
-    console.log(props.modalState.initialValues.id)
+    console.log(props.modalState.initialValues.id);
     try {
       axios
-        .patch(`/projects/${props.modalState.initialValues.id}`, {...values})
+        .patch(`/projects/${props.modalState.initialValues.id}`, { ...values })
         .then(res => {
           hide();
 
@@ -75,7 +75,12 @@ const SubmissionEditModal: React.FC<FormModalProps> = props => {
         onOk={onSubmit}
         bodyStyle={{ paddingBottom: 0 }}
       >
-        <Form form={form} layout="vertical" autoComplete="off" initialValues={props.modalState.initialValues}>
+        <Form
+          form={form}
+          layout="vertical"
+          autoComplete="off"
+          initialValues={props.modalState.initialValues}
+        >
           <Form.List name="members">
             {(fields, { add, remove }) => (
               <div>
@@ -177,7 +182,7 @@ const SubmissionEditModal: React.FC<FormModalProps> = props => {
           <Row justify="center">
             <Col {...FORM_LAYOUT.full}>
               <Form.Item name="expo" label="Expo">
-                <InputNumber defaultValue={1}  />
+                <InputNumber defaultValue={1} />
               </Form.Item>
             </Col>
           </Row>
@@ -195,4 +200,4 @@ const SubmissionEditModal: React.FC<FormModalProps> = props => {
   );
 };
 
-export default SubmissionEditModal;
+export default ProjectEditFormModal;

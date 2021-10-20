@@ -21,7 +21,7 @@ export const routes = [
   new Page("Create Submission", "/create", user =>
     [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)
   ),
-  new Page("Projects", "/projectgallery", user =>
+  new Page("Project Gallery", "/projectgallery", user =>
     [UserRole.GENERAL, UserRole.SPONSOR, UserRole.ADMIN].includes(user.role)
   ),
   new Page("Judging", "/judging", user => user.isJudging),

@@ -7,8 +7,8 @@ import ProjectCard from "./ProjectCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
-import { FormModalProps, ModalState } from "../admin/FormModalProps";
-import SubmissionEditModal from "../admin/SubmissionEditModal";
+import { ModalState } from "../../util/FormModalProps";
+import ProjectEditFormModal from "./ProjectEditFormModal";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -17,7 +17,7 @@ interface Props {
   user: User;
 }
 
-const Projects: React.FC<Props> = (props) => {
+const ProjectGallery: React.FC<Props> = props => {
   const [{ loading, data, error }, refetch] = useAxios("/projects");
   const [{ data: categoryData }] = useAxios("/categories");
 
@@ -31,12 +31,11 @@ const Projects: React.FC<Props> = (props) => {
   } as ModalState);
 
   const openModal = (values: any) => {
-    
-    const newCategories = values.categories.map((category: any) => category.name)
-    console.log(values)
+    const newCategories = values.categories.map((category: any) => category.name);
+    console.log(values);
     setModalState({
       visible: true,
-      initialValues: {...values, categories: newCategories},
+      initialValues: { ...values, categories: newCategories },
     });
   };
 
@@ -72,7 +71,7 @@ const Projects: React.FC<Props> = (props) => {
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
-  const Modal = SubmissionEditModal;
+  const Modal = ProjectEditFormModal;
   return (
     <>
       <Title level={2}>Projects</Title>
@@ -104,7 +103,12 @@ const Projects: React.FC<Props> = (props) => {
         dataSource={updatedData}
         renderItem={(project: Project) => (
           <List.Item>
-            <ProjectCard key={project.id} project={project} user={props.user} onClick={() => openModal(project)}/>
+            <ProjectCard
+              key={project.id}
+              project={project}
+              user={props.user}
+              onClick={() => openModal(project)}
+            />
           </List.Item>
         )}
       />
@@ -113,4 +117,4 @@ const Projects: React.FC<Props> = (props) => {
   );
 };
 
-export default Projects;
+export default ProjectGallery;

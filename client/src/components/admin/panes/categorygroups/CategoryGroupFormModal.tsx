@@ -3,7 +3,7 @@ import { Form, Input, message, Modal, Typography } from "antd";
 import axios from "axios";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
-import { FormModalProps } from "../../FormModalProps";
+import { FormModalProps } from "../../../../util/FormModalProps";
 
 const { Text } = Typography;
 

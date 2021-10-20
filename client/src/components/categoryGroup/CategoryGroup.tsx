@@ -4,7 +4,7 @@ import useAxios from "axios-hooks";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import ProjectCard from "../projects/ProjectCard";
+import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
 
 const CategoryGroup: React.FC = () => {

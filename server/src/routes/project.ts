@@ -143,53 +143,53 @@ projectRoutes.route("/:id").patch(
     }
 
     const dbCategories = await prisma.category.findMany({
-      where: {name: { in: categories }}
-    })
+      where: { name: { in: categories } },
+    });
 
-    categories = dbCategories.map((category: any) => ({id: category.id}))
-    
+    categories = dbCategories.map((category: any) => ({ id: category.id }));
+
     const updated = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
       data: {
         ...req.body,
         members: {
-          connect: members
+          connect: members,
         },
         categories: {
           connect: categories,
-        }
+        },
       },
       include: {
         categories: true,
-        members: true
-      }
+        members: true,
+      },
     });
     const membersToDisconnect: any[] = [];
     const categoriesToDisconnect: any[] = [];
-    const memberEmailArr = members.map((member: any) => member.email)
+    const memberEmailArr = members.map((member: any) => member.email);
     updated.members.forEach((member: any) => {
       if (!memberEmailArr.includes(member.email)) {
-        membersToDisconnect.push({email: member.email});
+        membersToDisconnect.push({ email: member.email });
       }
-    })
-    const categoryIdArr = categories.map((category: any) => category.id)
+    });
+    const categoryIdArr = categories.map((category: any) => category.id);
     updated.categories.forEach((category: any) => {
       if (!categoryIdArr.includes(category.id)) {
-        categoriesToDisconnect.push({id: category.id});
+        categoriesToDisconnect.push({ id: category.id });
       }
-    })
+    });
 
     const disconnect = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
       data: {
         members: {
-          disconnect: membersToDisconnect
+          disconnect: membersToDisconnect,
         },
         categories: {
-          disconnect: categoriesToDisconnect
-        }
-      }
-    })
+          disconnect: categoriesToDisconnect,
+        },
+      },
+    });
     res.status(200).json(disconnect);
   })
 );
