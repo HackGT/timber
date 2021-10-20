@@ -75,7 +75,7 @@ io.attach(http, {
 app.use(handleError);
 
 async function runSetup() {
-  await scheduleJobs();
+  // await scheduleJobs();
 }
 
 runSetup()
