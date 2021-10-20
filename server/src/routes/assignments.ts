@@ -121,13 +121,10 @@ assignmentRoutes.route("/current-project").get(
       },
     });
 
-    const categoryGroupCategoryIdSet = new Set(
-      categoryGroup?.categories.map(category => category.id)
+    const filteredCategories = categoryGroup?.categories.filter(category =>
+      project?.categories.some(c => c.id === category.id) || category.isDefault
     );
-    const filteredCategories = project?.categories.filter(category =>
-      categoryGroupCategoryIdSet.has(category.id)
-    );
-    res.status(200).json(filteredCategories);
+
     const updatedProject = {
       ...project,
       categories: filteredCategories,
