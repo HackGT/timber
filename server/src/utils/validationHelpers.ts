@@ -71,7 +71,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
   let registrationError = null;
   const currentHackathon = await getCurrentHackathon();
 
-  const registrationUsers: string[] = await Promise.all(
+  const registrationUsers: any[] = await Promise.all(
     memberEmails.map(async email => {
       let res: any;
       try {
@@ -128,8 +128,6 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
           data: {
             name: searchUsers[0].name,
             email,
-            uuid: "",
-            token: "",
             role: UserRole.GENERAL,
           },
         });
@@ -163,7 +161,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
   }
 
   const eligiblePrizes = await getEligiblePrizes(registrationUsers);
-  return { error: false, eligiblePrizes };
+  return { error: false, eligiblePrizes, registrationUsers };
 };
 
 /*

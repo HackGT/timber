@@ -101,7 +101,15 @@ projectRoutes.route("/").post(async (req, res) => {
           },
         },
         members: {
-          connect: data.members.map((member: any) => ({ email: member.email })),
+          connectOrCreate: teamValidation.registrationUsers?.map((user: any) => ({
+            where: {
+              email: user.email,
+            },
+            create: {
+              name: user.name,
+              email: user.email,
+            },
+          })),
         },
       },
     });

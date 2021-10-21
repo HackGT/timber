@@ -66,7 +66,7 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => {
       let user = await prisma.user.findUnique({
         where: {
-          uuid: profile.uuid,
+          email: profile.email,
         },
       });
 
@@ -83,9 +83,11 @@ passport.use(
       } else {
         user = await prisma.user.update({
           where: {
-            uuid: profile.uuid,
+            email: profile.email,
           },
           data: {
+            name: profile.name,
+            uuid: profile.uuid,
             token: accessToken,
           },
         });
@@ -97,7 +99,7 @@ passport.use(
 );
 
 passport.serializeUser<string>((user, done) => {
-  done(null, user.uuid);
+  done(null, user.uuid || "");
 });
 passport.deserializeUser<string>(async (id, done) => {
   const user = await prisma.user.findUnique({
