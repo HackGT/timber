@@ -107,6 +107,7 @@ const JudgingBox: React.FC<Props> = props => {
         ))}
       </div>
       <>
+        <Text strong>Scores</Text>
         {Object.entries(scoreData).map((category: any) => {
           let scoreString = "";
           Object.entries(category[1]).map(score => {
@@ -122,21 +123,21 @@ const JudgingBox: React.FC<Props> = props => {
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         Join Meeting Room
       </a>
-      <Text>Change Round</Text>
+      <Text strong>Change Round</Text>
       <div>
-        <Button disabled={round === 1} onClick={decrementRound}>
+        <Button disabled={round === 1} onClick={decrementRound} size="small">
           Move Back 1
         </Button>
-        <Button style={{ marginLeft: "10px" }} onClick={incrementRound}>
+        <Button style={{ marginLeft: "10px" }} onClick={incrementRound} size="small">
           Move Up 1
         </Button>
       </div>
-      <Text>Change Expo</Text>
+      <Text strong>Change Expo</Text>
       <div>
-        <Button disabled={expo === 1} onClick={decrementExpo}>
+        <Button disabled={expo === 1} onClick={decrementExpo} size="small">
           Move Back 1
         </Button>
-        <Button style={{ marginLeft: "10px" }} onClick={incrementExpo}>
+        <Button style={{ marginLeft: "10px" }} onClick={incrementExpo} size="small">
           Move Up 1
         </Button>
       </div>
