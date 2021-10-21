@@ -43,7 +43,7 @@ function App() {
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
               <Route exact path="/category-group/:categoryGroupId" component={CategoryGroup} />
               <Route exact path="/projectgallery" render={() => <ProjectGallery user={data} />} />
-              <Route exact path="/projectgallery/:projectId" component={ProjectDetails} />
+              <Route exact path="/projects/:projectId" component={ProjectDetails} />
               <Route exact path="/judging" component={JudgingHome} />
               <Route exact path="/admin/:activePane?" component={AdminHome} />
               <Route exact path="/epicenter" component={Epicenter} />

@@ -4,22 +4,15 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
 import useAxios from "axios-hooks";
 import axios from "axios";
 
-import { FORM_LAYOUT, FORM_RULES } from "../../util/util";
+import { FORM_RULES } from "../../util/util";
 import { FormModalProps } from "../../util/FormModalProps";
 import { Category } from "../../types/Category";
-// interface Props {
-//   visible: boolean;
-//   closeModal: () => void;
-//   initialValues: any;
-// }
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
-  // console.log(props);
   const [form] = Form.useForm();
   const [{ data: categoryData, loading }] = useAxios("/categories", { useCache: false });
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
-  console.log(categoryData);
   const categoryOptions = loading
     ? []
     : categoryData.map((category: Category) => ({
@@ -85,8 +78,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             {(fields, { add, remove }) => (
               <div>
                 {fields.map((field, index) => (
-                  <Row justify="center" key={field.key}>
-                    <Col {...FORM_LAYOUT.full}>
+                  <Row gutter={[8, 0]} key={field.key}>
+                    <Col span={24}>
                       <Form.Item
                         name={[field.name, "email"]}
                         fieldKey={[field.fieldKey, "email"]}
@@ -106,7 +99,6 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                               />
                             ) : undefined
                           }
-                          defaultValue=""
                         />
                       </Form.Item>
                     </Col>
@@ -114,8 +106,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                 ))}
                 {/* Max team size is 4 */}
                 {fields.length < 4 ? (
-                  <Row justify="center">
-                    <Col {...FORM_LAYOUT.full}>
+                  <Row gutter={[8, 0]}>
+                    <Col span={24}>
                       <Form.Item>
                         <Button type="dashed" onClick={add} block>
                           <PlusOutlined />
@@ -129,8 +121,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             )}
           </Form.List>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
               <Form.Item name="categories" label="Categories">
                 <Select
                   placeholder="Select categories"
@@ -144,8 +136,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             </Col>
           </Row>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
               <Form.Item
                 name="devpostUrl"
                 rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
@@ -156,41 +148,32 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             </Col>
           </Row>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
               <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
                 <Input placeholder="Alexa Assistant" />
               </Form.Item>
             </Col>
           </Row>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
-              {/* <Form.Item name="round" rules={[FORM_RULES.requiredRule]} label="Round">
-                <Select
-                  placeholder="Select round"
-                  options={roundOptions}
-                  optionFilterProp="label"
-                />
-              </Form.Item> */}
+          <Row gutter={[8, 0]}>
+            <Col xs={24} sm={12}>
               <Form.Item name="round" label="Round">
-                <InputNumber defaultValue={1} />
+                <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
               </Form.Item>
             </Col>
-          </Row>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
+            <Col xs={24} sm={12}>
               <Form.Item name="expo" label="Expo">
-                <InputNumber defaultValue={1} />
+                <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
               </Form.Item>
             </Col>
           </Row>
 
-          <Row justify="center">
-            <Col {...FORM_LAYOUT.full}>
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
               <Form.Item name="table" label="Table Number">
-                <InputNumber defaultValue={1} />
+                <InputNumber style={{ width: "100%" }} precision={0} />
               </Form.Item>
             </Col>
           </Row>

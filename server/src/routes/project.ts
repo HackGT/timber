@@ -161,7 +161,15 @@ projectRoutes.route("/:id").patch(
       data: {
         ...req.body,
         members: {
-          connect: members,
+          connectOrCreate: members.map((member: any) => ({
+            where: {
+              email: member.email,
+            },
+            create: {
+              name: "",
+              email: member.email,
+            },
+          })),
         },
         categories: {
           connect: categories,
@@ -172,6 +180,7 @@ projectRoutes.route("/:id").patch(
         members: true,
       },
     });
+
     const membersToDisconnect: any[] = [];
     const categoriesToDisconnect: any[] = [];
     const memberEmailArr = members.map((member: any) => member.email);
