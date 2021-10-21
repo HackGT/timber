@@ -47,10 +47,19 @@ assignmentRoutes.route("/current-project").get(
   asyncHandler(async (req, res) => {
     const user: User = req.user as User;
     const filter: any = {};
+
     if (!user.isJudging) {
-      res.status(500).json({ error: "User is not a judge" });
+      res.status(400).json({ error: true, message: "User is not a judge" });
       return;
     }
+
+    if (!user.categoryGroupId) {
+      res
+        .status(400)
+        .json({ error: true, message: "Please assign a category group to this user first." });
+      return;
+    }
+
     filter.userId = user.id;
     filter.status = { in: ["STARTED", "QUEUED"] };
 
@@ -121,8 +130,8 @@ assignmentRoutes.route("/current-project").get(
       },
     });
 
-    const filteredCategories = categoryGroup?.categories.filter(category =>
-      project?.categories.some(c => c.id === category.id) || category.isDefault
+    const filteredCategories = categoryGroup?.categories.filter(
+      category => project?.categories.some(c => c.id === category.id) || category.isDefault
     );
 
     const updatedProject = {

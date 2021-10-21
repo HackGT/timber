@@ -53,7 +53,15 @@ categoryGroupRoutes.route("/:id").patch(
       where: {
         id: categoryGroupId,
       },
-      data: req.body,
+      data: {
+        ...req.body,
+        categories: {
+          set: req.body.categories.map((id: number) => ({ id })),
+        },
+        users: {
+          set: req.body.users.map((id: number) => ({ id })),
+        },
+      },
     });
 
     res.status(200).json(updatedCategoryGroup);

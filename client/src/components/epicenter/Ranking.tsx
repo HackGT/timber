@@ -68,7 +68,14 @@ const Ranking = () => {
                     numJudged: number,
                   });
                 })}
-                <Table key={category.id} columns={columns} dataSource={data} pagination={false} />
+                <Table
+                  key={category.id}
+                  columns={columns}
+                  dataSource={data}
+                  pagination={false}
+                  style={{ marginBottom: "20px" }}
+                  size="small"
+                />
               </>
             );
           })}

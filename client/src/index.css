@@ -26,8 +26,8 @@ html {
 .placeholder-box {
   position: static;
   left: 990px;
-  width: 86px;
-  height: 86px;
+  width: 70px;
+  height: 70px;
   margin: 5px;
   border: 3px dashed #808080;
 }
@@ -36,8 +36,8 @@ html {
   position: static;
   top: 0;
   left: 990px;
-  width: 86px;
-  height: 86px;
+  width: 70px;
+  height: 70px;
   margin: 5px;
   padding: 12px 9px;
   color: white;
@@ -49,12 +49,11 @@ html {
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-between;
-  margin: 3px;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .judging-box-project-id {
-  font-size: 18px;
+  font-size: 15px;
   line-height: 0;
 }
 *,

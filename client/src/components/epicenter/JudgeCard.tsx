@@ -20,7 +20,7 @@ const JudgeCard: React.FC<Props> = props => {
 
   return (
     <>
-      <Card key={props.key} title={props.user.name}>
+      <Card key={props.key} title={props.user.name} size="small">
         <div id="judging">{projects}</div>
       </Card>
     </>

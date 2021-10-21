@@ -1,6 +1,7 @@
+import React from "react";
 import { Button, Popover, Tag, Typography } from "antd";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
+import { RefetchOptions } from "axios-hooks";
 
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
@@ -14,86 +15,52 @@ interface Props {
   key: number;
   project: Project;
   assignment?: Assignment;
+  refetch?: (
+    config?: AxiosRequestConfig | undefined,
+    options?: RefetchOptions | undefined
+  ) => AxiosPromise<any>;
 }
 
 const JudgingBox: React.FC<Props> = props => {
-  const [expo, setExpo] = useState(props.project.expo);
-  const [round, setRound] = useState(props.project.round);
-  const [scoreData, setScoreData] = useState({});
-
-  const decrementRound = async () => {
+  const updateRound = async (difference: number) => {
     axios
       .patch(`/projects/${props.project.id}`, {
-        round: round - 1,
+        round: props.project.round + difference,
       })
       .then(response => {
         console.log(response);
+        props.refetch && props.refetch();
       })
       .catch(err => {
         handleAxiosError(err);
       });
-    setRound(round - 1);
   };
 
-  const incrementRound = async () => {
+  const updateExpo = async (difference: number) => {
     axios
       .patch(`/projects/${props.project.id}`, {
-        round: round + 1,
+        expo: props.project.expo + difference,
       })
       .then(response => {
         console.log(response);
+        props.refetch && props.refetch();
       })
       .catch(err => {
         handleAxiosError(err);
       });
-    setRound(round + 1);
   };
 
-  const decrementExpo = async () => {
-    axios
-      .patch(`/projects/${props.project.id}`, {
-        expo: expo - 1,
-      })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(err => {
-        handleAxiosError(err);
-      });
-    setExpo(expo - 1);
-  };
+  const scoreData: any = {};
 
-  const incrementExpo = async () => {
-    axios
-      .patch(`/projects/${props.project.id}`, {
-        expo: expo + 1,
-      })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(err => {
-        handleAxiosError(err);
-      });
-    setExpo(expo + 1);
-  };
-
-  const generateScoreData = () => {
-    const data: any = {};
-    props.project.categories.forEach((category: Category) => {
-      data[category.name] = {};
-      props.project.ballots.forEach((ballot: Ballot) => {
-        if (ballot.criteria.categoryId === category.id) {
-          data[category.name][ballot.user.name] =
-            (data[category.name][ballot.user.name] || 0) + ballot.score;
-        }
-      });
+  props.project.categories.forEach((category: Category) => {
+    scoreData[category.name] = {};
+    props.project.ballots.forEach((ballot: Ballot) => {
+      if (ballot.criteria.categoryId === category.id) {
+        scoreData[category.name][ballot.user.name] =
+          (scoreData[category.name][ballot.user.name] || 0) + ballot.score;
+      }
     });
-    setScoreData(data);
-  };
-
-  useEffect(() => {
-    generateScoreData();
-  }, []);
+  });
 
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -125,19 +92,19 @@ const JudgingBox: React.FC<Props> = props => {
       </a>
       <Text strong>Change Round</Text>
       <div>
-        <Button disabled={round === 1} onClick={decrementRound} size="small">
+        <Button disabled={props.project.round === 1} onClick={() => updateRound(-1)} size="small">
           Move Back 1
         </Button>
-        <Button style={{ marginLeft: "10px" }} onClick={incrementRound} size="small">
+        <Button style={{ marginLeft: "10px" }} onClick={() => updateRound(1)} size="small">
           Move Up 1
         </Button>
       </div>
       <Text strong>Change Expo</Text>
       <div>
-        <Button disabled={expo === 1} onClick={decrementExpo} size="small">
+        <Button disabled={props.project.expo === 1} onClick={() => updateExpo(-1)} size="small">
           Move Back 1
         </Button>
-        <Button style={{ marginLeft: "10px" }} onClick={incrementExpo} size="small">
+        <Button style={{ marginLeft: "10px" }} onClick={() => updateExpo(1)} size="small">
           Move Up 1
         </Button>
       </div>

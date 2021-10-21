@@ -1,15 +1,28 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal, Typography } from "antd";
+import { Form, Input, message, Modal, Select } from "antd";
 import axios from "axios";
+import useAxios from "axios-hooks";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
-
-const { Text } = Typography;
+import ErrorDisplay from "../../../../displays/ErrorDisplay";
+import LoadingDisplay from "../../../../displays/LoadingDisplay";
 
 const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
+  const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
+    useAxios("/categories");
+
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+
+  if (userLoading || categoriesLoading) {
+    return <LoadingDisplay />;
+  }
+
+  if (userError || categoriesError) {
+    return <ErrorDisplay error={userError} />;
+  }
 
   const onSubmit = async () => {
     try {
@@ -50,6 +63,20 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
     }
   };
 
+  const categoryOptions = categoriesLoading
+    ? []
+    : categoriesData.map((category: any) => ({
+        label: category.name,
+        value: category.id,
+      }));
+
+  const userOptions = userLoading
+    ? []
+    : userData.map((user: any) => ({
+        label: `${user.name} [${user.email}]`,
+        value: user.id,
+      }));
+
   return (
     <Modal
       visible={props.modalState.visible}
@@ -60,33 +87,43 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       onOk={onSubmit}
       bodyStyle={{ paddingBottom: 0 }}
     >
-      <Form
-        form={form}
-        initialValues={props.modalState.initialValues}
-        layout="vertical"
-        autoComplete="off"
-      >
-        <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Name">
+      <Form form={form} layout="vertical" autoComplete="off">
+        <Form.Item
+          name="name"
+          rules={[FORM_RULES.requiredRule]}
+          label="Name"
+          initialValue={props.modalState.initialValues?.name}
+        >
           <Input />
         </Form.Item>
-        {props.modalState.initialValues && (
-          <>
-            <Text strong>Categories</Text>
-            <ul>
-              {props.modalState.initialValues.categories.map((category: any) => (
-                <li>{category.name}</li>
-              ))}
-            </ul>
-            <Text strong>Users</Text>
-            <ul>
-              {props.modalState.initialValues.users.map((user: any) => (
-                <li>
-                  {user.name} [{user.email}]
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+        <Form.Item
+          name="categories"
+          label="Categories"
+          initialValue={props.modalState.initialValues?.categories.map(
+            (category: any) => category.id
+          )}
+        >
+          <Select
+            mode="multiple"
+            options={categoryOptions}
+            optionFilterProp="label"
+            loading={categoriesLoading}
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item
+          name="users"
+          label="Users"
+          initialValue={props.modalState.initialValues?.users.map((user: any) => user.id)}
+        >
+          <Select
+            mode="multiple"
+            options={userOptions}
+            optionFilterProp="label"
+            loading={userLoading}
+            allowClear
+          />
+        </Form.Item>
       </Form>
     </Modal>
   );

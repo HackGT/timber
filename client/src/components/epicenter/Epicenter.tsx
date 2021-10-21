@@ -17,11 +17,11 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectData, error: projectsError }] =
+  const [{ loading: projectsLoading, data: projectData, error: projectsError }, refetch] =
     useAxios("/projects");
-  const [{ loading: assignmentsLoading, data: assignmentsData, error: assignmentsError }] =
-    useAxios("/assignments");
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
+  const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
+    useAxios("/categorygroups");
 
   // adding auto-assign button and function for testing purposes
   const autoAssign = () => {
@@ -35,42 +35,54 @@ const Epicenter: React.FC = () => {
     });
   };
 
-  if (projectsLoading || assignmentsLoading || userLoading) {
+  if (projectsLoading || userLoading || categoryGroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || assignmentsError || userError) {
+  if (projectsError || userError || categoryGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
   const projects = projectData.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} />
+    <JudgingBox key={project.id} project={project} refetch={refetch} />
   ));
 
   const judges = userData
     .filter((user: User) => user.isJudging)
     .sort((a: Assignment, b: Assignment) => (a.priority > b.priority ? 1 : -1));
 
+  const categoryGroups = [...categoryGroupsData, { name: "Unassigned", id: null }];
+
   return (
     <>
       <Title level={2}>Epicenter</Title>
       <div id="judging">{projects}</div>
-      <List
-        grid={{ gutter: 16, column: 4 }}
-        loading={projectsLoading}
-        dataSource={judges}
-        renderItem={(user: User) => (
-          <List.Item>
-            <JudgeCard key={user.id} user={user} />
-          </List.Item>
-        )}
-      />
+      <Button
+        type="primary"
+        htmlType="submit"
+        onClick={autoAssign}
+        style={{ marginBottom: "15px", marginTop: "10px" }}
+      >
+        Auto-assign
+      </Button>
+      {categoryGroups.map((categoryGroup: any) => (
+        <>
+          <Title level={4}>{categoryGroup.name}</Title>
+          <List
+            grid={{ gutter: 16, column: 4 }}
+            loading={projectsLoading}
+            dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
+            renderItem={(user: User) => (
+              <List.Item>
+                <JudgeCard key={user.id} user={user} />
+              </List.Item>
+            )}
+          />
+        </>
+      ))}
       <Title level={2} style={{ textAlign: "center" }}>
         Dashboard
       </Title>
-      <Button type="primary" htmlType="submit" onClick={autoAssign}>
-        Auto-assign
-      </Button>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">
           <Dashboard />

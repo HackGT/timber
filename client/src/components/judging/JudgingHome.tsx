@@ -9,9 +9,29 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
 
-const JudgingHome: React.FC = () => {
+interface Props {
+  user: any;
+}
+
+const JudgingHome: React.FC<Props> = props => {
   const [{ data, loading, error }] = useAxios("/assignments/current-project");
   const [projectScores, setProjectScores] = useState({});
+
+  if (!props.user.categoryGroupId) {
+    return (
+      <p>
+        Please ask a HexLabs team member to assign you a category group before you start judging.
+      </p>
+    );
+  }
+
+  if (loading) {
+    return <LoadingDisplay />;
+  }
+
+  if (error) {
+    return <ErrorDisplay error={error} />;
+  }
 
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
@@ -31,14 +51,6 @@ const JudgingHome: React.FC = () => {
       handleAxiosError(err);
     }
   };
-
-  if (loading) {
-    return <LoadingDisplay />;
-  }
-
-  if (error) {
-    return <ErrorDisplay error={error} />;
-  }
 
   if (data.length === 0) {
     return <p>You have no projects queued!</p>;
