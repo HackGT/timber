@@ -188,7 +188,7 @@ model User {
   id            Int            @id @default(autoincrement())
   name          String
   email         String         @unique
-  uuid          String?         @unique
+  uuid          String?        @unique
   token         String?
   role          UserRole       @default(GENERAL)
   isJudging     Boolean        @default(false)
