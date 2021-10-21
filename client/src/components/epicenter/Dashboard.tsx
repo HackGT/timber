@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { Table, Tag, Space, Typography } from "antd";
-import axios from "axios";
+import React from "react";
+import { Typography } from "antd";
 import useAxios from "axios-hooks";
 
 import ProjectTable from "./ProjectTable";
@@ -18,7 +17,7 @@ const Dashboard = () => {
         const generateData = (categoryId: number) => {
           const data: any = {};
           let total = 0;
-          project.ballots.map((ballot: Ballot) => {
+          project.ballots.forEach((ballot: Ballot) => {
             if (ballot.criteria.categoryId === categoryId) {
               data[ballot.user.name] = (data[ballot.user.name] || 0) + ballot.score;
               total += ballot.score;

@@ -2,9 +2,9 @@ import React from "react";
 import { Card } from "antd";
 
 import JudgingBox from "./JudgingBox";
-import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 import PlaceHolderBox from "./PlaceholderBox";
+import { Assignment } from "../../types/Assignment";
 
 interface Props {
   key: string;
@@ -12,8 +12,8 @@ interface Props {
 }
 
 const JudgeCard: React.FC<Props> = props => {
-  const projects = props.user.projects.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} assignments={props.user.assignments} />
+  const projects = props.user.assignments.map((assignment: Assignment) => (
+    <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
   ));
 
   projects.splice(1, 0, <PlaceHolderBox />);

@@ -31,18 +31,26 @@ userRoutes.route("/").get(
     const users = await prisma.user.findMany({
       where: filter,
       include: {
-        assignments: true,
+        assignments: {
+          include: {
+            project: {
+              include: {
+                ballots: {
+                  select: {
+                    score: true,
+                    user: true,
+                    criteria: true,
+                  },
+                },
+                categories: true,
+              },
+            },
+          },
+        },
         categoryGroup: true,
         projects: {
           include: {
             categories: true,
-            ballots: {
-              select: {
-                score: true,
-                user: true,
-                criteria: true,
-              },
-            },
           },
         },
       },

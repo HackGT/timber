@@ -13,7 +13,7 @@ const { Title, Text } = Typography;
 interface Props {
   key: number;
   project: Project;
-  assignments: Assignment[];
+  assignment?: Assignment;
 }
 
 const JudgingBox: React.FC<Props> = props => {
@@ -144,27 +144,15 @@ const JudgingBox: React.FC<Props> = props => {
     </div>
   );
 
-  // Finds the assignemtn corresponding with the project
-  const assignment = props.assignments.find(
-    (assign: Assignment) => assign.userId === props.project.id
-  );
-
-  if (assignment !== undefined && assignment.status.toString() === "QUEUED") {
-    return (
-      <Popover content={content} key={props.key} placement="bottom">
-        <div className="judging-boxes" key={props.key} style={{ background: "#888888" }}>
-          <div className="judging-box-top-row">
-            <p>E:{props.project.expo}</p>
-            <p>R:{props.project.round}</p>
-          </div>
-          <p className="judging-box-project-id">P{props.project.id}</p>
-        </div>
-      </Popover>
-    );
-  }
   return (
     <Popover content={content} key={props.key} placement="bottom">
-      <div className="judging-boxes" key={props.key}>
+      <div
+        className="judging-boxes"
+        key={props.key}
+        style={{
+          background: props.assignment?.status.toString() === "QUEUED" ? "#888888" : undefined,
+        }}
+      >
         <div className="judging-box-top-row">
           <p>E:{props.project.expo}</p>
           <p>R:{props.project.round}</p>

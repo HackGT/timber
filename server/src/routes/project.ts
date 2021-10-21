@@ -31,6 +31,9 @@ projectRoutes.route("/").get(
         },
         members: true,
       },
+      orderBy: {
+        id: "asc",
+      },
     });
     res.status(200).json(matches);
   })

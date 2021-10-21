@@ -43,10 +43,8 @@ const Epicenter: React.FC = () => {
     return <ErrorDisplay error={projectsError} />;
   }
 
-  console.log(projectData);
-
   const projects = projectData.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} assignments={[]} />
+    <JudgingBox key={project.id} project={project} />
   ));
 
   const judges = userData

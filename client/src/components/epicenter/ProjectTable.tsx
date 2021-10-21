@@ -19,7 +19,7 @@ type ProjectTableType = {
 };
 
 const ProjectTable = ({ data }: ProjectTableType) => (
-  <Table columns={columns} dataSource={data} pagination={false} />
+  <Table columns={columns} dataSource={data} pagination={false} size="small" />
 );
 
 export default ProjectTable;
