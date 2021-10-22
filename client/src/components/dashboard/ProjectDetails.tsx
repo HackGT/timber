@@ -85,7 +85,7 @@ const ProjectDetails: React.FC = props => {
           <a href={data.devpostUrl}>{data.devpostUrl}</a>
         </Descriptions.Item>
         <Descriptions.Item label={<Label name="Selected Prizes" />}>
-          {data.categories.join(", ")}
+          {data.categories.map((category: any) => category.name).join(", ")}
         </Descriptions.Item>
       </Descriptions>
 
