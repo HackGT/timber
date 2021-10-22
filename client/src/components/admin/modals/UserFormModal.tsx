@@ -85,7 +85,6 @@ const UserFormModal: React.FC<FormModalProps> = props => {
         <Form.Item name="categoryGroup" rules={[FORM_RULES.requiredRule]} label="Category Group">
           <Select
             placeholder="Select a category group"
-            // onChange={onCategoryGroupChange}
             allowClear
           >
             {data.map((categorygroups: CategoryGroup) => (
