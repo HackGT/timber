@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
+import { Select, Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
+import useAxios from "axios-hooks";
 
 import { FORM_RULES } from "../../../util/util";
 import { FormModalProps } from "../FormModalProps";
 import { UserRole } from "../../../types/UserRole";
+import { CategoryGroup } from "../../../types/CategoryGroup";
 import QuestionIconLabel from "../../../util/QuestionIconLabel";
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const UserFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
@@ -38,6 +41,17 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       console.log("Validate Failed:", error);
     }
   };
+
+  const [{ data }] = useAxios("/categorygroups");
+  // const groupList = (
+  //   <Menu>
+  //       {data.map((categorygroups: CategoryGroup) => (
+  //         <Menu.Item>
+  //           {categorygroups.name}
+  //         </Menu.Item>
+  //       ))}
+  //   </Menu>
+  // );
 
   const accessLevelOptions = [
     {
@@ -76,6 +90,19 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       >
         <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Name">
           <Input placeholder="Johnny" />
+        </Form.Item>
+        <Form.Item name="categoryGroup" rules={[FORM_RULES.requiredRule]} label="Category Group">
+          <Select
+            placeholder="Select a category group"
+            // onChange={onCategoryGroupChange}
+            allowClear
+          >
+            {data.map((categorygroups: CategoryGroup) => (
+              <Option value={categorygroups.name}>
+                {categorygroups.name}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item name="role" rules={[FORM_RULES.requiredRule]} label="User Role">
           <Radio.Group>
