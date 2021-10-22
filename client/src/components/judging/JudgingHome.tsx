@@ -8,6 +8,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
+import DailyWindow from "../video/DailyWindow";
 
 interface Props {
   user: any;
@@ -80,6 +81,7 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
+      <DailyWindow videoID={data.roomUrl}/>
       {criteriaArray.map((criteria: any) => (
         <CriteriaCard {...criteria} changeScore={changeScore} />
       ))}
