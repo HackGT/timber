@@ -43,15 +43,6 @@ const UserFormModal: React.FC<FormModalProps> = props => {
   };
 
   const [{ data }] = useAxios("/categorygroups");
-  // const groupList = (
-  //   <Menu>
-  //       {data.map((categorygroups: CategoryGroup) => (
-  //         <Menu.Item>
-  //           {categorygroups.name}
-  //         </Menu.Item>
-  //       ))}
-  //   </Menu>
-  // );
 
   const accessLevelOptions = [
     {
