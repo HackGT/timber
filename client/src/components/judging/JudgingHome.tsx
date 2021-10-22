@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import axios from "axios";
-import { Button, message } from "antd";
+import { Button, Popconfirm, message } from "antd";
 
 import CriteriaCard from "./CriteriaCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -53,6 +53,18 @@ const JudgingHome: React.FC<Props> = props => {
     }
   };
 
+  const onSkip = async () => {
+    const hide = message.loading("Loading...", 0);
+    try {
+      await axios.patch(`/assignments/${data.assignmentId}`, { data: { status: "SKIPPED" } });
+      hide();
+      window.location.reload();
+    } catch (err: any) {
+      hide();
+      handleAxiosError(err);
+    }
+  };
+
   if (data.length === 0) {
     return <p>You have no projects queued!</p>;
   }
@@ -86,6 +98,9 @@ const JudgingHome: React.FC<Props> = props => {
         <CriteriaCard {...criteria} changeScore={changeScore} />
       ))}
       <Button onClick={() => onSubmit()}> Submit </Button>
+      <Popconfirm placement="right" title="Are you sure you want to skip this project?" onConfirm={onSkip} okText="Yes" cancelText="No">
+        <Button>Skip</Button>
+      </Popconfirm>
     </>
   );
 };
