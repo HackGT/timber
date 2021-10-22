@@ -2,17 +2,9 @@ import React, { useEffect, useRef } from "react";
 
 import DailyIframe from "@daily-co/daily-js";
 import "./DailyWindow.css"
-// interface EventInformation {
-//   id: string;
-//   url: string;
-//   title: string;
-//   tags: string[];
-//   description: string;
-// }
 
 type Props = {
   videoID: string;
-  // event: EventInformation;
 };
 
 const DailyWindow: React.FC<Props> = (props: Props) => {
