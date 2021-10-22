@@ -5,6 +5,7 @@ import useAxios from "axios-hooks";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
+import DailyWindow from "../video/DailyWindow";
 
 const { Title, Text } = Typography;
 
@@ -71,6 +72,7 @@ const ProjectDetails: React.FC = props => {
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       {/* {createMessage()} */}
+      <DailyWindow videoID={data.roomUrl}/>
       <Title level={2} style={{ margin: "30px 0" }}>
         {data.hackathon.name} Submission Details
       </Title>
@@ -83,7 +85,7 @@ const ProjectDetails: React.FC = props => {
           <a href={data.devpostUrl}>{data.devpostUrl}</a>
         </Descriptions.Item>
         <Descriptions.Item label={<Label name="Selected Prizes" />}>
-          {data.categories.join(", ")}
+          {data.categories.map((category: any) => category.name).join(", ")}
         </Descriptions.Item>
       </Descriptions>
 

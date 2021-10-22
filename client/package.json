@@ -13,6 +13,7 @@
     "@ant-design/icons": "^4.7.0",
     "@babel/runtime": "^7.15.4",
     "@craco/craco": "^6.3.0",
+    "@daily-co/daily-js": "^0.20.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
