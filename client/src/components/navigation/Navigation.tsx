@@ -14,6 +14,10 @@ export class Page {
     this.link = link;
     this.isAllowed = isAllowed;
   }
+
+  setLink(link: string) {
+    this.link = link;
+  }
 }
 
 export const routes = [
@@ -24,6 +28,7 @@ export const routes = [
   new Page("Project Gallery", "/projectgallery", user =>
     [UserRole.GENERAL, UserRole.SPONSOR, UserRole.ADMIN].includes(user.role)
   ),
+  new Page("Sponsor Page", `/category-group`, user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
   new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
@@ -45,7 +50,12 @@ const Navigation: React.FC<Props> = props => {
   //   };
   // });
 
-  const filteredRoutes = routes.filter((page: Page) => page.isAllowed(props.user));
+  const filteredRoutes = routes.filter((page: Page) => {
+    if (page.link === '/category-group') {
+      page.setLink(`/category-group/${props.user.categoryGroupId}`)
+    }
+    return page.isAllowed(props.user)
+  });
 
   return <Header routes={filteredRoutes} />;
 };
