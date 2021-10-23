@@ -4,6 +4,7 @@ import { User, AssignmentStatus, Config, Assignment } from "@prisma/client";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { isAdminOrIsJudging } from "../auth/auth";
+import { getConfig } from "../utils/utils";
 
 export const assignmentRoutes = express.Router();
 
@@ -71,9 +72,11 @@ assignmentRoutes.route("/current-project").get(
       },
     });
 
+    const config = await getConfig();
+
     const assignment: Assignment | null = await new Promise(async (resolve, reject) => {
-      // call auto assign if there are no assignments
-      if (assignments.length === 0) {
+      // call auto assign if judging is on and there are no assignments
+      if (config.isJudgingOn && assignments.length === 0) {
         await autoAssign(user.id, true)
           .then(newAssignment => {
             resolve(newAssignment);
@@ -81,15 +84,15 @@ assignmentRoutes.route("/current-project").get(
           .catch(err => {
             reject(err);
           });
-      } else {
+      } else if (assignments.length > 0) {
         // return the started assignment if it exists
         // otherwise, return the first queued assignment (after changing its status to started)
-        const started_assignments = assignments.filter(
+        const startedAssignments = assignments.filter(
           assignment => assignment.status === AssignmentStatus.STARTED
         );
 
-        if (started_assignments.length > 0) {
-          resolve(started_assignments[0]);
+        if (startedAssignments.length > 0) {
+          resolve(startedAssignments[0]);
         } else {
           const startedAssignment = await prisma.assignment.update({
             where: {
@@ -101,19 +104,22 @@ assignmentRoutes.route("/current-project").get(
           });
           resolve(startedAssignment);
         }
+      } else {
+        resolve(null);
       }
     });
 
     // auto assign returns null if there are no projects to assign to the judge
     if (assignment === null) {
-      return res.status(200).json([]);
+      res.status(200).json([]);
+      return;
     }
 
     const projectFilter: any = {};
     if (assignment) {
       projectFilter.id = assignment.projectId;
     } else {
-      res.status(500).json({ error: "Project not found" });
+      res.status(500).json({ error: true, message: "Project not found" });
       return;
     }
     const project = await prisma.project.findUnique({
@@ -152,7 +158,7 @@ assignmentRoutes.route("/").post(
     const duplicateFilter: any = {};
     const multipleProjectFilter: any = {};
     if (!user.isJudging) {
-      res.status(500).json({ error: "User is not a judge" });
+      res.status(500).json({ error: true, message: "User is not a judge" });
       return;
     }
 
@@ -170,7 +176,8 @@ assignmentRoutes.route("/").post(
 
     if (checkAssignment.length !== 0) {
       res.status(500).json({
-        error: "Judge already has a project started or project assignment is a duplicate",
+        error: true,
+        message: "Judge already has a project started or project assignment is a duplicate",
       });
       return;
     }
@@ -188,7 +195,7 @@ assignmentRoutes.route("/:id").patch(
     const assignmentId: number = parseInt(req.params.id);
     const user: User = req.user as User;
     if (!user.isJudging) {
-      res.status(500).json({ error: "User is not a judge" });
+      res.status(500).json({ error: true, message: "User is not a judge" });
       return;
     }
 
@@ -254,17 +261,7 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   */
 
   // get config info
-  const config = await prisma.config.findFirst({
-    select: {
-      currentExpo: true,
-      currentRound: true,
-      isJudgingOn: true,
-    },
-  });
-
-  if (!config?.isJudgingOn) {
-    return null;
-  }
+  const config = await getConfig();
 
   // get judge info
   const judgeToAssign = await prisma.user.findFirst({
@@ -297,7 +294,7 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   const judgeCategoryIds = judgeToAssign.categoryGroup.categories.map(category => category.id);
 
   // where clause for finding projects
-  const project_filter: any = {
+  const projectFilter: any = {
     expo: config?.currentExpo,
     round: config?.currentRound,
     categories: {
@@ -318,7 +315,7 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
     category => category.isDefault
   );
   if (defaultCategories.length > 0) {
-    delete project_filter.categories;
+    delete projectFilter.categories;
   }
 
   // get projects from the appropriate expo/round, where at least some of the project's categories match the judge's categories
@@ -340,10 +337,10 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
       },
       categories: true,
     },
-    where: project_filter,
+    where: projectFilter,
   });
 
-  if (projectsWithMatchingCategories.length == 0) {
+  if (projectsWithMatchingCategories.length === 0) {
     return null;
   }
 
@@ -382,7 +379,8 @@ assignmentRoutes.route("/autoAssign").post(
       })
       .catch(err =>
         res.status(500).json({
-          error: err.message,
+          error: true,
+          message: err.message,
         })
       );
   })
