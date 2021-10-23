@@ -1,36 +1,28 @@
 import React from "react";
 import { Typography, Card, Slider } from "antd";
 
-const { Title, Paragraph, Text, Link } = Typography;
+const { Paragraph } = Typography;
 
 interface Props {
-  id: number;
-  name: string;
-  description: string;
-  minScore: number;
-  maxScore: number;
-  categoryId: number;
+  criteria: any;
   changeScore: (value: number, id: number) => void;
 }
 
 const CriteriaCard: React.FC<Props> = props => {
-  const hi = "hi";
-  // const minScore = props.minScore;
-
   const marks = {
-    [props.minScore]: `${props.minScore}`,
-    [props.maxScore]: `${props.maxScore}`,
+    [props.criteria.minScore]: `${props.criteria.minScore}`,
+    [props.criteria.maxScore]: `${props.criteria.maxScore}`,
   };
 
   return (
     <div>
-      <Card hoverable style={{ width: 626 }} title={props.name}>
-        <Paragraph>{props.description}</Paragraph>
+      <Card hoverable title={props.criteria.name} size="small" style={{ maxWidth: "500px" }}>
+        <Paragraph>{props.criteria.description}</Paragraph>
         <Slider
           marks={marks}
-          min={props.minScore}
-          max={props.maxScore}
-          onChange={(value: any) => props.changeScore(value, props.id)}
+          min={props.criteria.minScore}
+          max={props.criteria.maxScore}
+          onChange={(value: any) => props.changeScore(value, props.criteria.id)}
         />
       </Card>
     </div>
