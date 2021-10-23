@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { List, Typography, Input, Select } from "antd";
+import { List, Typography, Input, Select, Col, Form, Row } from "antd";
 
 import { Project } from "../../types/Project";
 import ProjectCard from "./ProjectCard";
@@ -11,6 +11,7 @@ import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
 import { config } from "process";
 import { UserRole } from "../../types/UserRole";
+import { FORM_RULES } from "../../util/util";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -89,30 +90,37 @@ const ProjectGallery: React.FC<Props> = props => {
   return (
     <>
       <Title level={2}>Project Gallery</Title>
-      <Search
-        placeholder="Search"
-        style={{ width: "200px" }}
-        value={searchText}
-        onChange={event => setSearchText(event.target.value)}
-      />
-      <Select
-        mode="multiple"
-        placeholder="Filter by Categories"
-        style={{ width: "200px" }}
-        onChange={value => setCategoriesSelected(value)}
-      >
-        {categoryChoices}
-      </Select>
-      <Select
-        placeholder="Sort"
-        style={{ width: "200px" }}
-        onChange={(value: any) => setSortCondition(value)}
-      >
-        <Option value="name">Name</Option>
-        <Option value="recent">Recent</Option>
-      </Select>
+      <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
+        <Col xs={24} sm={8} md={8}>
+          <Search
+            placeholder="Search"
+            value={searchText}
+            onChange={event => setSearchText(event.target.value)}
+          />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <Select
+            mode="multiple"
+            placeholder="Filter by Categories"
+            style={{ width: "100%" }}
+            onChange={value => setCategoriesSelected(value)}
+          >
+            {categoryChoices}
+          </Select>
+        </Col>
+        <Col xs={24} sm={4} md={4}>
+          <Select
+            placeholder="Sort"
+            style={{ width: "100%" }}
+            onChange={(value: any) => setSortCondition(value)}
+          >
+            <Option value="name">Name</Option>
+            <Option value="recent">Recent</Option>
+          </Select>
+        </Col>
+      </Row>
       <List
-        grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
         loading={projectsLoading}
         dataSource={updatedData}
         renderItem={(project: Project) => (

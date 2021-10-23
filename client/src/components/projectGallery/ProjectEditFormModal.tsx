@@ -123,6 +123,14 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
 
           <Row gutter={[8, 0]}>
             <Col span={24}>
+              <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
+                <Input placeholder="Alexa Assistant" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
               <Form.Item name="categories" label="Categories">
                 <Select
                   placeholder="Select categories"
@@ -150,8 +158,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
 
           <Row gutter={[8, 0]}>
             <Col span={24}>
-              <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
-                <Input placeholder="Alexa Assistant" />
+              <Form.Item name="roomUrl" rules={[FORM_RULES.urlRule]} label="Room URL">
+                <Input placeholder="https://hexlabs.daily.co/sdj38cjk129f" />
               </Form.Item>
             </Col>
           </Row>
