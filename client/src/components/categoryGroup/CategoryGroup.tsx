@@ -1,11 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
+import { Space, Typography } from "antd";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
+import ProjectTableContainer from "../epicenter/ProjectTableContainer";
+
+const { Title } = Typography;
 
 const CategoryGroup: React.FC = () => {
   const { categoryGroupId } = useParams<any>();
@@ -23,10 +27,14 @@ const CategoryGroup: React.FC = () => {
 
   return (
     <>
-      <h1>Projects Within Category Group</h1>
-      {data.map((project: Project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
+      <Space size="middle" direction="vertical">
+        <Title level={2}>Projects Within Category Group</Title>
+        {data.map((project: Project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+        <Title level={2}> Scores </Title>
+        <ProjectTableContainer projects={data} isSponsor />
+      </Space>
     </>
   );
 };

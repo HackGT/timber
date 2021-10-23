@@ -7,6 +7,7 @@ export type User = {
   name: string;
   email: string;
   role: UserRole;
+  categoryGroupId: number;
   isJudging: boolean;
   projects: Project[];
   assignments: Assignment[];

@@ -305,6 +305,13 @@ projectRoutes.route("/special/category-group/:id").get(
       include: {
         members: true,
         categories: true,
+        ballots: {
+          select: {
+            score: true,
+            user: true,
+            criteria: true,
+          },
+        },
       },
     });
 
