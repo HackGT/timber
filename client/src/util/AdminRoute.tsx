@@ -1,8 +1,9 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { UserRole } from "../types/UserRole";
 
-function PrivateRoute({ component: Component, user, ...rest }: any): any {
-  if (user && user.admin) {
+function AdminRoute({ component: Component, user, ...rest }: any): any {
+  if (user && [UserRole.ADMIN].includes(user.role)) {
     return <Route {...rest} render={(props: any) => <Component {...props} />} />;
   }
 
@@ -14,4 +15,4 @@ function PrivateRoute({ component: Component, user, ...rest }: any): any {
   );
 }
 
-export default PrivateRoute;
+export default AdminRoute;

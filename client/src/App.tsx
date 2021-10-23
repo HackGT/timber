@@ -18,6 +18,9 @@ import LoadingDisplay from "./displays/LoadingDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
 import Epicenter from "./components/epicenter/Epicenter";
 import CategoryGroup from "./components/categoryGroup/CategoryGroup";
+import AdminRoute from "./util/AdminRoute";
+import JudgeRoute from "./util/JudgeRoute";
+import SponsorRoute from "./util/SponsorRoute";
 
 const { Content } = Layout;
 
@@ -41,12 +44,12 @@ function App() {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
-              <Route exact path="/category-group/:categoryGroupId" component={CategoryGroup} />
+              <SponsorRoute exact path="/category-group/:categoryGroupId" component={CategoryGroup} user={data}/>
               <Route exact path="/projectgallery" render={() => <ProjectGallery user={data} />} />
               <Route exact path="/projects/:projectId" component={ProjectDetails} />
-              <Route exact path="/judging" render={() => <JudgingHome user={data} />} />
-              <Route exact path="/admin/:activePane?" component={AdminHome} />
-              <Route exact path="/epicenter" component={Epicenter} />
+              <JudgeRoute exact path="/judging" render={() => <JudgingHome user={data} />} user={data}/>
+              <AdminRoute exact path="/admin/:activePane?" component={AdminHome} user={data}/>
+              <AdminRoute exact path="/epicenter" component={Epicenter} user={data}/>
               <Route component={NotFoundDisplay} />
             </Switch>
           </Content>
