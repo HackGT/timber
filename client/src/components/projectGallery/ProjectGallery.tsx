@@ -9,6 +9,8 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
+import { config } from "process";
+import { UserRole } from "../../types/UserRole";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -18,8 +20,11 @@ interface Props {
 }
 
 const ProjectGallery: React.FC<Props> = props => {
-  const [{ loading, data, error }, refetch] = useAxios("/projects");
-  const [{ data: categoryData }] = useAxios("/categories");
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
+    useAxios("/projects");
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
+    useAxios("/categories");
+  const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
@@ -39,16 +44,25 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (loading) {
+  if (projectsLoading || categoriesLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
-    return <ErrorDisplay error={error} />;
+  if (projectsError || categoriesError || configError) {
+    return <ErrorDisplay error={projectsError} />;
   }
 
-  let updatedData = data
-    ? data.filter((item: any) => item.name.toLowerCase().includes(searchText.toLowerCase()))
+  if (props.user.role !== UserRole.ADMIN && !configData.isProjectsPublished) {
+    return (
+      <>
+        <Title level={2}>Project Gallery</Title>
+        <Title level={5}>The projects aren't published yet. Please check back later!</Title>
+      </>
+    );
+  }
+
+  let updatedData = projectsData
+    ? projectsData.filter((item: any) => item.name.toLowerCase().includes(searchText.toLowerCase()))
     : [];
 
   updatedData =
@@ -58,8 +72,8 @@ const ProjectGallery: React.FC<Props> = props => {
         )
       : updatedData;
 
-  const categoryChoices = categoryData
-    ? categoryData.map((item: any) => (
+  const categoryChoices = categoriesData
+    ? categoriesData.map((item: any) => (
         <Option key={item.name} value={item.name}>
           {item.name}
         </Option>
@@ -71,10 +85,10 @@ const ProjectGallery: React.FC<Props> = props => {
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
-  const Modal = ProjectEditFormModal;
+
   return (
     <>
-      <Title level={2}>Projects</Title>
+      <Title level={2}>Project Gallery</Title>
       <Search
         placeholder="Search"
         style={{ width: "200px" }}
@@ -99,7 +113,7 @@ const ProjectGallery: React.FC<Props> = props => {
       </Select>
       <List
         grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
-        loading={loading}
+        loading={projectsLoading}
         dataSource={updatedData}
         renderItem={(project: Project) => (
           <List.Item>
@@ -112,7 +126,11 @@ const ProjectGallery: React.FC<Props> = props => {
           </List.Item>
         )}
       />
-      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
+      <ProjectEditFormModal
+        modalState={modalState}
+        setModalState={setModalState}
+        refetch={refetch}
+      />
     </>
   );
 };
