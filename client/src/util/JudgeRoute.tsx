@@ -1,9 +1,8 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { UserRole } from "../types/UserRole";
 
 function JudgeRoute({ component: Component, user, ...rest }: any): any {
-  if (user && [UserRole.ADMIN, UserRole.SPONSOR].includes(user.role) && user.isJudging) {
+  if (user && user.isJudging) {
     return <Route {...rest} />;
   }
 
