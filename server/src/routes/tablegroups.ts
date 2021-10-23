@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { isAdmin } from "../auth/auth";
 
 export const tableGroupRoutes = express.Router();
 
@@ -21,6 +22,7 @@ tableGroupRoutes.route("/").get(
 );
 
 tableGroupRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const createdTableGroup = await prisma.tableGroup.create({
       data: req.body,
@@ -31,6 +33,7 @@ tableGroupRoutes.route("/").post(
 );
 
 tableGroupRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const tableGroupId: number = parseInt(req.params.id);
 

@@ -3,6 +3,7 @@ import express from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig } from "../utils/utils";
+import { isAdmin } from "../auth/auth";
 
 export const categoryRoutes = express.Router();
 
@@ -39,6 +40,7 @@ categoryRoutes.route("/").get(
 );
 
 categoryRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const config = await getConfig();
 
@@ -57,6 +59,7 @@ categoryRoutes.route("/").post(
 );
 
 categoryRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const categoryId = parseInt(req.params.id);
 
@@ -132,6 +135,7 @@ categoryRoutes.route("/:id").patch(
 );
 
 categoryRoutes.route("/:id").delete(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const categoryId: number = parseInt(req.params.id);
 

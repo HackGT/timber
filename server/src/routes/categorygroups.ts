@@ -3,6 +3,7 @@ import express from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getCurrentHackathon } from "../utils/utils";
+import { isAdmin } from "../auth/auth";
 
 export const categoryGroupRoutes = express.Router();
 
@@ -34,7 +35,7 @@ categoryGroupRoutes.route("/").get(
 
 categoryGroupRoutes.route("/:id").get(
   asyncHandler(async (req, res) => {
-   const categoryGroup = await prisma.categoryGroup.findUnique({
+    const categoryGroup = await prisma.categoryGroup.findUnique({
       where: {
         id: parseInt(req.params.id),
       },
@@ -45,6 +46,7 @@ categoryGroupRoutes.route("/:id").get(
 );
 
 categoryGroupRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const currentHackathon = await getCurrentHackathon();
     const createdCategoryGroup = await prisma.categoryGroup.create({
@@ -58,6 +60,7 @@ categoryGroupRoutes.route("/").post(
 );
 
 categoryGroupRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const categoryGroupId: number = parseInt(req.params.id);
 
@@ -81,6 +84,7 @@ categoryGroupRoutes.route("/:id").patch(
 );
 
 categoryGroupRoutes.route("/:id").delete(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const categoryGroupId: number = parseInt(req.params.id);
 

@@ -3,6 +3,7 @@ import { User, AssignmentStatus, Config, Assignment } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { isAdminOrIsJudging } from "../auth/auth";
 
 export const assignmentRoutes = express.Router();
 
@@ -144,6 +145,7 @@ assignmentRoutes.route("/current-project").get(
 );
 
 assignmentRoutes.route("/").post(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const user: User = req.body.user as User;
     const projectId: number = parseInt(req.body.project.id);
@@ -181,6 +183,7 @@ assignmentRoutes.route("/").post(
 );
 
 assignmentRoutes.route("/:id").patch(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const assignmentId: number = parseInt(req.params.id);
     const user: User = req.user as User;
@@ -368,6 +371,7 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
 };
 
 assignmentRoutes.route("/autoAssign").post(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     autoAssign(req.body.judge, false)
       .then(createdAssignment => {

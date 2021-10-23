@@ -1,5 +1,6 @@
 import express from "express";
 
+import { isAdmin } from "../auth/auth";
 import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -27,6 +28,7 @@ configRoutes.route("/").get(
 );
 
 configRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const updated = await prisma.config.update({
       where: {
@@ -40,6 +42,7 @@ configRoutes.route("/").post(
 );
 
 configRoutes.route("/currentRoundExpo").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["currentRound", "currentExpo"]);
     res.status(200).json(update);
@@ -47,6 +50,7 @@ configRoutes.route("/currentRoundExpo").post(
 );
 
 configRoutes.route("/isJudgingOn").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["isJudgingOn"]);
     res.status(200).json(update);
@@ -54,6 +58,7 @@ configRoutes.route("/isJudgingOn").post(
 );
 
 configRoutes.route("/isProjectsPublished").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["isProjectsPublished"]);
     res.status(200).json(update);
@@ -61,6 +66,7 @@ configRoutes.route("/isProjectsPublished").post(
 );
 
 configRoutes.route("/isProjectSubmissionOpen").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["isProjectSubmissionOpen"]);
     res.status(200).json(update);
@@ -68,6 +74,7 @@ configRoutes.route("/isProjectSubmissionOpen").post(
 );
 
 configRoutes.route("/currentHackathonId").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const update = await updateConfigFields(req.body, ["currentHackathonId"]);
     res.status(200).json(update);

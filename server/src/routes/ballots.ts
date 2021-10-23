@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 
 import { Ballot, User } from ".prisma/client";
+import { isAdminOrIsJudging } from "../auth/auth";
 
 export const ballotsRoutes = express.Router();
 
@@ -56,6 +57,7 @@ ballotsRoutes.route("/").get(
 );
 
 ballotsRoutes.route("/").post(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const { criterium } = req.body;
     const user: User = req.user as User;
@@ -77,6 +79,7 @@ ballotsRoutes.route("/").post(
 );
 
 ballotsRoutes.route("/:id").patch(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const ballotId: number = parseInt(req.params.id);
     const { score, userId } = req.body;
@@ -133,6 +136,7 @@ ballotsRoutes.route("/:id").patch(
 );
 
 ballotsRoutes.route("/").delete(
+  isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const { criterium } = req.body;
 
