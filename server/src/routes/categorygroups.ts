@@ -32,6 +32,18 @@ categoryGroupRoutes.route("/").get(
   })
 );
 
+categoryGroupRoutes.route("/:id").get(
+  asyncHandler(async (req, res) => {
+   const categoryGroup = await prisma.categoryGroup.findUnique({
+      where: {
+        id: parseInt(req.params.id),
+      },
+    });
+
+    res.status(200).json(categoryGroup);
+  })
+);
+
 categoryGroupRoutes.route("/").post(
   asyncHandler(async (req, res) => {
     const currentHackathon = await getCurrentHackathon();

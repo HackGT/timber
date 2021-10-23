@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "antd";
+import { Space, Typography } from "antd";
 import useAxios from "axios-hooks";
 
 import ProjectTable from "./ProjectTable";
@@ -26,13 +26,13 @@ const ProjectTableContainer: React.FC<Props> = props => (
             }
           });
           const newData = Object.entries(data).map(e => ({ judge: e[0], total: e[1] }));
-          newData.push({ judge: "Average", total: total / newData.length });
+          newData.push({ judge: "Average", total: Math.round((total / newData.length) * 10) / 10 });
           return newData;
         };
 
         return (
           <div key={project.id}>
-            <Title key={project.id} level={4}>{props.isSponsor ? `${project.name}`:`${project.id} - ${project.name}`}</Title>
+            <Title key={project.id} level={4}>{props.isSponsor ? `Project Name: ${project.name}`:`${project.id} - ${project.name}`}</Title>
             <>
               {project.categories.map((category: any) => (
                 <>
@@ -43,6 +43,7 @@ const ProjectTableContainer: React.FC<Props> = props => (
                 </>
               ))}
             </>
+            <br />
           </div>
         );
       })}

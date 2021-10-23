@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
-import { Space, Typography } from "antd";
+import { List, Typography } from "antd";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -16,6 +16,9 @@ const CategoryGroup: React.FC = () => {
   const [{ data, loading, error }] = useAxios(
     `/projects/special/category-group/${categoryGroupId}`
   );
+  const [{ data: categoryGroup, loading: categoryGroupLoading, error: categoryGroupError }] = useAxios(
+    `/categorygroups/${categoryGroupId}`
+  );
 
   if (loading) {
     return <LoadingDisplay />;
@@ -27,14 +30,25 @@ const CategoryGroup: React.FC = () => {
 
   return (
     <>
-      <Space size="middle" direction="vertical">
-        <Title level={2}>Projects Within Category Group</Title>
-        {data.map((project: Project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
+      <Title>{categoryGroup.name}</Title>
+      
+        <Title level={2}>Projects</Title>
+        <List
+        grid={{ gutter: 8, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
+        loading={loading}
+        dataSource={data}
+        renderItem={(project: Project) => (
+          <List.Item>
+            <ProjectCard
+              key={project.id}
+              project={project}
+            />
+          </List.Item>
+        )}
+      />
         <Title level={2}> Scores </Title>
         <ProjectTableContainer projects={data} isSponsor />
-      </Space>
+      
     </>
   );
 };

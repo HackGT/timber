@@ -28,7 +28,7 @@ export const routes = [
   new Page("Project Gallery", "/projectgallery", user =>
     [UserRole.GENERAL, UserRole.SPONSOR, UserRole.ADMIN].includes(user.role)
   ),
-  new Page("Sponsor Page", `/category-group`, user => user.categoryGroupId !== undefined),
+  new Page("Sponsor Page", `/category-group`, user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
   new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
