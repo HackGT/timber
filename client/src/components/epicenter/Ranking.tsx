@@ -38,7 +38,8 @@ const columns = [
 const Ranking = () => {
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
     useAxios("/categories");
-  const [{ data: ballotData, loading: ballotLoading, error: ballotError }] = useAxios("/ballots");
+  const [{ data: ballotData, loading: ballotLoading, error: ballotError }, refetch] =
+    useAxios("/ballots");
 
   const [modalState, setModalState] = useState({
     visible: false,
@@ -47,14 +48,15 @@ const Ranking = () => {
 
   // TODO: Update to match ballot info
   const openModal = (values: any) => {
-    const newCategories = values.categories.map((category: any) => category.name);
+    // const newBallot = values.ballot.map((ballot: any) => ballot.name);
     console.log(values);
+
     setModalState({
       visible: true,
-      initialValues: { ...values, categories: newCategories },
+      initialValues: { ...values },
     });
   };
-
+  const Modal = RankingEditFormModal;
   return (
     <div>
       {categoryLoading || ballotLoading ? (
@@ -78,8 +80,11 @@ const Ranking = () => {
                       if (ballot.projectId === project.id) {
                         score += ballot.score;
                         ballotsNumber++;
-                        // editButton = (<Button type="primary">Edit<Button/>);
-                        editButton = score;
+                        editButton = (
+                          <Button type="primary" onClick={() => openModal(ballot)}>
+                            Edit
+                          </Button>
+                        );
                         if (!judges.has(ballot.userId)) {
                           number++;
                           judges.add(ballot.userId);
@@ -91,13 +96,10 @@ const Ranking = () => {
                     project: project.name,
                     average: score / ballotsNumber,
                     numJudged: number,
-                    editScore: (
-                      <Button type="primary" onClick={() => openModal(ballot)}>
-                        Edit
-                      </Button>
-                    ),
+                    editScore: editButton,
                   });
                 })}
+
                 <Table
                   key={category.id}
                   columns={columns}
@@ -111,6 +113,7 @@ const Ranking = () => {
           })}
         </>
       )}
+      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </div>
   );
 };

@@ -9,11 +9,11 @@ import { Ballot } from "../../types/Ballot";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
-  const [{ data: ballotData, loading }] = useAxios("/ballot", { useCache: false });
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
 
   const onSubmit = async () => {
+    // console.log("Submitted");
     const hide = message.loading("Loading...", 0);
     const values = await form.validateFields();
 
