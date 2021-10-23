@@ -21,7 +21,11 @@ projectRoutes.route("/").get(
     const matches = await prisma.project.findMany({
       where: filter,
       include: {
-        categories: true,
+        categories: {
+          select: {
+            categoryGroups: true,
+          },
+        },
         ballots: {
           select: {
             score: true,

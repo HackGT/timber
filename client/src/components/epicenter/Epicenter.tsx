@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { Typography, List, Tabs, Button } from "antd";
 import axios from "axios";
@@ -12,6 +12,7 @@ import JudgeCard from "./JudgeCard";
 import { User } from "../../types/User";
 import Dashboard from "./Dashboard";
 import Ranking from "./Ranking";
+import JudgeAssignmentModal from "./JudgeAssignmentModal";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -22,6 +23,20 @@ const Epicenter: React.FC = () => {
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios("/categorygroups");
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   // adding auto-assign button and function for testing purposes
   const autoAssign = () => {
@@ -65,6 +80,7 @@ const Epicenter: React.FC = () => {
       >
         Auto-assign
       </Button>
+      <Button onClick={showModal}>Manually Assign</Button>
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
@@ -80,6 +96,7 @@ const Epicenter: React.FC = () => {
           />
         </>
       ))}
+      <JudgeAssignmentModal visible={isModalVisible} handleCancel={handleCancel} />
       <Title level={2} style={{ textAlign: "center" }}>
         Dashboard
       </Title>

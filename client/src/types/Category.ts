@@ -1,5 +1,6 @@
 import { Project } from "./Project";
 import { Criteria } from "./Criteria";
+import { CategoryGroup } from "./CategoryGroup";
 
 export type Category = {
   id: number;
@@ -9,4 +10,5 @@ export type Category = {
   hackathonId: number;
   projects: Project[];
   criterias: Criteria[];
+  categoryGroups: CategoryGroup[];
 };
