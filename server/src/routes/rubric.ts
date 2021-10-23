@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { isAdmin } from "../auth/auth";
 
 export const rubricRoutes = express.Router();
 
@@ -22,6 +23,7 @@ rubricRoutes.route("/:id").get(
 
 // route to add a rubric
 rubricRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const createdRubric = await prisma.rubric.create({
       data: req.body.data,
@@ -32,6 +34,7 @@ rubricRoutes.route("/").post(
 
 // route to add multiple rubrics
 rubricRoutes.route("/batch/create").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const createdRubrics = await prisma.rubric.createMany({
       data: req.body.data,
@@ -42,6 +45,7 @@ rubricRoutes.route("/batch/create").post(
 
 // route to edit a rubric
 rubricRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const rubricId: number = parseInt(req.params.id);
 
@@ -58,6 +62,7 @@ rubricRoutes.route("/:id").patch(
 
 // route to delete a rubric
 rubricRoutes.route("/:id").delete(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const rubricId: number = parseInt(req.params.id);
 

@@ -1,5 +1,6 @@
 import express from "express";
 
+import { isAdmin } from "../auth/auth";
 import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -13,6 +14,7 @@ hackathonRoutes.route("/").get(
 );
 
 hackathonRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const created = await prisma.hackathon.create({
       data: req.body,
@@ -22,6 +24,7 @@ hackathonRoutes.route("/").post(
 );
 
 hackathonRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const updated = await prisma.hackathon.update({
       where: { id: parseInt(req.params.id) },

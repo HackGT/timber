@@ -1,0 +1,12 @@
+.main_stage_wrapper {
+  width: 100%;
+  position: relative;
+  padding-bottom: 45.45%;
+}
+.dailyStage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

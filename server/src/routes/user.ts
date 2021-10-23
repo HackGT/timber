@@ -3,6 +3,7 @@ import { User } from "@prisma/client";
 
 import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
+import { isAdmin } from "../auth/auth";
 
 export const userRoutes = express.Router();
 
@@ -62,10 +63,11 @@ userRoutes.route("/").get(
 
 // Update user
 userRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const data: any = {};
     Object.keys(req.body).forEach(key => {
-      if (["name", "role", "categoryGroup", "isJudging"].includes(key)) {
+      if (["name", "role", "categoryGroupId", "isJudging"].includes(key)) {
         data[key] = req.body[key];
       }
     });

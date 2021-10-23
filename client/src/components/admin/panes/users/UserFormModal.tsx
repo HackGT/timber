@@ -1,18 +1,34 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
+import { Select, Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
+import useAxios from "axios-hooks";
 
 import { FORM_RULES } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import { UserRole } from "../../../../types/UserRole";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
+import { CategoryGroup } from "../../../../types/CategoryGroup";
+import ErrorDisplay from "../../../../displays/ErrorDisplay";
+import LoadingDisplay from "../../../../displays/LoadingDisplay";
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const UserFormModal: React.FC<FormModalProps> = props => {
+  const [{ data: categoryGroupsData, loading: categoryGroupsLoading, error: categoryGroupsError }] =
+    useAxios("/categorygroups");
+
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+
+  if (categoryGroupsLoading) {
+    return <LoadingDisplay />;
+  }
+
+  if (categoryGroupsError) {
+    return <ErrorDisplay error={categoryGroupsError} />;
+  }
 
   const onSubmit = async () => {
     try {
@@ -58,6 +74,13 @@ const UserFormModal: React.FC<FormModalProps> = props => {
     },
   ];
 
+  const categoryGroupsOptions = categoryGroupsLoading
+    ? []
+    : categoryGroupsData.map((categoryGroup: any) => ({
+        label: categoryGroup.name,
+        value: categoryGroup.id,
+      }));
+
   return (
     <Modal
       visible={props.modalState.visible}
@@ -76,6 +99,14 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       >
         <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Name">
           <Input placeholder="Johnny" />
+        </Form.Item>
+        <Form.Item name="categoryGroupId" label="Category Group">
+          <Select
+            placeholder="Select a category group"
+            options={categoryGroupsOptions}
+            loading={categoryGroupsLoading}
+            allowClear
+          />
         </Form.Item>
         <Form.Item name="role" rules={[FORM_RULES.requiredRule]} label="User Role">
           <Radio.Group>

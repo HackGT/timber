@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import axios from "axios";
-import { Button, message } from "antd";
+import { Button, Popconfirm, message } from "antd";
 
 import CriteriaCard from "./CriteriaCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
+import DailyWindow from "../video/DailyWindow";
 
 interface Props {
   user: any;
@@ -52,6 +53,18 @@ const JudgingHome: React.FC<Props> = props => {
     }
   };
 
+  const onSkip = async () => {
+    const hide = message.loading("Loading...", 0);
+    try {
+      await axios.patch(`/assignments/${data.assignmentId}`, { data: { status: "SKIPPED" } });
+      hide();
+      window.location.reload();
+    } catch (err: any) {
+      hide();
+      handleAxiosError(err);
+    }
+  };
+
   if (data.length === 0) {
     return <p>You have no projects queued!</p>;
   }
@@ -80,10 +93,16 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
+      <DailyWindow videoID={data.roomUrl}/>
       {criteriaArray.map((criteria: any) => (
         <CriteriaCard {...criteria} changeScore={changeScore} />
       ))}
-      <Button onClick={() => onSubmit()}> Submit </Button>
+      <Popconfirm placement="right" title="Are you sure you want to submit these scores?" onConfirm={onSubmit} okText="Yes" cancelText="No">
+        <Button>Submit</Button>
+      </Popconfirm>
+      <Popconfirm placement="right" title="Are you sure you want to skip this project?" onConfirm={onSkip} okText="Yes" cancelText="No">
+        <Button>Skip</Button>
+      </Popconfirm>
     </>
   );
 };

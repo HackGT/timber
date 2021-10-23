@@ -8,6 +8,7 @@ import { UserRole } from "@prisma/client";
 
 import { app } from "../app";
 import { prisma } from "../common";
+import { StatusCodes } from "http-status-codes";
 
 dotenv.config();
 
@@ -50,6 +51,42 @@ export function isAuthenticated(
       request.session.returnTo = request.originalUrl;
     }
     response.redirect("/auth/login");
+  } else {
+    next();
+  }
+}
+
+export function isAdmin(
+  request: express.Request,
+  response: express.Response,
+  next: express.NextFunction
+) {
+  response.setHeader("Cache-Control", "private");
+
+  if (!request.isAuthenticated() || !request.user) {
+    response.redirect("/auth/login");
+  } else if (!(request.user.role === UserRole.ADMIN)) {
+    response.status(StatusCodes.FORBIDDEN).json({
+      message: "Sorry, you don't have access to this endpoint.",
+    });
+  } else {
+    next();
+  }
+}
+
+export function isAdminOrIsJudging(
+  request: express.Request,
+  response: express.Response,
+  next: express.NextFunction
+) {
+  response.setHeader("Cache-Control", "private");
+
+  if (!request.isAuthenticated() || !request.user) {
+    response.redirect("/auth/login");
+  } else if (!(request.user.role === UserRole.ADMIN || request.user.isJudging)) {
+    response.status(StatusCodes.FORBIDDEN).json({
+      message: "Sorry, you don't have access to this endpoint.",
+    });
   } else {
     next();
   }

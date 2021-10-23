@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { isAdmin } from "../auth/auth";
 
 export const criteriaRoutes = express.Router();
 
@@ -21,6 +22,7 @@ criteriaRoutes.route("/").get(
 );
 
 criteriaRoutes.route("/").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const createdCriteria = await prisma.criteria.create({
       data: req.body,
@@ -30,6 +32,7 @@ criteriaRoutes.route("/").post(
 );
 
 criteriaRoutes.route("/batch/create").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const createdCriterias = await prisma.criteria.createMany({
       data: req.body.data,
@@ -39,6 +42,7 @@ criteriaRoutes.route("/batch/create").post(
 );
 
 criteriaRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const criteriaId: number = parseInt(req.params.id);
 
@@ -54,6 +58,7 @@ criteriaRoutes.route("/:id").patch(
 );
 
 criteriaRoutes.route("/:id").delete(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const criteriaId: number = parseInt(req.params.id);
 

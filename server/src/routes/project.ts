@@ -1,9 +1,12 @@
 import express from "express";
+import axios from "axios";
+import fetch from "node-fetch";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig, getCurrentHackathon } from "../utils/utils";
 import { validateTeam, validateDevpost } from "../utils/validationHelpers";
+import { isAdmin } from "../auth/auth";
 
 export const projectRoutes = express.Router();
 
@@ -90,6 +93,27 @@ projectRoutes.route("/").post(async (req, res) => {
     res.status(400).send(devpostValidation);
     return;
   }
+  let daily;
+  try {
+    const fetchUrl = "https://api.daily.co/v1/rooms";
+    const options = {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
+      },
+    };
+
+    daily = await fetch(fetchUrl, options).then(response => response.json());
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({
+      error: true,
+      message: "Submission could not be saved - There was an error creating a Daily call",
+    });
+    return;
+  }
 
   try {
     await prisma.project.create({
@@ -98,6 +122,7 @@ projectRoutes.route("/").post(async (req, res) => {
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
+        roomUrl: daily.url,
         hackathon: {
           connect: {
             id: currentHackathon.id,
@@ -129,6 +154,7 @@ projectRoutes.route("/").post(async (req, res) => {
 });
 
 projectRoutes.route("/batch/update").post(
+  isAdmin,
   asyncHandler(async (req, res) => {
     const { ids, ...updates } = req.body;
     const batchPayload = await prisma.project.updateMany({
@@ -140,6 +166,7 @@ projectRoutes.route("/batch/update").post(
 );
 
 projectRoutes.route("/:id").patch(
+  isAdmin,
   asyncHandler(async (req, res) => {
     let members: any[] = [];
     let categories: any[] = [];
@@ -281,6 +308,13 @@ projectRoutes.route("/special/category-group/:id").get(
       include: {
         members: true,
         categories: true,
+        ballots: {
+          select: {
+            score: true,
+            user: true,
+            criteria: true,
+          },
+        },
       },
     });
 
