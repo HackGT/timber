@@ -97,7 +97,9 @@ const JudgingHome: React.FC<Props> = props => {
       {criteriaArray.map((criteria: any) => (
         <CriteriaCard {...criteria} changeScore={changeScore} />
       ))}
-      <Button onClick={() => onSubmit()}> Submit </Button>
+      <Popconfirm placement="right" title="Are you sure you want to submit these scores?" onConfirm={onSubmit} okText="Yes" cancelText="No">
+        <Button>Submit</Button>
+      </Popconfirm>
       <Popconfirm placement="right" title="Are you sure you want to skip this project?" onConfirm={onSkip} okText="Yes" cancelText="No">
         <Button>Skip</Button>
       </Popconfirm>
