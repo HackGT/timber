@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { Typography, List, Tabs, Button, Alert, message } from "antd";
+import { Typography, List, Button, Alert, message } from "antd";
 import axios from "axios";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -8,14 +8,11 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Assignment } from "../../types/Assignment";
 import JudgeCard from "./JudgeCard";
 import { User } from "../../types/User";
-import Dashboard from "./Dashboard";
-import Ranking from "./Ranking";
 import { handleAxiosError } from "../../util/util";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 
 const { Title } = Typography;
-const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] =
@@ -110,17 +107,6 @@ const Epicenter: React.FC = () => {
           />
         </>
       ))}
-      <Title level={2} style={{ textAlign: "center" }}>
-        Dashboard
-      </Title>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Overview" key="1">
-          <Dashboard />
-        </TabPane>
-        <TabPane tab="Rankings" key="2">
-          <Ranking />
-        </TabPane>
-      </Tabs>
     </>
   );
 };

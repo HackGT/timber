@@ -4,7 +4,7 @@ import { Ballot, User } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
-import { isAdminOrIsJudging } from "../auth/auth";
+import { isAdmin, isAdminOrIsJudging } from "../auth/auth";
 
 export const ballotsRoutes = express.Router();
 
@@ -158,6 +158,39 @@ ballotsRoutes.route("/").delete(
           deleted: true,
         },
       });
+    });
+
+    res.status(204).end();
+  })
+);
+
+ballotsRoutes.route("/batch/update").post(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    Object.keys(req.body).forEach(async (ballotId: any) => {
+      await prisma.ballot.update({
+        where: {
+          id: parseInt(ballotId),
+        },
+        data: {
+          score: req.body[ballotId],
+        },
+      });
+    });
+
+    res.status(204).end();
+  })
+);
+
+ballotsRoutes.route("/batch/delete").delete(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    await prisma.ballot.deleteMany({
+      where: {
+        id: {
+          in: req.body.ids,
+        },
+      },
     });
 
     res.status(204).end();

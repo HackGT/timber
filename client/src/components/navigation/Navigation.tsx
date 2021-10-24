@@ -22,16 +22,23 @@ export class Page {
 
 export const routes = [
   new Page("Home", "/", user => true),
-  new Page("Create Submission", "/create", user =>
-    (!user.isJudging && [UserRole.GENERAL].includes(user.role)) || [UserRole.ADMIN].includes(user.role)
+  new Page(
+    "Create Submission",
+    "/create",
+    user =>
+      (!user.isJudging && [UserRole.GENERAL].includes(user.role)) ||
+      [UserRole.ADMIN].includes(user.role)
   ),
-  new Page("Project Gallery", "/projectgallery", user =>
-    true
+  new Page("Project Gallery", "/projectgallery", user => true),
+  new Page(
+    "Sponsor Page",
+    `/category-group`,
+    user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined
   ),
-  new Page("Sponsor Page", `/category-group`, user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
   new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
+  new Page("Project Status", "/project-status", user => [UserRole.ADMIN].includes(user.role)),
 ];
 
 interface Props {
@@ -51,10 +58,10 @@ const Navigation: React.FC<Props> = props => {
   // });
 
   const filteredRoutes = routes.filter((page: Page) => {
-    if (page.link === '/category-group') {
-      page.setLink(`/category-group/${props.user.categoryGroupId}`)
+    if (page.link === "/category-group") {
+      page.setLink(`/category-group/${props.user.categoryGroupId}`);
     }
-    return page.isAllowed(props.user)
+    return page.isAllowed(props.user);
   });
 
   return <Header routes={filteredRoutes} />;
