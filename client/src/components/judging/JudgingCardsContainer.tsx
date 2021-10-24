@@ -17,7 +17,15 @@ interface Props {
 const JudgingCardsContainer: React.FC<Props> = props => {
   const [projectScores, setProjectScores] = useState({});
   const [criteriaArray, setCriteriaArray] = useState<any[]>([]);
-  const [categoryToCriteriaMapping, setCategoryToCriteriaMapping] = useState({})
+  const [categoryContainers, setCategoryContainers] = useState([])
+
+  const changeScore = (value: number, id: number) => {
+    const objectValue = {
+      ...projectScores,
+      [id]: value,
+    };
+    setProjectScores(objectValue);
+  };
 
   useEffect(() => {
     if (!props.data || props.data.length === 0) {
@@ -25,16 +33,14 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
 
     const newCriteriaArray: any[] = [];
-    const newCategoryToCriteriaMapping: any = {}
+    const criteriaCards: any = []
 
     props.data.categories.forEach((category: any) => {
+      criteriaCards.push(<CriteriaCardContainer criteriaArray={category.criterias} changeScore={changeScore} categoryName={category.name}/>)
+
       category.criterias.map((criteria: any) => {
+        
         newCriteriaArray.push(criteria)
-        if (newCategoryToCriteriaMapping[category.name]) {
-          newCategoryToCriteriaMapping[category.name].push(criteria)
-        } else {
-          newCategoryToCriteriaMapping[category.name] = [criteria]
-        }
       });
     });
 
@@ -45,8 +51,8 @@ const JudgingCardsContainer: React.FC<Props> = props => {
 
     setCriteriaArray(newCriteriaArray);
     setProjectScores(mapping);
-    setCategoryToCriteriaMapping(newCategoryToCriteriaMapping)
-  }, [props.data, setCriteriaArray, setProjectScores, setCategoryToCriteriaMapping]);
+    setCategoryContainers(criteriaCards)
+  }, [props.data, setCriteriaArray, setProjectScores, setCategoryContainers]);
 
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
@@ -81,28 +87,21 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
   };
 
-  const changeScore = (value: number, id: number) => {
-    const objectValue = {
-      ...projectScores,
-      [id]: value,
-    };
-    setProjectScores(objectValue);
-  };
+  
 
-  const renderCategoryContainers = (cToCMapping: any) => {
-    const categoryContainerArr = []
-    for (const key of Object.keys(cToCMapping)) {
-      categoryContainerArr.push(<CriteriaCardContainer criteriaArray={cToCMapping[key]} changeScore={changeScore} categoryName={key}/>)
-    }
-    return categoryContainerArr;
-  }
+  // const renderCategoryContainers = (cToCMapping: any) => {
+  //   const categoryContainerArr = []
+  //   for (const key of Object.keys(cToCMapping)) {
+  //         }
+  //   return categoryContainerArr;
+  // }
 
   return (
     <>
       {/* {criteriaArray.map((criteria: any) => (
         <CriteriaCard criteria={criteria} changeScore={changeScore} />
       ))} */}
-      {renderCategoryContainers(categoryToCriteriaMapping)}
+      {categoryContainers}
       <div style={{ marginTop: "15px" }}>
         <Popconfirm
           placement="right"
