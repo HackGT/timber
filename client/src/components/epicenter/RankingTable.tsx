@@ -1,13 +1,12 @@
-import { Typography, Table, Button } from "antd/lib";
+import { Typography, Table } from "antd/lib";
 import useAxios from "axios-hooks";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
-import RankingEditFormModal from "./BallotEditFormModal";
 import { ModalState } from "../../util/FormModalProps";
 
 const { Title } = Typography;
@@ -30,7 +29,7 @@ const columns = [
   },
 ];
 
-const Ranking = () => {
+const RankingTable = () => {
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
     useAxios("/categories");
   const [{ data: ballotData, loading: ballotLoading, error: ballotError }, refetch] =
@@ -96,4 +95,4 @@ const Ranking = () => {
   );
 };
 
-export default Ranking;
+export default RankingTable;

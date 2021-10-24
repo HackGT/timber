@@ -10,9 +10,9 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Assignment } from "../../types/Assignment";
 import JudgeCard from "./JudgeCard";
 import { User } from "../../types/User";
-import Dashboard from "./Dashboard";
-import Ranking from "./Ranking";
+import RankingTable from "./RankingTable";
 import { handleAxiosError } from "../../util/util";
+import ProjectTableContainer from "./ProjectTableContainer";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -108,10 +108,14 @@ const Epicenter: React.FC = () => {
       </Title>
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">
-          <Dashboard />
+          <ProjectTableContainer
+            projects={projectData}
+            isSponsor={false}
+            refetch={refetchProjects}
+          />
         </TabPane>
         <TabPane tab="Rankings" key="2">
-          <Ranking />
+          <RankingTable />
         </TabPane>
       </Tabs>
     </>

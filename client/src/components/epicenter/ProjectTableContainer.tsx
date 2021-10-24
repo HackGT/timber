@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Typography, Button, Modal, message } from "antd";
 import useAxios from "axios-hooks";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 import ProjectTable from "./ProjectTable";
 import { Project } from "../../types/Project";
@@ -9,8 +11,6 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import axios from "axios";
 
 const { Title } = Typography;
 
@@ -21,7 +21,6 @@ interface Props {
 }
 
 const ProjectTableContainer: React.FC<Props> = props => {
-  console.log(props);
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -85,7 +84,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
 
   return (
     <div>
-      {props.projects.map((project: Project) => {
+      {props.projects?.map((project: Project) => {
         const generateData = (categoryId: number) => {
           const data: any = [];
           const judgeBallots: any = [];
@@ -167,7 +166,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
           </div>
         );
       })}
-      <BallotModal modalState={modalState} setModalState={setModalState} refetch={refetch} />
+      <BallotModal modalState={modalState} setModalState={setModalState} refetch={props.refetch} />
     </div>
   );
 };

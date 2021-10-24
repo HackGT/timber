@@ -73,12 +73,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                           rules={[FORM_RULES.requiredRule]}
                           label={scores[field.fieldKey].criteria.name}
                         >
-                          <InputNumber
-                            style={{ width: "100%" }}
-                            precision={0}
-                            min={scores[field.fieldKey].criteria.minScore}
-                            max={scores[field.fieldKey].criteria.maxScore}
-                          />
+                          <InputNumber style={{ width: "100%" }} precision={0} />
                         </Form.Item>
                       </Col>
                     </Row>
