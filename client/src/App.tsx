@@ -42,7 +42,7 @@ function App() {
           <Navigation user={data} />
           <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
             <Switch>
-              <Route exact path="/" component={Dashboard} />
+              <Route exact path="/" render={() => <Dashboard user={data} />} />
               <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
               <SponsorRoute exact path="/category-group/:categoryGroupId" component={CategoryGroup} user={data}/>
               <Route exact path="/projectgallery" render={() => <ProjectGallery user={data} />} />
