@@ -3,6 +3,7 @@ import express from "express";
 import { isAdmin } from "../auth/auth";
 import { prisma } from "../common";
 import { asyncHandler } from "../utils/asyncHandler";
+import { getConfig } from "../utils/utils";
 
 export const configRoutes = express.Router();
 
@@ -30,9 +31,11 @@ configRoutes.route("/").get(
 configRoutes.route("/").post(
   isAdmin,
   asyncHandler(async (req, res) => {
+    const config = await getConfig();
+
     const updated = await prisma.config.update({
       where: {
-        id: 1,
+        id: config.id,
       },
       data: req.body,
     });

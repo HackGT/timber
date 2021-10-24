@@ -1,15 +1,11 @@
-import axios from "axios";
 import rp from "request-promise";
 import cheerio from "cheerio";
 import { User, UserRole } from "@prisma/client";
 import { URL } from "url";
 
 import { prisma, prizeConfig } from "../common";
-import { getCurrentHackathon } from "./utils";
-
-const REGISTRATION_GRAPHQL_URL =
-  process.env.REGISTRATION_GRAPHQL_URL || "https://registration.hack.gt/graphql";
-const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt2020.devpost.com/";
+import { getConfig, getCurrentHackathon } from "./utils";
+import { queryRegistration } from "../registration";
 
 /*
     - Classify team into prize based on user tracks (from registration)
@@ -43,6 +39,53 @@ export const getEligiblePrizes = async (users: any[]) => {
 
       return prizeConfig.hackathons["HackGT 7"].sponsorPrizes;
     }
+    case "HackGT 8": {
+      let numEmerging = 0;
+
+      for (const user of users) {
+        if (!user || !user.confirmationBranch) {
+          return {
+            error: true,
+            message: `User: ${user.email} does not have a confirmation branch`,
+          };
+        }
+
+        if (
+          user.confirmationBranch === "Emerging In-Person Participant Confirmation" ||
+          user.confirmationBranch === "Emerging Virtual Participant Confirmation"
+        ) {
+          numEmerging += 1;
+        }
+      }
+
+      // A team must be greater than 50% emerging to be eligible for emerging prizes
+      if (numEmerging / users.length > 0.5) {
+        const emergingPrizes = prizeConfig.hackathons["HackGT 8"].emergingPrizes
+          .concat(prizeConfig.hackathons["HackGT 8"].sponsorPrizes)
+          .concat(prizeConfig.hackathons["HackGT 8"].generalPrizes)
+          .concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+        const emergingDBPrizes = await prisma.category.findMany({
+          where: {
+            name: {
+              in: emergingPrizes,
+            },
+          },
+        });
+        return emergingDBPrizes;
+      }
+      const generalPrizes = prizeConfig.hackathons["HackGT 8"].sponsorPrizes
+        .concat(prizeConfig.hackathons["HackGT 8"].generalPrizes)
+        .concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+      const generalDBPrizes = await prisma.category.findMany({
+        where: {
+          name: {
+            in: generalPrizes,
+          },
+        },
+      });
+      return generalDBPrizes;
+    }
+
     default: {
       return [];
     }
@@ -75,29 +118,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
     memberEmails.map(async email => {
       let res: any;
       try {
-        res = await axios({
-          method: "POST",
-          url: REGISTRATION_GRAPHQL_URL,
-          headers: {
-            "Authorization": `Bearer ${process.env.REGISTRATION_GRAPHQL_AUTH}`,
-            "Content-Type": "application/json",
-          },
-          data: JSON.stringify({
-            query: `
-            query($search: String!) {
-              search_user(search: $search, offset: 0, n: 1) {
-                users {
-                  name
-                  email
-                  confirmationBranch
-                  confirmed
-                }
-              }
-            }
-          `,
-            variables: { search: email },
-          }),
-        });
+        res = await queryRegistration(email);
       } catch (error) {
         console.error(error);
         registrationError = {
@@ -165,10 +186,46 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
 };
 
 /*
+  - Validate prizes to ensure the correct selection is made
+*/
+export const validatePrizes = async (prizes: any[]) => {
+  const currentHackathon = await getCurrentHackathon();
+  switch (currentHackathon.name) {
+    case "HackGT 8": {
+      const prizeObjects = await prisma.category.findMany({
+        where: {
+          id: {
+            in: prizes,
+          },
+        },
+      });
+      for (let i = 0; i < prizeObjects.length; i++) {
+        if (prizeObjects[i].name === "HackGT - Best Open Source Hack" && prizeObjects.length > 1) {
+          return {
+            error: true,
+            message: "If you are submitting to open source you can only submit to that prize",
+          };
+        }
+      }
+      return { error: false };
+    }
+    default: {
+      return { error: false };
+    }
+  }
+};
+
+/*
     - Ensure url is the right devpost url
     - Ensure project isn't submitted to multiple hackathons
 */
 export const validateDevpost = async (devpostUrl: string, submissionName: string) => {
+  const config = await getConfig();
+
+  if (!config.isDevpostCheckingOn) {
+    return { error: false };
+  }
+
   if (!devpostUrl) {
     return { error: true, message: "No url specified" };
   }
@@ -195,7 +252,7 @@ export const validateDevpost = async (devpostUrl: string, submissionName: string
       const item = $(elem).find("div a").attr("href");
       if (item) {
         devpostUrls.push(item);
-        if (item === HACKGT_DEVPOST) {
+        if (item.includes(String(process.env.HACKGT_DEVPOST))) {
           submitted = true;
         }
       }

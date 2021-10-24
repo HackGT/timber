@@ -52,6 +52,8 @@ categoryGroupRoutes.route("/").post(
     const createdCategoryGroup = await prisma.categoryGroup.create({
       data: {
         ...req.body,
+        categories: req.body.categories?.map((id: number) => ({ id })) ?? undefined,
+        users: req.body.users?.map((id: number) => ({ id })) ?? undefined,
         hackathonId: currentHackathon.id,
       },
     });
@@ -71,10 +73,10 @@ categoryGroupRoutes.route("/:id").patch(
       data: {
         ...req.body,
         categories: {
-          set: req.body.categories.map((id: number) => ({ id })),
+          set: req.body.categories?.map((id: number) => ({ id })) ?? undefined,
         },
         users: {
-          set: req.body.users.map((id: number) => ({ id })),
+          set: req.body.users?.map((id: number) => ({ id })) ?? undefined,
         },
       },
     });

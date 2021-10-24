@@ -76,10 +76,22 @@ const AdminHome: React.FC = () => {
           modal={CategoryFormModal}
           searchFilterField="name"
           renderItem={(item, index, openModal) => (
-            <CategoryCard category={item} openModal={openModal} />
+            <List.Item style={{ backgroundColor: "white" }}>
+              <List.Item.Meta
+                title={item.name}
+                description={item.criterias
+                  .map(
+                    (criteria: any) =>
+                      `${criteria.name} [${criteria.minScore}-${criteria.maxScore}]`
+                  )
+                  .join(", ")}
+                avatar={<ContainerOutlined />}
+              />
+              <Button onClick={() => openModal(item)}>Edit</Button>
+            </List.Item>
           )}
           key="categories"
-          listGrid={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 3 }}
+          listBordered
         />
       );
       break;

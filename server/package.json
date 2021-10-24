@@ -59,6 +59,7 @@
     "del": "^6.0.0",
     "eslint": "^7.22.0",
     "gulp": "^4.0.2",
+    "gulp-copy": "^4.0.1",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "nodemon": "^2.0.7",

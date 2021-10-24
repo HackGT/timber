@@ -10,11 +10,10 @@ module.exports = {
             modifyVars: {
               "@primary-color": "#7B69EC",
               "@heading-color": "#212121",
-              "@text-color": "#858585",
+              "@text-color": "#343434",
               "@text-color-secondary": "#212121",
               "@border-radius-base": "2px",
               "@border-color-base": "#e6e6e6",
-              "@box-shadow-base": "0 8px 24px 0 rgb(33, 36, 41, 10%)",
             },
             javascriptEnabled: true,
           },

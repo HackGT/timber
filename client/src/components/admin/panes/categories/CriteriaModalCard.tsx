@@ -52,6 +52,7 @@ const CriteriaModalCard: React.FC<Props> = props => (
         <Form.Item
           name={[props.field.name, "description"]}
           fieldKey={[props.field.fieldKey, "description"]}
+          rules={[FORM_RULES.requiredRule]}
           label="Description"
         >
           <TextArea rows={3} />

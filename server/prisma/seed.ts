@@ -9,7 +9,7 @@ async function main() {
     },
     update: {},
     create: {
-      name: "Temporary Hackathon",
+      name: "HackGT 8",
     },
   });
 

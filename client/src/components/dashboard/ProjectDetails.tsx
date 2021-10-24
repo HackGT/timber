@@ -72,7 +72,7 @@ const ProjectDetails: React.FC = props => {
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       {/* {createMessage()} */}
-      <DailyWindow videoID={data.roomUrl}/>
+      <DailyWindow videoUrl={data.roomUrl} />
       <Title level={2} style={{ margin: "30px 0" }}>
         {data.hackathon.name} Submission Details
       </Title>

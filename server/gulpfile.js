@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const gulp = require("gulp");
+const gulpCopy = require("gulp-copy");
 const ts = require("gulp-typescript");
 const sourcemaps = require("gulp-sourcemaps");
 const del = require("del");
@@ -19,5 +20,10 @@ gulp.task("build", () =>
     .pipe(gulp.dest("dist"))
 );
 
+// Copy files
+gulp.task("copy", () =>
+  gulp.src(["./src/config/*", "./src/public/*"]).pipe(gulpCopy("dist", { prefix: 1 }))
+);
+
 // Default task
-gulp.task("default", gulp.series("clean", "build"));
+gulp.task("default", gulp.series("clean", "build", "copy"));

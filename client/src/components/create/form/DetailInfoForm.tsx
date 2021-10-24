@@ -1,10 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { Alert, Button, Col, Form, message, Row, Select, Typography } from "antd";
+import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
 
-import { FORM_LAYOUT, handleAxiosError } from "../../../util/util";
+import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 interface Props {
   data: any;
@@ -13,12 +14,12 @@ interface Props {
   prevStep: () => void;
 }
 
-const PrizeInfoForm: React.FC<Props> = props => {
+const DetailInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/projects/special/prize-validation", values)
+      .post("/projects/special/detail-validation", values)
       .then(res => {
         hide();
         props.updateData(values);
@@ -34,11 +35,6 @@ const PrizeInfoForm: React.FC<Props> = props => {
     message.error("Please complete the required fields.", 2);
   };
 
-  const prizeOptions = props.data.eligiblePrizes.map((prize: any) => ({
-    label: prize.name,
-    value: prize.id,
-  }));
-
   const formInitialValue = props.data;
 
   return (
@@ -53,32 +49,37 @@ const PrizeInfoForm: React.FC<Props> = props => {
           </strong>
         }
       />
-      <Title level={2}>Prize Info</Title>
-      <Text>
-        Please select the prizes you would like to be considered for. Note, every team is
-        automatically considered for the Best Overall prize. Based on your team members, these are
-        the prizes you are eligible to choose from. If you believe something is wrong, please ask a
-        question at help desk.
-      </Text>
+      <Title level={2}>Detail Info</Title>
+      <Text>Please include more information about your project below!</Text>
       <Form
-        name="prize"
+        name="detail"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         layout="vertical"
         autoComplete="off"
-        style={{ marginTop: "10px" }}
         initialValues={formInitialValue}
+        style={{ marginTop: "10px" }}
       >
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
-            <Form.Item name="prizes" label="Prizes" initialValue={[]}>
-              <Select
-                placeholder="Select prizes"
-                mode="multiple"
-                options={prizeOptions}
-                showSearch
-                optionFilterProp="label"
-              />
+            <Form.Item
+              name="description"
+              rules={[FORM_RULES.requiredRule]}
+              label="Description (tell us about your project!)"
+            >
+              <TextArea rows={4} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item
+              name="githubUrl"
+              rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
+              label="GitHub Url"
+            >
+              <Input placeholder="https://github.com/HackGT/timber" />
             </Form.Item>
           </Col>
         </Row>
@@ -100,4 +101,4 @@ const PrizeInfoForm: React.FC<Props> = props => {
   );
 };
 
-export default PrizeInfoForm;
+export default DetailInfoForm;

@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { Typography, List, Tabs, Button, Alert, message } from "antd";
 import axios from "axios";
 
-import JudgingBox from "./JudgingBox";
-import { Project } from "../../types/Project";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Assignment } from "../../types/Assignment";
@@ -13,18 +11,29 @@ import { User } from "../../types/User";
 import RankingTable from "./RankingTable";
 import { handleAxiosError } from "../../util/util";
 import ProjectTableContainer from "./ProjectTableContainer";
+import JudgeAssignmentModal from "./JudgeAssignmentModal";
+import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectData, error: projectsError }, refetchProjects] =
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
     useAxios("/projects");
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] =
     useAxios("/user");
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios("/categorygroups");
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
+  const [judgingModalOpen, setJudgingModalOpen] = useState(false);
+
+  const handleJudgingModalOpen = () => {
+    setJudgingModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setJudgingModalOpen(false);
+  };
 
   // adding auto-assign button and function for testing purposes
   const autoAssign = async () => {
@@ -50,12 +59,8 @@ const Epicenter: React.FC = () => {
   }
 
   if (projectsError || userError || categoryGroupsError || configError) {
-    return <ErrorDisplay error={projectsError} />;
+    return <ErrorDisplay error={userError} />;
   }
-
-  const projects = projectData.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} refetch={refetchProjects} />
-  ));
 
   const judges = userData
     .filter((user: User) => user.isJudging)
@@ -79,21 +84,25 @@ const Epicenter: React.FC = () => {
         />
       )}
       <Title level={2}>Epicenter</Title>
-      <div id="judging">{projects}</div>
+      <EpicenterProjectBoxes />
       <Button
         type="primary"
         htmlType="submit"
         onClick={autoAssign}
-        style={{ marginBottom: "15px", marginTop: "10px" }}
+        style={{ margin: "10px 10px 15px 0" }}
       >
         Auto-assign
       </Button>
+      <Button onClick={handleJudgingModalOpen} style={{ margin: "10px 0 15px 0" }}>
+        Manual Assign
+      </Button>
+      <JudgeAssignmentModal visible={judgingModalOpen} handleCancel={handleCancel} />
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
           <List
             grid={{ gutter: 16, column: 4 }}
-            loading={projectsLoading}
+            loading={categoryGroupsLoading}
             dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
             renderItem={(user: User) => (
               <List.Item>
@@ -109,7 +118,7 @@ const Epicenter: React.FC = () => {
       <Tabs defaultActiveKey="1">
         <TabPane tab="Overview" key="1">
           <ProjectTableContainer
-            projects={projectData}
+            projects={projectsData}
             isSponsor={false}
             refetch={refetchProjects}
           />

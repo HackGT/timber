@@ -87,8 +87,8 @@ const JudgingBox: React.FC<Props> = props => {
           return <Text>{`${category[0]}: ${scoreString}`}</Text>;
         })}
       </>
-      <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
-        Join Meeting Room
+      <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
+        Join Video Call
       </a>
       <Text strong>Change Round</Text>
       <div>

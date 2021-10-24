@@ -111,7 +111,7 @@ assignmentRoutes.route("/current-project").get(
 
     // auto assign returns null if there are no projects to assign to the judge
     if (assignment === null) {
-      res.status(200).json([]);
+      res.status(200).json();
       return;
     }
 
@@ -157,10 +157,6 @@ assignmentRoutes.route("/").post(
     const projectId: number = parseInt(req.body.project.id);
     const duplicateFilter: any = {};
     const multipleProjectFilter: any = {};
-    if (!user.isJudging) {
-      res.status(500).json({ error: true, message: "User is not a judge" });
-      return;
-    }
 
     duplicateFilter.projectId = projectId;
     duplicateFilter.userId = user.id;
@@ -174,8 +170,10 @@ assignmentRoutes.route("/").post(
       },
     });
 
+    console.log(checkAssignment);
+
     if (checkAssignment.length !== 0) {
-      res.status(500).json({
+      res.status(400).json({
         error: true,
         message: "Judge already has a project started or project assignment is a duplicate",
       });

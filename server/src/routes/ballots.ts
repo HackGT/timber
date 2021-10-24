@@ -1,9 +1,9 @@
 import express from "express";
+import { StatusCodes } from "http-status-codes";
+import { Ballot, User } from "@prisma/client";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
-
-import { Ballot, User } from ".prisma/client";
 import { isAdmin, isAdminOrIsJudging } from "../auth/auth";
 
 export const ballotsRoutes = express.Router();
@@ -107,11 +107,17 @@ ballotsRoutes.route("/:id").patch(
     );
 
     if (filteredBallots.length > 1) {
-      throw new Error("You can only judge one project for each category");
+      res.status(StatusCodes.BAD_REQUEST).send({
+        error: true,
+        message: "You can only judge one project for each category",
+      });
     }
 
     if (ballot?.userId !== userId) {
-      throw new Error("You're not authorized to change the score on this ballot.");
+      res.status(StatusCodes.FORBIDDEN).send({
+        error: true,
+        message: "You're not authorized to change the score on this ballot.",
+      });
     }
 
     const criteria = await prisma.criteria.findFirst({
@@ -121,7 +127,10 @@ ballotsRoutes.route("/:id").patch(
     });
 
     if (score < criteria!.minScore || score > criteria!.maxScore) {
-      throw new Error("Score is out of range for the criteria");
+      res.status(StatusCodes.BAD_REQUEST).send({
+        error: true,
+        message: "Score is out of range for the criteria",
+      });
     }
 
     const updatedBallot = await prisma.ballot.update({

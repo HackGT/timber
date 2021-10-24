@@ -1,57 +1,54 @@
 import { Typography, Table } from "antd/lib";
 import useAxios from "axios-hooks";
-import React, { useState } from "react";
+import React from "react";
+import { SortOrder } from "antd/lib/table/interface";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
-import { ModalState } from "../../util/FormModalProps";
 
 const { Title } = Typography;
 
 const columns = [
   {
-    title: "Project",
-    dataIndex: "project",
-    key: "project",
+    title: "Project Name",
+    dataIndex: "name",
+    key: "name",
+    defaultSortOrder: "ascend" as SortOrder,
+    sorter: (a: any, b: any) => a.average - b.average,
   },
   {
     title: "Average Score",
     dataIndex: "average",
     key: "average",
+    sorter: (a: any, b: any) => a.average - b.average,
   },
   {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
+    sorter: (a: any, b: any) => a.numJudged - b.numJudged,
   },
 ];
 
 const RankingTable = () => {
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
     useAxios("/categories");
-  const [{ data: ballotData, loading: ballotLoading, error: ballotError }, refetch] =
-    useAxios("/ballots");
 
-  const [modalState, setModalState] = useState({
-    visible: false,
-    initialValues: null,
-  } as ModalState);
   return (
     <div>
-      {categoryLoading || ballotLoading ? (
+      {categoryLoading ? (
         <LoadingDisplay />
       ) : (
         <>
           {categoryData.map((category: Category) => {
-            const categoryId = category.id;
             const data: any = [];
             return (
               <>
                 <Title level={4}>{category.name}</Title>
-                {category.projects.map((project: Project) => {
+                {category.projects.forEach((project: Project) => {
                   let score = 0;
                   let number = 0;
                   let ballotsNumber = 0;
@@ -70,8 +67,9 @@ const RankingTable = () => {
                       }
                     });
                   });
+
                   data.push({
-                    project: project.name,
+                    name: project.name,
                     average: score / ballotsNumber,
                     numJudged: number,
                     editScore: editButton,

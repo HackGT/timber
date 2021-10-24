@@ -1,14 +1,10 @@
-import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import axios from "axios";
-import { Button, Popconfirm, message } from "antd";
+import React from "react";
 
-import CriteriaCard from "./CriteriaCard";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { Criteria } from "../../types/Criteria";
-import { handleAxiosError } from "../../util/util";
 import DailyWindow from "../video/DailyWindow";
+import JudgingCardsContainer from "./JudgingCardsContainer";
 
 interface Props {
   user: any;
@@ -16,7 +12,6 @@ interface Props {
 
 const JudgingHome: React.FC<Props> = props => {
   const [{ data, loading, error }] = useAxios("/assignments/current-project");
-  const [projectScores, setProjectScores] = useState({});
 
   if (!props.user.categoryGroupId) {
     return (
@@ -34,75 +29,14 @@ const JudgingHome: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  const onSubmit = async () => {
-    const hide = message.loading("Loading...", 0);
-    const ballots: any = {
-      criterium: projectScores,
-      round: data.round,
-      projectId: data.id,
-    };
-
-    try {
-      await axios.post("/ballots", ballots);
-      await axios.patch(`/assignments/${data.assignmentId}`, { data: { status: "COMPLETED" } });
-      hide();
-      window.location.reload();
-    } catch (err: any) {
-      hide();
-      handleAxiosError(err);
-    }
-  };
-
-  const onSkip = async () => {
-    const hide = message.loading("Loading...", 0);
-    try {
-      await axios.patch(`/assignments/${data.assignmentId}`, { data: { status: "SKIPPED" } });
-      hide();
-      window.location.reload();
-    } catch (err: any) {
-      hide();
-      handleAxiosError(err);
-    }
-  };
-
   if (data.length === 0) {
     return <p>You have no projects queued!</p>;
   }
 
-  const criteriaArray: any = [];
-
-  data.categories.forEach((category: any) => {
-    category.criterias.map((criteria: any) => criteriaArray.push(criteria));
-  });
-
-  if (criteriaArray.length !== Object.keys(projectScores).length) {
-    const mapping: any = {};
-    criteriaArray.forEach((criteria: Criteria) => {
-      mapping[criteria.id] = criteria.minScore;
-    });
-    setProjectScores(mapping);
-  }
-
-  const changeScore = (value: number, id: number) => {
-    const objectValue = {
-      ...projectScores,
-      [id]: value,
-    };
-    setProjectScores(objectValue);
-  };
-
   return (
     <>
-      <DailyWindow videoID={data.roomUrl}/>
-      {criteriaArray.map((criteria: any) => (
-        <CriteriaCard {...criteria} changeScore={changeScore} />
-      ))}
-      <Popconfirm placement="right" title="Are you sure you want to submit these scores?" onConfirm={onSubmit} okText="Yes" cancelText="No">
-        <Button>Submit</Button>
-      </Popconfirm>
-      <Popconfirm placement="right" title="Are you sure you want to skip this project?" onConfirm={onSkip} okText="Yes" cancelText="No">
-        <Button>Skip</Button>
-      </Popconfirm>
+      <DailyWindow videoUrl={data.roomUrl} />
+      <JudgingCardsContainer data={data} />
     </>
   );
 };

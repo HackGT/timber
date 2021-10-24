@@ -29,7 +29,7 @@ export const FORM_LAYOUT = {
 
 export const handleAxiosError = (error: Error | AxiosError) => {
   if (axios.isAxiosError(error)) {
-    if (error.response?.data.error) {
+    if (error.response?.data.error || error.response?.data.message) {
       message.error(error.response?.data.message, 2);
     } else {
       console.error(error.response);

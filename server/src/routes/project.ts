@@ -1,11 +1,10 @@
 import express from "express";
 import axios from "axios";
-import fetch from "node-fetch";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig, getCurrentHackathon } from "../utils/utils";
-import { validateTeam, validateDevpost } from "../utils/validationHelpers";
+import { validateTeam, validateDevpost, validatePrizes } from "../utils/validationHelpers";
 import { isAdmin } from "../auth/auth";
 
 export const projectRoutes = express.Router();
@@ -24,7 +23,11 @@ projectRoutes.route("/").get(
     const matches = await prisma.project.findMany({
       where: filter,
       include: {
-        categories: true,
+        categories: {
+          include: {
+            categoryGroups: true,
+          },
+        },
         ballots: {
           select: {
             id: true,
@@ -53,7 +56,17 @@ projectRoutes.route("/special/team-validation").post(async (req, res) => {
 });
 
 // TODO: Fill in prize validation as needed
-projectRoutes.route("/special/prize-validation").post((req, res) => {
+projectRoutes.route("/special/prize-validation").post(async (req, res) => {
+  const resp = await validatePrizes(req.body.prizes);
+  if (resp.error) {
+    res.status(400).json(resp);
+  } else {
+    res.status(200).json(resp);
+  }
+});
+
+// TODO: Fill in detail validation as needed
+projectRoutes.route("/special/detail-validation").post(async (req, res) => {
   res.status(200).send({ error: false });
 });
 
@@ -94,19 +107,22 @@ projectRoutes.route("/").post(async (req, res) => {
     res.status(400).send(devpostValidation);
     return;
   }
-  let daily;
-  try {
-    const fetchUrl = "https://api.daily.co/v1/rooms";
-    const options = {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
-      },
-    };
 
-    daily = await fetch(fetchUrl, options).then(response => response.json());
+  let dailyUrl;
+  try {
+    const response = await axios.post(
+      "https://api.daily.co/v1/rooms",
+      {},
+      {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
+        },
+      }
+    );
+
+    dailyUrl = response.data.url || "";
   } catch (err) {
     console.error(err);
     res.status(400).send({
@@ -114,6 +130,64 @@ projectRoutes.route("/").post(async (req, res) => {
       message: "Submission could not be saved - There was an error creating a Daily call",
     });
     return;
+  }
+  console.log(data);
+  try {
+    const logInteractions = (teamValidation.registrationUsers || []).map(
+      (registrationMember: any) =>
+        new Promise<null>((resolve, reject) => {
+          if (registrationMember.id) {
+            try {
+              axios.post(
+                String(process.env.CHECK_IN_URL),
+                {
+                  uuid: registrationMember.id,
+                  eventID: "616f450fd020f00022987288",
+                  eventType: "submission-expo",
+                  interactionType: "inperson",
+                },
+                {
+                  headers: {
+                    "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              resolve(null);
+            } catch (err) {
+              console.error(err);
+              reject(err);
+            }
+          }
+        })
+    );
+
+    await Promise.all(logInteractions);
+  } catch (error: any) {
+    console.error(error);
+  }
+
+  const bestOverall: any = await prisma.category.findFirst({
+    where: {
+      name: { in: ["HackGT - Best Overall"] },
+    },
+  });
+
+  const openSource: any = await prisma.category.findFirst({
+    where: {
+      name: { in: ["HackGT - Best Open Source Hack"] },
+    },
+  });
+
+  if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
+    res.status(400).send({
+      error: true,
+      message: "If you submit to open source you can only submit to that category",
+    });
+  } else if (!data.prizes.includes(openSource.id)) {
+    data.prizes.push(bestOverall.id);
   }
 
   try {
@@ -123,7 +197,8 @@ projectRoutes.route("/").post(async (req, res) => {
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        roomUrl: daily.url,
+        expo: Math.floor(Math.random() * 2 + 1),
+        roomUrl: dailyUrl,
         hackathon: {
           connect: {
             id: currentHackathon.id,
@@ -139,6 +214,9 @@ projectRoutes.route("/").post(async (req, res) => {
               email: user.email,
             },
           })),
+        },
+        categories: {
+          connect: data.prizes.map((prizeId: any) => ({ id: prizeId })),
         },
       },
     });
