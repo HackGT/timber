@@ -64,6 +64,11 @@ projectRoutes.route("/special/prize-validation").post(async (req, res) => {
   }
 });
 
+// TODO: Fill in detail validation as needed
+projectRoutes.route("/special/detail-validation").post(async (req, res) => {
+  res.status(200).send({ error: false });
+});
+
 projectRoutes.route("/special/devpost-validation").post(async (req, res) => {
   const resp = await validateDevpost(req.body.devpostUrl, req.body.name);
   if (resp.error) {
@@ -125,7 +130,7 @@ projectRoutes.route("/").post(async (req, res) => {
     });
     return;
   }
-  console.log(data)
+  console.log(data);
   try {
     const logInteractions = (teamValidation.registrationUsers || []).map(
       (registrationMember: any) =>
@@ -188,9 +193,8 @@ projectRoutes.route("/").post(async (req, res) => {
           })),
         },
         categories: {
-          connect: data.prizes.map((prizeId: any) => ({id: prizeId})
-          ),
-        }
+          connect: data.prizes.map((prizeId: any) => ({ id: prizeId })),
+        },
       },
     });
   } catch (err) {

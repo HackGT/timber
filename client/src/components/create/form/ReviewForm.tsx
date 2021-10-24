@@ -5,6 +5,7 @@ import { Form, Row, Col, message, Input, Button, Typography, Select, Alert } fro
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
 const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 interface Props {
   data: any;
@@ -95,7 +96,13 @@ const ReviewForm: React.FC<Props> = props => {
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
             <Form.Item name="prizes" label="Prizes">
-              <Select disabled mode="multiple" showSearch options={prizeOptions} optionFilterProp="label" />
+              <Select
+                disabled
+                mode="multiple"
+                showSearch
+                options={prizeOptions}
+                optionFilterProp="label"
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -116,6 +123,26 @@ const ReviewForm: React.FC<Props> = props => {
           <Col {...FORM_LAYOUT.full}>
             <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
               <Input disabled />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item
+              name="description"
+              rules={[FORM_RULES.requiredRule]}
+              label="Description (tell us about your project!)"
+            >
+              <TextArea rows={4} disabled />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item name="githubUrl" rules={[FORM_RULES.urlRule]} label="GitHub Url">
+              <Input placeholder="https://github.com/HackGT/timber" disabled />
             </Form.Item>
           </Col>
         </Row>

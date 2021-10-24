@@ -10,6 +10,7 @@ import ResultForm from "./form/ResultForm";
 import ReviewForm from "./form/ReviewForm";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import DetailInfoForm from "./form/DetailInfoForm";
 
 const { Title } = Typography;
 const { Step } = Steps;
@@ -33,13 +34,13 @@ const SubmissionFormContainer: React.FC<Props> = props => {
   }
 
   const nextStep = () => {
-    if ([0, 1, 2, 3].includes(current)) {
+    if ([0, 1, 2, 3, 4].includes(current)) {
       setCurrent(current + 1);
     }
   };
 
   const prevStep = () => {
-    if ([1, 2, 3].includes(current)) {
+    if ([1, 2, 3, 4].includes(current)) {
       setCurrent(current - 1);
     }
   };
@@ -83,7 +84,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
         );
       case 3:
         return (
-          <ReviewForm
+          <DetailInfoForm
             updateData={updateData}
             data={formData}
             nextStep={nextStep}
@@ -91,6 +92,15 @@ const SubmissionFormContainer: React.FC<Props> = props => {
           />
         );
       case 4:
+        return (
+          <ReviewForm
+            updateData={updateData}
+            data={formData}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        );
+      case 5:
         return <ResultForm />;
     }
 
@@ -115,7 +125,8 @@ const SubmissionFormContainer: React.FC<Props> = props => {
             <Step key={0} title="Team Info" />
             <Step key={1} title="Prize Info" />
             <Step key={2} title="Devpost Info" />
-            <Step key={3} title="Review" />
+            <Step key={3} title="Detail Info" />
+            <Step key={4} title="Review" />
           </Steps>
         </div>
       ) : (
