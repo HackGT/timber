@@ -7,7 +7,7 @@ import { prisma, prizeConfig } from "../common";
 import { getConfig, getCurrentHackathon } from "./utils";
 import { queryRegistration } from "../registration";
 
-const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt2020.devpost.com/";
+const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt8.devpost.com/";
 
 /*
     - Classify team into prize based on user tracks (from registration)
@@ -52,41 +52,45 @@ export const getEligiblePrizes = async (users: any[]) => {
           };
         }
 
-        if (user.confirmationBranch === "Emerging In-Person Participant Confirmation" || user.confirmationBranch === "Emerging Virtual Participant Confirmation") {
+        if (
+          user.confirmationBranch === "Emerging In-Person Participant Confirmation" ||
+          user.confirmationBranch === "Emerging Virtual Participant Confirmation"
+        ) {
           numEmerging += 1;
         }
       }
 
       // A team must be greater than 50% emerging to be eligible for emerging prizes
       if (numEmerging / users.length > 0.5) {
-        const emergingPrizes = prizeConfig.hackathons["HackGT 8"].emergingPrizes.concat(
-          prizeConfig.hackathons["HackGT 8"].sponsorPrizes
-        ).concat(prizeConfig.hackathons["HackGT 8"].generalPrizes).concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+        const emergingPrizes = prizeConfig.hackathons["HackGT 8"].emergingPrizes
+          .concat(prizeConfig.hackathons["HackGT 8"].sponsorPrizes)
+          .concat(prizeConfig.hackathons["HackGT 8"].generalPrizes)
+          .concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
         const emergingDBPrizes = await prisma.category.findMany({
-          where: { 
+          where: {
             name: {
-              in: emergingPrizes
-            }
-          }
-        })
-        return emergingDBPrizes
+              in: emergingPrizes,
+            },
+          },
+        });
+        return emergingDBPrizes;
       }
-      const generalPrizes = prizeConfig.hackathons["HackGT 8"].sponsorPrizes.concat(prizeConfig.hackathons["HackGT 8"].generalPrizes).concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+      const generalPrizes = prizeConfig.hackathons["HackGT 8"].sponsorPrizes
+        .concat(prizeConfig.hackathons["HackGT 8"].generalPrizes)
+        .concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
       const generalDBPrizes = await prisma.category.findMany({
-        where: { 
+        where: {
           name: {
-            in: generalPrizes
-          }
-        }
-      })
-      return generalDBPrizes
+            in: generalPrizes,
+          },
+        },
+      });
+      return generalDBPrizes;
     }
 
     default: {
       return [];
     }
-
-    
   }
 };
 
@@ -193,13 +197,16 @@ export const validatePrizes = async (prizes: any[]) => {
       const prizeObjects = await prisma.category.findMany({
         where: {
           id: {
-            in: prizes
-          }
-        }
-      })
+            in: prizes,
+          },
+        },
+      });
       for (let i = 0; i < prizeObjects.length; i++) {
         if (prizeObjects[i].name === "HackGT - Best Open Source Hack" && prizeObjects.length > 1) {
-          return {error: true, message: "If you are submitting to open source you can only submit to that prize"}
+          return {
+            error: true,
+            message: "If you are submitting to open source you can only submit to that prize",
+          };
         }
       }
       return { error: false };

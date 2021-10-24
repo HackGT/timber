@@ -18,6 +18,7 @@ secrets:
 env:
   GROUND_TRUTH_URL: https://login.hack.gt
   REGISTRATION_GRAPHQL_URL: https://registration.hack.gt/graphql
+  DEVPOST_URL: https://hackgt8.devpost.com
   CHECK_IN_URL: https://log.2021.hack.gt/log/interaction
   DEBUG: false
   PRODUCTION: true
