@@ -41,9 +41,52 @@ export const getEligiblePrizes = async (users: any[]) => {
 
       return prizeConfig.hackathons["HackGT 7"].sponsorPrizes;
     }
+    case "HackGT 8": {
+      let numEmerging = 0;
+
+      for (const user of users) {
+        if (!user || !user.confirmationBranch) {
+          return {
+            error: true,
+            message: `User: ${user.email} does not have a confirmation branch`,
+          };
+        }
+
+        if (user.confirmationBranch === "Emerging In-Person Participant Confirmation" || user.confirmationBranch === "Emerging Virtual Participant Confirmation") {
+          numEmerging += 1;
+        }
+      }
+
+      // A team must be greater than 50% emerging to be eligible for emerging prizes
+      if (numEmerging / users.length > 0.5) {
+        const emergingPrizes = prizeConfig.hackathons["HackGT 8"].emergingPrizes.concat(
+          prizeConfig.hackathons["HackGT 8"].sponsorPrizes
+        ).concat(prizeConfig.hackathons["HackGT 8"].generalPrizes).concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+        const emergingDBPrizes = await prisma.category.findMany({
+          where: { 
+            name: {
+              in: emergingPrizes
+            }
+          }
+        })
+        return emergingDBPrizes
+      }
+      const generalPrizes = prizeConfig.hackathons["HackGT 8"].sponsorPrizes.concat(prizeConfig.hackathons["HackGT 8"].generalPrizes).concat(prizeConfig.hackathons["HackGT 8"].openSourcePrizes);
+      const generalDBPrizes = await prisma.category.findMany({
+        where: { 
+          name: {
+            in: generalPrizes
+          }
+        }
+      })
+      return generalDBPrizes
+    }
+
     default: {
       return [];
     }
+
+    
   }
 };
 
@@ -138,6 +181,21 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
 
   const eligiblePrizes = await getEligiblePrizes(registrationUsers);
   return { error: false, eligiblePrizes, registrationUsers };
+};
+
+/*
+  - Validate prizes to ensure the correct selection is made
+*/
+export const validatePrizes = async (prizes: any[]) => {
+  const currentHackathon = await getCurrentHackathon();
+  switch (currentHackathon.name) {
+    case "HackGT 8": {
+      return { error: false };
+    }
+    default: {
+      return { error: false };
+    }
+  }
 };
 
 /*

@@ -4,7 +4,7 @@ import axios from "axios";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig, getCurrentHackathon } from "../utils/utils";
-import { validateTeam, validateDevpost } from "../utils/validationHelpers";
+import { validateTeam, validateDevpost, validatePrizes } from "../utils/validationHelpers";
 import { isAdmin } from "../auth/auth";
 
 export const projectRoutes = express.Router();
@@ -55,7 +55,13 @@ projectRoutes.route("/special/team-validation").post(async (req, res) => {
 });
 
 // TODO: Fill in prize validation as needed
-projectRoutes.route("/special/prize-validation").post((req, res) => {
+projectRoutes.route("/special/prize-validation").post(async (req, res) => {
+  const resp = await validatePrizes(req.body.prizes);
+  if (resp.error) {
+    res.status(400).json(resp);
+  } else {
+    res.status(200).json(resp);
+  }
   res.status(200).send({ error: false });
 });
 
@@ -120,7 +126,7 @@ projectRoutes.route("/").post(async (req, res) => {
     });
     return;
   }
-
+  console.log(data)
   try {
     const logInteractions = (teamValidation.registrationUsers || []).map(
       (registrationMember: any) =>
@@ -182,6 +188,10 @@ projectRoutes.route("/").post(async (req, res) => {
             },
           })),
         },
+        categories: {
+          connect: data.prizes.map((prizeId: any) => ({id: prizeId})
+          ),
+        }
       },
     });
   } catch (err) {
