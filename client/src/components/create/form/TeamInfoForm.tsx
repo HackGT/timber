@@ -18,12 +18,15 @@ interface Props {
 const TeamInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
+    const newValues = {
+      members: values.members.map((value: any) => ({email: value.email}))
+    }
 
     axios
-      .post("/projects/special/team-validation", values)
+      .post("/projects/special/team-validation", newValues)
       .then(res => {
         hide();
-        props.updateData({ ...values, eligiblePrizes: res.data.eligiblePrizes });
+        props.updateData({ ...newValues, eligiblePrizes: res.data.eligiblePrizes });
         props.nextStep();
       })
       .catch(err => {
