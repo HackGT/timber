@@ -173,8 +173,7 @@ assignmentRoutes.route("/").post(
     console.log(checkAssignment);
 
     if (checkAssignment.length !== 0) {
-      console.log("dupe");
-      res.status(500).json({
+      res.status(400).json({
         error: true,
         message: "Judge already has a project started or project assignment is a duplicate",
       });

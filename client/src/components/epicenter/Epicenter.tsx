@@ -3,8 +3,6 @@ import useAxios from "axios-hooks";
 import { Typography, List, Tabs, Button, Alert, message } from "antd";
 import axios from "axios";
 
-import JudgingBox from "./JudgingBox";
-import { Project } from "../../types/Project";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Assignment } from "../../types/Assignment";
@@ -14,13 +12,12 @@ import Dashboard from "./Dashboard";
 import Ranking from "./Ranking";
 import { handleAxiosError } from "../../util/util";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
+import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectData, error: projectsError }, refetchProjects] =
-    useAxios("/projects");
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] =
     useAxios("/user");
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
@@ -55,17 +52,13 @@ const Epicenter: React.FC = () => {
     }
   };
 
-  if (projectsLoading || userLoading || categoryGroupsLoading || configLoading) {
+  if (userLoading || categoryGroupsLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || userError || categoryGroupsError || configError) {
-    return <ErrorDisplay error={projectsError} />;
+  if (userError || categoryGroupsError || configError) {
+    return <ErrorDisplay error={userError} />;
   }
-
-  const projects = projectData.map((project: Project) => (
-    <JudgingBox key={project.id} project={project} refetch={refetchProjects} />
-  ));
 
   const judges = userData
     .filter((user: User) => user.isJudging)
@@ -89,16 +82,16 @@ const Epicenter: React.FC = () => {
         />
       )}
       <Title level={2}>Epicenter</Title>
-      <div id="judging">{projects}</div>
+      <EpicenterProjectBoxes />
       <Button
         type="primary"
         htmlType="submit"
         onClick={autoAssign}
-        style={{ marginBottom: "15px", marginTop: "10px" }}
+        style={{ margin: "10px 10px 15px 0" }}
       >
         Auto-assign
       </Button>
-      <Button onClick={handleJudgingModalOpen} style={{ marginBottom: "15px", marginTop: "10px" }}>
+      <Button onClick={handleJudgingModalOpen} style={{ margin: "10px 0 15px 0" }}>
         Manual Assign
       </Button>
       <JudgeAssignmentModal visible={judgingModalOpen} handleCancel={handleCancel} />
@@ -107,7 +100,7 @@ const Epicenter: React.FC = () => {
           <Title level={4}>{categoryGroup.name}</Title>
           <List
             grid={{ gutter: 16, column: 4 }}
-            loading={projectsLoading}
+            loading={categoryGroupsLoading}
             dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
             renderItem={(user: User) => (
               <List.Item>

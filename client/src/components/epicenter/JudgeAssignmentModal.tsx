@@ -10,6 +10,8 @@ import { Category } from "../../types/Category";
 import { CategoryGroup } from "../../types/CategoryGroup";
 import { User } from "../../types/User";
 import { handleAxiosError } from "../../util/util";
+import ErrorDisplay from "../../displays/ErrorDisplay";
+import LoadingDisplay from "../../displays/LoadingDisplay";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -31,6 +33,14 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
   // const getJudges = () => {
   //   selectedProject;
   // };
+
+  if (loading || userLoading) {
+    return <LoadingDisplay />;
+  }
+
+  if (error || userError) {
+    return <ErrorDisplay error={error} />;
+  }
 
   const handleChange = (e: any) => {
     const project: Project = data.find((o: Project) => o.id === e);
