@@ -21,12 +21,12 @@ export class Page {
 }
 
 export const routes = [
-  new Page("Home", "/", user => [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)),
+  new Page("Home", "/", user => true),
   new Page("Create Submission", "/create", user =>
-    [UserRole.GENERAL, UserRole.ADMIN].includes(user.role)
+    (!user.isJudging && [UserRole.GENERAL].includes(user.role)) || [UserRole.ADMIN].includes(user.role)
   ),
   new Page("Project Gallery", "/projectgallery", user =>
-    [UserRole.GENERAL, UserRole.SPONSOR, UserRole.ADMIN].includes(user.role)
+    true
   ),
   new Page("Sponsor Page", `/category-group`, user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined),
   new Page("Judging", "/judging", user => user.isJudging),
