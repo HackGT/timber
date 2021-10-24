@@ -1,6 +1,7 @@
 import { Assignment } from "./Assignment";
 import { Project } from "./Project";
 import { UserRole } from "./UserRole";
+import { CategoryGroup } from "./CategoryGroup";
 
 export type User = {
   id: string;
@@ -11,4 +12,5 @@ export type User = {
   isJudging: boolean;
   projects: Project[];
   assignments: Assignment[];
+  categoryGroup: CategoryGroup;
 };

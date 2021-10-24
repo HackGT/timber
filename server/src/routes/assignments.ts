@@ -157,10 +157,6 @@ assignmentRoutes.route("/").post(
     const projectId: number = parseInt(req.body.project.id);
     const duplicateFilter: any = {};
     const multipleProjectFilter: any = {};
-    if (!user.isJudging) {
-      res.status(500).json({ error: true, message: "User is not a judge" });
-      return;
-    }
 
     duplicateFilter.projectId = projectId;
     duplicateFilter.userId = user.id;
@@ -174,7 +170,10 @@ assignmentRoutes.route("/").post(
       },
     });
 
+    console.log(checkAssignment);
+
     if (checkAssignment.length !== 0) {
+      console.log("dupe");
       res.status(500).json({
         error: true,
         message: "Judge already has a project started or project assignment is a duplicate",

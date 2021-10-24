@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { Typography, List, Tabs, Button, Alert, message } from "antd";
 import axios from "axios";
@@ -13,6 +13,7 @@ import { User } from "../../types/User";
 import Dashboard from "./Dashboard";
 import Ranking from "./Ranking";
 import { handleAxiosError } from "../../util/util";
+import JudgeAssignmentModal from "./JudgeAssignmentModal";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -25,6 +26,15 @@ const Epicenter: React.FC = () => {
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios("/categorygroups");
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
+  const [judgingModalOpen, setJudgingModalOpen] = useState(false);
+
+  const handleJudgingModalOpen = () => {
+    setJudgingModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setJudgingModalOpen(false);
+  };
 
   // adding auto-assign button and function for testing purposes
   const autoAssign = async () => {
@@ -88,6 +98,10 @@ const Epicenter: React.FC = () => {
       >
         Auto-assign
       </Button>
+      <Button onClick={handleJudgingModalOpen} style={{ marginBottom: "15px", marginTop: "10px" }}>
+        Manual Assign
+      </Button>
+      <JudgeAssignmentModal visible={judgingModalOpen} handleCancel={handleCancel} />
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
