@@ -24,7 +24,7 @@ projectRoutes.route("/").get(
       where: filter,
       include: {
         categories: {
-          select: {
+          include: {
             categoryGroups: true,
           },
         },
@@ -170,16 +170,16 @@ projectRoutes.route("/").post(async (req, res) => {
 
   const bestOverall: any = await prisma.category.findFirst({
     where: {
-      name: { in: ["HackGT - Best Overall"]}
-    }
-  })
+      name: { in: ["HackGT - Best Overall"] },
+    },
+  });
 
   const openSource: any = await prisma.category.findFirst({
     where: {
-      name: { in: ["HackGT - Best Open Source Hack"]}
-    }
-  })
-  
+      name: { in: ["HackGT - Best Open Source Hack"] },
+    },
+  });
+
   if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
     res.status(400).send({
       error: true,
