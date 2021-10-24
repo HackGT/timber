@@ -43,8 +43,8 @@ const CategoryGroup: React.FC = () => {
           </List.Item>
         )}
       />
-      <Title level={2}> Scores </Title>
-      <ProjectTableContainer projects={data} isSponsor />
+      {/* <Title level={2}> Scores </Title> */}
+      {/* <ProjectTableContainer projects={data} isSponsor /> */}
     </>
   );
 };

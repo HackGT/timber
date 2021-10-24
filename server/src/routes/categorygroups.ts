@@ -49,10 +49,11 @@ categoryGroupRoutes.route("/").post(
   isAdmin,
   asyncHandler(async (req, res) => {
     const currentHackathon = await getCurrentHackathon();
+
     const createdCategoryGroup = await prisma.categoryGroup.create({
       data: {
         ...req.body,
-        categories: { connect: req.body.categories?.map((id: number) => ({ id })) ?? undefined },
+        // categories: { connect: req.body.categories?.map((id: number) => ({ id })) ?? undefined },
         users: { connect: req.body.users?.map((id: number) => ({ id })) ?? undefined },
         hackathonId: currentHackathon.id,
       },
