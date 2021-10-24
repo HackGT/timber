@@ -1,6 +1,5 @@
 import express from "express";
 import axios from "axios";
-import fetch from "node-fetch";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
@@ -97,19 +96,22 @@ projectRoutes.route("/").post(async (req, res) => {
     res.status(400).send(devpostValidation);
     return;
   }
-  let daily;
-  try {
-    const fetchUrl = "https://api.daily.co/v1/rooms";
-    const options = {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
-      },
-    };
 
-    daily = await fetch(fetchUrl, options).then(response => response.json());
+  let dailyUrl;
+  try {
+    const response = await axios.post(
+      "https://api.daily.co/v1/rooms",
+      {},
+      {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
+        },
+      }
+    );
+
+    dailyUrl = response.data.url || "";
   } catch (err) {
     console.error(err);
     res.status(400).send({
@@ -120,13 +122,50 @@ projectRoutes.route("/").post(async (req, res) => {
   }
 
   try {
+    const logInteractions = (teamValidation.registrationUsers || []).map(
+      (registrationMember: any) =>
+        new Promise<null>((resolve, reject) => {
+          if (registrationMember.id) {
+            try {
+              axios.post(
+                String(process.env.CHECK_IN_URL),
+                {
+                  uuid: registrationMember.id,
+                  eventID: "616f450fd020f00022987288",
+                  eventType: "submission-expo",
+                  interactionType: "inperson",
+                },
+                {
+                  headers: {
+                    "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              resolve(null);
+            } catch (err) {
+              console.error(err);
+              reject(err);
+            }
+          }
+        })
+    );
+
+    await Promise.all(logInteractions);
+  } catch (error: any) {
+    console.error(error);
+  }
+
+  try {
     await prisma.project.create({
       data: {
         name: data.name,
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        roomUrl: daily.url,
+        roomUrl: dailyUrl,
         hackathon: {
           connect: {
             id: currentHackathon.id,

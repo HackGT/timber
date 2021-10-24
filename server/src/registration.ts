@@ -8,6 +8,7 @@ export async function queryRegistration(email: string): Promise<AxiosResponse<an
     query($search: String!) {
       search_user(search: $search, offset: 0, n: 1) {
         users {
+          id
           name
           email
           confirmationBranch
