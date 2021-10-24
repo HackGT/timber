@@ -120,7 +120,7 @@ projectRoutes.route("/").post(async (req, res) => {
     });
     return;
   }
-
+  console.log(data)
   try {
     const logInteractions = (teamValidation.registrationUsers || []).map(
       (registrationMember: any) =>
@@ -182,6 +182,10 @@ projectRoutes.route("/").post(async (req, res) => {
             },
           })),
         },
+        categories: {
+          connect: data.prizes.map((prizeId: any) => ({id: prizeId})
+          ),
+        }
       },
     });
   } catch (err) {
