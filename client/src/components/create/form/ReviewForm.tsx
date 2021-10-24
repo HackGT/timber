@@ -35,6 +35,11 @@ const ReviewForm: React.FC<Props> = props => {
 
   const formInitialValue = props.data;
 
+  const prizeOptions = props.data.eligiblePrizes.map((prize: any) => ({
+    label: prize.name,
+    value: prize.id,
+  }));
+
   return (
     <>
       <Alert
@@ -90,7 +95,7 @@ const ReviewForm: React.FC<Props> = props => {
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
             <Form.Item name="prizes" label="Prizes">
-              <Select disabled mode="multiple" showSearch optionFilterProp="label" />
+              <Select disabled mode="multiple" showSearch options={prizeOptions} optionFilterProp="label" />
             </Form.Item>
           </Col>
         </Row>
