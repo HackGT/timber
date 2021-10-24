@@ -35,6 +35,10 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
+      <h1>Project Name: {data.name}</h1>
+      <a href={data.devpostUrl} target="_blank" rel="noreferrer">
+        Devpost Submission
+      </a>
       <DailyWindow videoUrl={data.roomUrl} />
       <JudgingCardsContainer data={data} />
     </>
