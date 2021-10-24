@@ -1,6 +1,7 @@
 import { Typography, Table } from "antd/lib";
 import useAxios from "axios-hooks";
-import React, { useEffect } from "react";
+import React from "react";
+import { SortOrder } from "antd/lib/table/interface";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
@@ -12,40 +13,42 @@ const { Title } = Typography;
 
 const columns = [
   {
-    title: "Project",
-    dataIndex: "project",
-    key: "project",
+    title: "Project Name",
+    dataIndex: "name",
+    key: "name",
+    defaultSortOrder: "ascend" as SortOrder,
+    sorter: (a: any, b: any) => a.average - b.average,
   },
   {
     title: "Average Score",
     dataIndex: "average",
     key: "average",
+    sorter: (a: any, b: any) => a.average - b.average,
   },
   {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
+    sorter: (a: any, b: any) => a.numJudged - b.numJudged,
   },
 ];
 
 const Ranking = () => {
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
     useAxios("/categories");
-  const [{ data: ballotData, loading: ballotLoading, error: ballotError }] = useAxios("/ballots");
 
   return (
     <div>
-      {categoryLoading || ballotLoading ? (
+      {categoryLoading ? (
         <LoadingDisplay />
       ) : (
         <>
           {categoryData.map((category: Category) => {
-            const categoryId = category.id;
             const data: any = [];
             return (
               <>
                 <Title level={4}>{category.name}</Title>
-                {category.projects.map((project: Project) => {
+                {category.projects.forEach((project: Project) => {
                   let score = 0;
                   let number = 0;
                   let ballotsNumber = 0;
@@ -62,8 +65,9 @@ const Ranking = () => {
                       }
                     });
                   });
+
                   data.push({
-                    project: project.name,
+                    name: project.name,
                     average: score / ballotsNumber,
                     numJudged: number,
                   });
