@@ -27,6 +27,7 @@ projectRoutes.route("/").get(
         categories: true,
         ballots: {
           select: {
+            id: true,
             score: true,
             user: true,
             criteria: true,

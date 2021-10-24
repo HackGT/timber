@@ -1,22 +1,12 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Input, message, Modal, Row, Select, InputNumber } from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
-import useAxios from "axios-hooks";
+import { Col, Form, message, Modal, Row, InputNumber } from "antd";
 import axios from "axios";
 
 import { FormModalProps } from "../../util/FormModalProps";
-import { Criteria } from "../../types/Criteria";
-import { Ballot } from "../../types/Ballot";
+import { FORM_RULES } from "../../util/util";
 
-interface BallotProps {
-  criteria: Criteria;
-}
-
-type Props = FormModalProps & BallotProps;
-
-const ProjectEditFormModal: React.FC<Props> = props => {
+const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   console.log(props);
-  console.log(props.criteria.ballots);
   const [form] = Form.useForm();
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -25,13 +15,19 @@ const ProjectEditFormModal: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
     const values = await form.validateFields();
 
-    console.log(values);
-    // const formattedMembers = values.members.map((member: any) => ({ email: member.email }));
-    // values.members = formattedMembers;
-    // console.log(props.modalState.initialValues.id);
+    const { scores } = props.modalState.initialValues;
+
+    const scoreMappings: any = {};
+    scores.forEach((score: any, index: number) => {
+      // id : value
+      scoreMappings[parseInt(score.id)] = parseInt(values.scores[index]);
+    });
+
+    console.log(scoreMappings);
+
     try {
       axios
-        .patch(`/projects/${props.modalState.initialValues.id}`, { ...values })
+        .post(`/ballots/batch/update`, scoreMappings)
         .then(res => {
           hide();
 
@@ -53,21 +49,6 @@ const ProjectEditFormModal: React.FC<Props> = props => {
     }
   };
 
-  const formInputs = props.criteria.ballots.map((ballot, index) => (
-    <Row gutter={[8, 0]}>
-      <Col span={24}>
-        <Form.Item name={index} label={props.criteria.name}>
-          <InputNumber
-            style={{ width: "100%" }}
-            precision={0}
-            min={props.criteria.minScore}
-            max={props.criteria.maxScore}
-          />
-        </Form.Item>
-      </Col>
-    </Row>
-  ));
-
   return (
     <>
       <Modal
@@ -85,7 +66,34 @@ const ProjectEditFormModal: React.FC<Props> = props => {
           autoComplete="off"
           initialValues={props.modalState.initialValues}
         >
-          {formInputs}
+          <Form.List name="scores">
+            {fields => {
+              const { scores } = props.modalState.initialValues;
+              return (
+                <div>
+                  {fields.map((field, index) => (
+                    <Row gutter={[8, 0]}>
+                      <Col span={24}>
+                        <Form.Item
+                          name={[field.name]}
+                          fieldKey={[field.fieldKey]}
+                          rules={[FORM_RULES.requiredRule]}
+                          label={scores[field.fieldKey].criteria.name}
+                        >
+                          <InputNumber
+                            style={{ width: "100%" }}
+                            precision={0}
+                            min={scores[field.fieldKey].criteria.minScore}
+                            max={scores[field.fieldKey].criteria.maxScore}
+                          />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  ))}
+                </div>
+              );
+            }}
+          </Form.List>
         </Form>
       </Modal>
     </>

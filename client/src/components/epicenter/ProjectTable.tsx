@@ -22,11 +22,6 @@ const columns = [
     dataIndex: "deleteScore",
     key: "deleteScore",
   },
-  {
-    title: "",
-    dataIndex: "modal",
-    key: "modal",
-  },
 ];
 
 type ProjectTableType = {

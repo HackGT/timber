@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Space, Typography, Button } from "antd";
+import { Typography, Button, Modal } from "antd";
 import useAxios from "axios-hooks";
 
 import ProjectTable from "./ProjectTable";
@@ -7,9 +7,9 @@ import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
-import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -25,7 +25,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
 
-  const [{ data: criteriaData, loading, error }] = useAxios("/criteria");
+  const [{ data: criteriaData, loading, error }, refetch] = useAxios("/criteria");
 
   if (loading) {
     return <LoadingDisplay />;
@@ -34,6 +34,33 @@ const ProjectTableContainer: React.FC<Props> = props => {
   if (error) {
     return <ErrorDisplay error={error} />;
   }
+
+  /*
+  const deleteScores = async () => {
+    try {
+      axios
+        .patch(`/project/batch/update`, { ...values })
+        .then(res => {
+          hide();
+
+          if (res.data.error) {
+            message.error(res.data.message, 2);
+          } else {
+            message.success("Success!", 2);
+            props.setModalState({ visible: false, initialValues: null });
+            props.refetch();
+          }
+        })
+        .catch(err => {
+          hide();
+          message.error("Error: Please ask for help", 2);
+          console.log(err);
+        });
+    } catch (info) {
+      console.log("Validate Failed:", info);
+    }
+  };
+  */
 
   const openModal = (values: any) => {
     // const newBallot = values.ballot.map((ballot: any) => ballot.name);
@@ -44,7 +71,20 @@ const ProjectTableContainer: React.FC<Props> = props => {
       initialValues: { ...values },
     });
   };
-  const Modal = BallotEditFormModal;
+  const { confirm } = Modal;
+  const BallotModal = BallotEditFormModal;
+
+  function showConfirm() {
+    confirm({
+      title: "Do you want to delete these scores?",
+      icon: <ExclamationCircleOutlined />,
+      content: "This cannot be undone",
+      onOk() {
+        // deleteScores();
+        console.log("delete");
+      },
+    });
+  }
 
   return (
     <div>
@@ -53,53 +93,52 @@ const ProjectTableContainer: React.FC<Props> = props => {
         const generateData = (categoryId: number) => {
           const data: any = [];
           let total = 0;
+          const ballotScores: any = [];
+
           project.ballots.forEach((ballot: Ballot) => {
+            // console.log(ballot);
             if (ballot.criteria.categoryId === categoryId) {
-              console.log(ballot);
-              const row: any = {};
-              row.name = ballot.user.name;
-              row.score = (parseInt(row.name) || 0) + ballot.score;
+              data[ballot.user.name] = (data[ballot.user.name] || 0) + ballot.score;
               total += ballot.score;
-
-              row.editButton = (
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    openModal(ballot);
-                  }}
-                >
-                  Edit
-                </Button>
-              );
+              ballotScores.push(ballot);
               console.log(ballot);
-              criteriaData.forEach((c: Criteria) => {
-                if (c.id == ballot.criteria.categoryId) {
-                  row.modal = (
-                    <Modal
-                      modalState={modalState}
-                      setModalState={setModalState}
-                      refetch={props.refetch}
-                      criteria={c}
-                    />
-                  );
-                }
-              });
-
-              data.push(row);
             }
           });
 
-          const newData = data.map((row: any) => ({
-            judge: row.name,
-            total: row.score,
-            editScore: row.editButton,
-            modal: row.modal,
-          }));
+          const editButton = (
+            <Button
+              type="primary"
+              onClick={() => {
+                openModal({ scores: ballotScores });
+              }}
+            >
+              Edit
+            </Button>
+          );
+          const deleteButton = (
+            <Button
+              type="primary"
+              onClick={() => {
+                showConfirm();
+              }}
+            >
+              Delete
+            </Button>
+          );
 
+          const newData = Object.entries(data).map(e => ({
+            judge: e[0],
+            total: e[1],
+            editScore: editButton,
+            deleteScore: deleteButton,
+          }));
           newData.push({
             judge: "Average",
             total: Math.round((total / newData.length) * 10) / 10,
+            editScore: <></>,
+            deleteScore: <></>,
           });
+          console.log(newData);
           return newData;
         };
 
@@ -124,6 +163,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
           </div>
         );
       })}
+      <BallotModal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </div>
   );
 };
