@@ -7,8 +7,6 @@ import { prisma, prizeConfig } from "../common";
 import { getConfig, getCurrentHackathon } from "./utils";
 import { queryRegistration } from "../registration";
 
-const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt8.devpost.com/";
-
 /*
     - Classify team into prize based on user tracks (from registration)
     - Return eligible prizes based on team type
@@ -254,7 +252,7 @@ export const validateDevpost = async (devpostUrl: string, submissionName: string
       const item = $(elem).find("div a").attr("href");
       if (item) {
         devpostUrls.push(item);
-        if (item === HACKGT_DEVPOST) {
+        if (item.includes(String(process.env.HACKGT_DEVPOST))) {
           submitted = true;
         }
       }
