@@ -118,7 +118,7 @@ projectRoutes.route("/").post(async (req, res) => {
     });
     return;
   }
-
+  console.log(data)
   try {
     await prisma.project.create({
       data: {
@@ -143,6 +143,10 @@ projectRoutes.route("/").post(async (req, res) => {
             },
           })),
         },
+        categories: {
+          connect: data.prizes.map((prizeId: any) => ({id: prizeId})
+          ),
+        }
       },
     });
   } catch (err) {
