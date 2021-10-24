@@ -4,7 +4,7 @@ import { User, UserRole } from "@prisma/client";
 import { URL } from "url";
 
 import { prisma, prizeConfig } from "../common";
-import { getCurrentHackathon } from "./utils";
+import { getConfig, getCurrentHackathon } from "./utils";
 import { queryRegistration } from "../registration";
 
 const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt2020.devpost.com/";
@@ -145,6 +145,12 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
     - Ensure project isn't submitted to multiple hackathons
 */
 export const validateDevpost = async (devpostUrl: string, submissionName: string) => {
+  const config = await getConfig();
+
+  if (!config.isDevpostCheckingOn) {
+    return { error: false };
+  }
+
   if (!devpostUrl) {
     return { error: true, message: "No url specified" };
   }

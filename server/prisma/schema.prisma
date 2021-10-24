@@ -85,6 +85,7 @@ model Config {
   isJudgingOn             Boolean   @default(false)
   isProjectsPublished     Boolean   @default(false)
   isProjectSubmissionOpen Boolean   @default(true)
+  isDevpostCheckingOn     Boolean   @default(true)
 
   currentHackathonId Int
   @@map("config")
