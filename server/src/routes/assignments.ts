@@ -111,7 +111,7 @@ assignmentRoutes.route("/current-project").get(
 
     // auto assign returns null if there are no projects to assign to the judge
     if (assignment === null) {
-      res.status(200).json([]);
+      res.status(200).json();
       return;
     }
 

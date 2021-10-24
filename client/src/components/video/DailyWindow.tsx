@@ -1,16 +1,13 @@
 import React, { useEffect, useRef } from "react";
 
 import DailyIframe from "@daily-co/daily-js";
-import "./DailyWindow.css"
+import "./DailyWindow.css";
 
 type Props = {
-  videoID: string;
+  videoUrl: string;
 };
 
 const DailyWindow: React.FC<Props> = (props: Props) => {
-  const url = props.videoID.split("?t=")[0];
-  const token = props.videoID.split("?t=")[1] || "";
-
   const containerRef = useRef<HTMLDivElement>(null);
 
   async function createCallFrameAndJoinCall() {
@@ -36,8 +33,7 @@ const DailyWindow: React.FC<Props> = (props: Props) => {
           },
         });
         await callFrame.join({
-          url,
-          token,
+          url: props.videoUrl,
         });
         callFrame.on("left-meeting", _ => {
           if (containerRef != null) {
@@ -58,10 +54,10 @@ const DailyWindow: React.FC<Props> = (props: Props) => {
       }
     }
     createCallFrameAndJoinCall();
-  }, [createCallFrameAndJoinCall, props.videoID]);
+  }, [createCallFrameAndJoinCall, props.videoUrl]);
 
   return (
-    <div>
+    <div style={{ marginBottom: "20px" }}>
       <div className="main_stage_wrapper">
         <div className="dailyStage" ref={containerRef} />
       </div>
