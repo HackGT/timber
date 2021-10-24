@@ -7,7 +7,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
-import ProjectTableContainer from "../projectStatus/ProjectTableContainer";
+import CategoryGroupProjectTableContainer from "./CategoryGroupProjectTableContainer";
 
 const { Title } = Typography;
 
@@ -28,6 +28,8 @@ const CategoryGroup: React.FC = () => {
   }
   console.log(categoryGroup);
 
+  const categoryIds = categoryGroup.categories.map((category: any) => category.id);
+
   return (
     <>
       <Title>{categoryGroup.name}</Title>
@@ -43,8 +45,8 @@ const CategoryGroup: React.FC = () => {
           </List.Item>
         )}
       />
-      {/* <Title level={2}> Scores </Title> */}
-      {/* <ProjectTableContainer projects={data} isSponsor /> */}
+      <Title level={2}> Scores </Title>
+      <CategoryGroupProjectTableContainer projects={data} categoryIds={categoryIds} isSponsor />
     </>
   );
 };

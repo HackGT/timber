@@ -39,6 +39,9 @@ categoryGroupRoutes.route("/:id").get(
       where: {
         id: parseInt(req.params.id),
       },
+      include: {
+        categories: true,
+      },
     });
 
     res.status(200).json(categoryGroup);
