@@ -196,6 +196,7 @@ projectRoutes.route("/").post(async (req, res) => {
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
+        expo: Math.floor(Math.random() * 2 + 1),
         roomUrl: dailyUrl,
         hackathon: {
           connect: {
