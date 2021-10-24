@@ -49,6 +49,9 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     };
     const userArray: UserArrayType[] = [];
     userData.forEach((user: User) => {
+      if (!user.categoryGroup) {
+        return;
+      }
       if (categoryGroupIds.includes(user.categoryGroup.id)) {
         userArray.push({ name: user.name, id: user.id });
       }
