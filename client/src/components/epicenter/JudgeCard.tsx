@@ -3,8 +3,8 @@ import { Card } from "antd";
 
 import JudgingBox from "./JudgingBox";
 import { User } from "../../types/User";
-import PlaceHolderBox from "./PlaceholderBox";
 import { Assignment } from "../../types/Assignment";
+import { AssignmentStatus } from "../../types/AssignmentStatus";
 
 interface Props {
   key: string;
@@ -12,16 +12,38 @@ interface Props {
 }
 
 const JudgeCard: React.FC<Props> = props => {
-  const projects = props.user.assignments.map((assignment: Assignment) => (
-    <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
-  ));
+  const queuedProjects: any[] = [];
+  const startedProjects: any[] = [];
+  const completedProjects: any[] = [];
 
-  projects.splice(1, 0, <PlaceHolderBox />);
+  props.user.assignments.forEach((assignment: Assignment) => {
+    console.log(assignment);
+    switch (assignment.status) {
+      case AssignmentStatus.QUEUED:
+        queuedProjects.push(
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+        );
+        break;
+      case AssignmentStatus.STARTED:
+        startedProjects.push(
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+        );
+        break;
+      case AssignmentStatus.COMPLETED:
+      case AssignmentStatus.SKIPPED:
+        completedProjects.push(
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+        );
+        break;
+    }
+  });
 
   return (
     <>
       <Card key={props.key} title={`${props.user.id} - ${props.user.name}`} size="small">
-        <div id="judging">{projects}</div>
+        <div id="judging">Queued: {queuedProjects}</div>
+        <div id="judging">Started: {startedProjects}</div>
+        <div id="judging">Completed/Skipped: {completedProjects}</div>
       </Card>
     </>
   );

@@ -1,6 +1,6 @@
 export enum AssignmentStatus {
-  QUEUED,
-  STARTED,
-  COMPLETED,
-  SKIPPED,
+  QUEUED = "QUEUED",
+  STARTED = "STARTED",
+  COMPLETED = "COMPLETED",
+  SKIPPED = "SKIPPED",
 }
