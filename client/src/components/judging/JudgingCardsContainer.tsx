@@ -8,6 +8,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
+import CriteriaCardContainer from "./CriteriaCardContainer";
 
 interface Props {
   data: any;
@@ -16,6 +17,15 @@ interface Props {
 const JudgingCardsContainer: React.FC<Props> = props => {
   const [projectScores, setProjectScores] = useState({});
   const [criteriaArray, setCriteriaArray] = useState<any[]>([]);
+  const [categoryContainers, setCategoryContainers] = useState([])
+
+  const changeScore = (value: number, id: number) => {
+    const objectValue = {
+      ...projectScores,
+      [id]: value,
+    };
+    setProjectScores(objectValue);
+  };
 
   useEffect(() => {
     if (!props.data || props.data.length === 0) {
@@ -23,9 +33,15 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
 
     const newCriteriaArray: any[] = [];
+    const criteriaCards: any = []
 
     props.data.categories.forEach((category: any) => {
-      category.criterias.map((criteria: any) => newCriteriaArray.push(criteria));
+      criteriaCards.push(<CriteriaCardContainer criteriaArray={category.criterias} changeScore={changeScore} categoryName={category.name}/>)
+
+      category.criterias.map((criteria: any) => {
+        
+        newCriteriaArray.push(criteria)
+      });
     });
 
     const mapping: any = {};
@@ -35,7 +51,8 @@ const JudgingCardsContainer: React.FC<Props> = props => {
 
     setCriteriaArray(newCriteriaArray);
     setProjectScores(mapping);
-  }, [props.data, setCriteriaArray, setProjectScores]);
+    setCategoryContainers(criteriaCards)
+  }, [props.data, setCriteriaArray, setProjectScores, setCategoryContainers]);
 
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
@@ -70,19 +87,21 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
   };
 
-  const changeScore = (value: number, id: number) => {
-    const objectValue = {
-      ...projectScores,
-      [id]: value,
-    };
-    setProjectScores(objectValue);
-  };
+  
+
+  // const renderCategoryContainers = (cToCMapping: any) => {
+  //   const categoryContainerArr = []
+  //   for (const key of Object.keys(cToCMapping)) {
+  //         }
+  //   return categoryContainerArr;
+  // }
 
   return (
     <>
-      {criteriaArray.map((criteria: any) => (
+      {/* {criteriaArray.map((criteria: any) => (
         <CriteriaCard criteria={criteria} changeScore={changeScore} />
-      ))}
+      ))} */}
+      {categoryContainers}
       <div style={{ marginTop: "15px" }}>
         <Popconfirm
           placement="right"
