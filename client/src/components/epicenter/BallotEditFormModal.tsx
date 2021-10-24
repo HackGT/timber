@@ -6,7 +6,6 @@ import { FormModalProps } from "../../util/FormModalProps";
 import { FORM_RULES, handleAxiosError } from "../../util/util";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
-  console.log(props);
   const [form] = Form.useForm();
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -19,8 +18,6 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     values.scores.forEach((score: any, index: number) => {
       scoreMappings[parseInt(score.id)] = parseInt(score.score); // id : value
     });
-
-    console.log(scoreMappings);
 
     try {
       axios
