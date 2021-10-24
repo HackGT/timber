@@ -345,8 +345,17 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   // sort projects by number of assignments that match the judge's categories
   projectsWithMatchingCategories.sort((p1, p2) => p1.assignment.length - p2.assignment.length);
 
+  const assignmentCount = projectsWithMatchingCategories[0].assignment.length;
+  const sameSortProjects = projectsWithMatchingCategories.filter(proj => proj.assignment.length === assignmentCount);
+
+  const selectedProject = sameSortProjects[Math.floor(Math.random() * sameSortProjects.length)];
+
+  if (!selectedProject) {
+    return null;
+  }
+
   // pick the highest priority project based on sorting above
-  let categoriesToJudge = projectsWithMatchingCategories[0].categories.filter(category =>
+  let categoriesToJudge = selectedProject.categories.filter(category =>
     judgeCategoryIds.includes(category.id)
   );
 
@@ -357,7 +366,7 @@ const autoAssign = async (judge: number, isStarted: boolean): Promise<Assignment
   const createdAssignment = await prisma.assignment.create({
     data: {
       userId: judgeToAssign.id,
-      projectId: projectsWithMatchingCategories[0].id,
+      projectId: selectedProject.id,
       status: isStarted ? AssignmentStatus.STARTED : AssignmentStatus.QUEUED,
       categoryIds: categoriesToJudge.map(category => category.id),
     },
