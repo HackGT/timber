@@ -33,12 +33,11 @@ const PrizeInfoForm: React.FC<Props> = props => {
   const onFinishFailed = (errorInfo: any) => {
     message.error("Please complete the required fields.", 2);
   };
-  console.log(props.data.eligiblePrizes)
+
   const prizeOptions = props.data.eligiblePrizes.map((prize: any) => ({
     label: prize.name,
     value: prize.id,
   }));
-  console.log(prizeOptions);
 
   const formInitialValue = props.data;
 

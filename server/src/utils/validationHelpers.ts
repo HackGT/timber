@@ -184,6 +184,21 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
 };
 
 /*
+  - Validate prizes to ensure the correct selection is made
+*/
+export const validatePrizes = async (prizes: any[]) => {
+  const currentHackathon = await getCurrentHackathon();
+  switch (currentHackathon.name) {
+    case "HackGT 8": {
+      return { error: false };
+    }
+    default: {
+      return { error: false };
+    }
+  }
+};
+
+/*
     - Ensure url is the right devpost url
     - Ensure project isn't submitted to multiple hackathons
 */
