@@ -1,4 +1,3 @@
-import axios from "axios";
 import rp from "request-promise";
 import cheerio from "cheerio";
 import { User, UserRole } from "@prisma/client";
@@ -6,9 +5,8 @@ import { URL } from "url";
 
 import { prisma, prizeConfig } from "../common";
 import { getCurrentHackathon } from "./utils";
+import { queryRegistration } from "../registration";
 
-const REGISTRATION_GRAPHQL_URL =
-  process.env.REGISTRATION_GRAPHQL_URL || "https://registration.hack.gt/graphql";
 const HACKGT_DEVPOST = process.env.DEVPOST_URL || "https://hackgt2020.devpost.com/";
 
 /*
@@ -75,29 +73,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
     memberEmails.map(async email => {
       let res: any;
       try {
-        res = await axios({
-          method: "POST",
-          url: REGISTRATION_GRAPHQL_URL,
-          headers: {
-            "Authorization": `Bearer ${process.env.REGISTRATION_GRAPHQL_AUTH}`,
-            "Content-Type": "application/json",
-          },
-          data: JSON.stringify({
-            query: `
-            query($search: String!) {
-              search_user(search: $search, offset: 0, n: 1) {
-                users {
-                  name
-                  email
-                  confirmationBranch
-                  confirmed
-                }
-              }
-            }
-          `,
-            variables: { search: email },
-          }),
-        });
+        res = await queryRegistration(email);
       } catch (error) {
         console.error(error);
         registrationError = {

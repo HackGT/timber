@@ -1,15 +1,34 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-export async function queryRegistration(
-  query: string,
-  variables?: { [name: string]: string }
-): Promise<any> {
+const REGISTRATION_GRAPHQL_URL =
+  process.env.REGISTRATION_GRAPHQL_URL || "https://registration.hack.gt/graphql";
+
+export async function queryRegistration(email: string): Promise<AxiosResponse<any>> {
+  const query = `
+    query($search: String!) {
+      search_user(search: $search, offset: 0, n: 1) {
+        users {
+          name
+          email
+          confirmationBranch
+          confirmed
+          application {
+            type
+          }
+        }
+      }
+    }`;
+
+  const variables = {
+    search: email,
+  };
+
   try {
     const response = await axios.post(
-      process.env.REGISTRATION_URL || "",
+      REGISTRATION_GRAPHQL_URL,
       {
         query,
-        variables: variables || {},
+        variables,
       },
       {
         headers: {
@@ -22,7 +41,7 @@ export async function queryRegistration(
       }
     );
 
-    return response.data;
+    return response;
   } catch (error: any) {
     throw new Error(JSON.stringify(error.response.data));
   }

@@ -102,36 +102,18 @@ passport.use(
       callbackURL: "/auth/login/callback",
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      const query = `
-          query($search: String!) {
-              search_user(search: $search, offset: 0, n: 1) {
-                  users {
-                      confirmed
-                      confirmationBranch
-                      application {
-                          type
-                      }
-                  }
-              }
-          }
-      `;
-
-      const variables = {
-        search: profile.email,
-      };
-
       let userRole: UserRole = UserRole.GENERAL;
       let userIsJudging = false;
       try {
-        const data = await queryRegistration(query, variables);
+        const response = await queryRegistration(profile.email);
 
         if (
-          data &&
-          data.data.search_user.users.length > 0 &&
-          data.data.search_user.users[0].confirmed &&
-          data.data.search_user.users[0].confirmationBranch
+          response.data &&
+          response.data.data.search_user.users.length > 0 &&
+          response.data.data.search_user.users[0].confirmed &&
+          response.data.data.search_user.users[0].confirmationBranch
         ) {
-          const { confirmationBranch } = data.data.search_user.users[0];
+          const { confirmationBranch } = response.data.data.search_user.users[0];
 
           if (confirmationBranch === "Judge Confirmation") {
             userIsJudging = true;
