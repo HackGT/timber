@@ -36,9 +36,7 @@
         "HackGT - Most Sustainable Hack",
         "HackGT - Most Unique/Out of the Box/Creative"
       ],
-      "openSourcePrizes": [
-        "HackGT - Best Open Source Hack"
-      ],
+      "openSourcePrizes": ["HackGT - Best Open Source Hack"],
       "emergingPrizes": [
         "Emerging - Best Overall",
         "Emerging - Best in App/Web Development",
@@ -56,7 +54,8 @@
         "BlackRock - Best Overall",
         "Anthem - Best Overall",
         "NSA - Secure the Server",
-        "NSA - Secure Code Zero Trust"
+        "NSA - Secure Code Zero Trust",
+        "Best Use of Google Cloud"
       ]
     }
   }
