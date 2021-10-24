@@ -7,7 +7,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
-import ProjectTableContainer from "../epicenter/ProjectTableContainer";
+import ProjectTableContainer from "../projectStatus/ProjectTableContainer";
 
 const { Title } = Typography;
 

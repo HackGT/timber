@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { Typography, List, Tabs, Button, Alert, message } from "antd";
+import { Typography, List, Button, Alert, message } from "antd";
 import axios from "axios";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -8,18 +8,13 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Assignment } from "../../types/Assignment";
 import JudgeCard from "./JudgeCard";
 import { User } from "../../types/User";
-import RankingTable from "./RankingTable";
 import { handleAxiosError } from "../../util/util";
-import ProjectTableContainer from "./ProjectTableContainer";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 
 const { Title } = Typography;
-const { TabPane } = Tabs;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios("/projects");
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] =
     useAxios("/user");
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
@@ -54,11 +49,11 @@ const Epicenter: React.FC = () => {
     }
   };
 
-  if (projectsLoading || userLoading || categoryGroupsLoading || configLoading) {
+  if (userLoading || categoryGroupsLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || userError || categoryGroupsError || configError) {
+  if (userError || categoryGroupsError || configError) {
     return <ErrorDisplay error={userError} />;
   }
 
@@ -112,21 +107,6 @@ const Epicenter: React.FC = () => {
           />
         </>
       ))}
-      <Title level={2} style={{ textAlign: "center" }}>
-        Dashboard
-      </Title>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Overview" key="1">
-          <ProjectTableContainer
-            projects={projectsData}
-            isSponsor={false}
-            refetch={refetchProjects}
-          />
-        </TabPane>
-        <TabPane tab="Rankings" key="2">
-          <RankingTable />
-        </TabPane>
-      </Tabs>
     </>
   );
 };
