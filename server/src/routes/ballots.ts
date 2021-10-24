@@ -172,3 +172,18 @@ ballotsRoutes.route("/batch/update").post(
     res.status(204).end();
   })
 );
+
+ballotsRoutes.route("/batch/delete").delete(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    await prisma.ballot.deleteMany({
+      where: {
+        id: {
+          in: req.body.ids,
+        },
+      },
+    });
+
+    res.status(204).end();
+  })
+);

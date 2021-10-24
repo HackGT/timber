@@ -3,7 +3,7 @@ import { Col, Form, message, Modal, Row, InputNumber } from "antd";
 import axios from "axios";
 
 import { FormModalProps } from "../../util/FormModalProps";
-import { FORM_RULES } from "../../util/util";
+import { FORM_RULES, handleAxiosError } from "../../util/util";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   console.log(props);
@@ -15,12 +15,9 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     const hide = message.loading("Loading...", 0);
     const values = await form.validateFields();
 
-    const { scores } = props.modalState.initialValues;
-
     const scoreMappings: any = {};
-    scores.forEach((score: any, index: number) => {
-      // id : value
-      scoreMappings[parseInt(score.id)] = parseInt(values.scores[index]);
+    values.scores.forEach((score: any, index: number) => {
+      scoreMappings[parseInt(score.id)] = parseInt(score.score); // id : value
     });
 
     console.log(scoreMappings);
@@ -41,8 +38,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
         })
         .catch(err => {
           hide();
-          message.error("Error: Please ask for help", 2);
-          console.log(err);
+          handleAxiosError(err);
         });
     } catch (info) {
       console.log("Validate Failed:", info);
@@ -75,8 +71,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                     <Row gutter={[8, 0]}>
                       <Col span={24}>
                         <Form.Item
-                          name={[field.name]}
-                          fieldKey={[field.fieldKey]}
+                          name={[field.name, "score"]}
+                          fieldKey={[field.fieldKey, "score"]}
                           rules={[FORM_RULES.requiredRule]}
                           label={scores[field.fieldKey].criteria.name}
                         >

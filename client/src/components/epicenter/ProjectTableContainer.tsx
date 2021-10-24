@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Button, Modal } from "antd";
+import { Typography, Button, Modal, message } from "antd";
 import useAxios from "axios-hooks";
 
 import ProjectTable from "./ProjectTable";
@@ -10,6 +10,7 @@ import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const { Title } = Typography;
 
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const ProjectTableContainer: React.FC<Props> = props => {
+  console.log(props);
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -35,24 +37,23 @@ const ProjectTableContainer: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  /*
-  const deleteScores = async () => {
+  const deleteScores = async (values: any) => {
+    const ballotIds = values.scores.map((ballot: any) => ballot.id);
+    const ids = {
+      ids: ballotIds,
+    };
     try {
       axios
-        .patch(`/project/batch/update`, { ...values })
+        .delete(`/ballots/batch/delete`, { data: ids })
         .then(res => {
-          hide();
-
           if (res.data.error) {
             message.error(res.data.message, 2);
           } else {
             message.success("Success!", 2);
-            props.setModalState({ visible: false, initialValues: null });
             props.refetch();
           }
         })
         .catch(err => {
-          hide();
           message.error("Error: Please ask for help", 2);
           console.log(err);
         });
@@ -60,12 +61,8 @@ const ProjectTableContainer: React.FC<Props> = props => {
       console.log("Validate Failed:", info);
     }
   };
-  */
 
   const openModal = (values: any) => {
-    // const newBallot = values.ballot.map((ballot: any) => ballot.name);
-    console.log(values);
-
     setModalState({
       visible: true,
       initialValues: { ...values },
@@ -74,14 +71,14 @@ const ProjectTableContainer: React.FC<Props> = props => {
   const { confirm } = Modal;
   const BallotModal = BallotEditFormModal;
 
-  function showConfirm() {
+  function showConfirm(values: any) {
+    const ballotIds = values.scores.map((ballot: any) => ballot.id);
     confirm({
       title: "Do you want to delete these scores?",
       icon: <ExclamationCircleOutlined />,
       content: "This cannot be undone",
       onOk() {
-        // deleteScores();
-        console.log("delete");
+        deleteScores(values);
       },
     });
   }
@@ -89,56 +86,63 @@ const ProjectTableContainer: React.FC<Props> = props => {
   return (
     <div>
       {props.projects.map((project: Project) => {
-        console.log(project);
         const generateData = (categoryId: number) => {
           const data: any = [];
+          const judgeBallots: any = [];
           let total = 0;
           const ballotScores: any = [];
 
           project.ballots.forEach((ballot: Ballot) => {
-            // console.log(ballot);
             if (ballot.criteria.categoryId === categoryId) {
               data[ballot.user.name] = (data[ballot.user.name] || 0) + ballot.score;
+              if (judgeBallots[ballot.user.name]) {
+                judgeBallots[ballot.user.name].push(ballot);
+              } else {
+                judgeBallots[ballot.user.name] = [];
+                judgeBallots[ballot.user.name].push(ballot);
+              }
               total += ballot.score;
               ballotScores.push(ballot);
-              console.log(ballot);
             }
           });
 
-          const editButton = (
-            <Button
-              type="primary"
-              onClick={() => {
-                openModal({ scores: ballotScores });
-              }}
-            >
-              Edit
-            </Button>
-          );
-          const deleteButton = (
-            <Button
-              type="primary"
-              onClick={() => {
-                showConfirm();
-              }}
-            >
-              Delete
-            </Button>
-          );
+          const newData = Object.entries(data).map((e: any) => {
+            const editButton = (
+              <Button
+                type="primary"
+                onClick={() => {
+                  openModal({ scores: judgeBallots[e[0]] });
+                }}
+              >
+                Edit
+              </Button>
+            );
 
-          const newData = Object.entries(data).map(e => ({
-            judge: e[0],
-            total: e[1],
-            editScore: editButton,
-            deleteScore: deleteButton,
-          }));
+            const deleteButton = (
+              <Button
+                type="primary"
+                onClick={() => {
+                  showConfirm({ scores: judgeBallots[e[0]] });
+                }}
+              >
+                Delete
+              </Button>
+            );
+
+            return {
+              judge: e[0],
+              total: e[1],
+              editScore: editButton,
+              deleteScore: deleteButton,
+            };
+          });
+
           newData.push({
             judge: "Average",
             total: Math.round((total / newData.length) * 10) / 10,
             editScore: <></>,
             deleteScore: <></>,
           });
-          console.log(newData);
           return newData;
         };
 
