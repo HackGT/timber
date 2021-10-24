@@ -56,8 +56,9 @@ const EpicenterProjectBoxes: React.FC = () => {
       });
     });
 
-    console.log(scoreData);
-    updatedData = updatedData.sort((a: any, b: any) => scoreData[b.id] - scoreData[a.id]);
+    updatedData = updatedData.sort(
+      (a: any, b: any) => (scoreData[b.id] || 0) - (scoreData[a.id] || 0)
+    );
   }
 
   const categoryOptions = categoriesData

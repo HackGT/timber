@@ -18,7 +18,7 @@ const columns = [
     dataIndex: "name",
     key: "name",
     defaultSortOrder: "ascend" as SortOrder,
-    sorter: (a: any, b: any) => a.average - b.average,
+    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "Average Score",
@@ -75,7 +75,7 @@ const RankingTable = () => {
 
               data.push({
                 name: project.name,
-                average: score / ballotsNumber,
+                average: ballotsNumber > 0 ? score / ballotsNumber : 0,
                 numJudged: number,
                 editScore: editButton,
               });
