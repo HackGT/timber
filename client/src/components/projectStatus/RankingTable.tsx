@@ -15,7 +15,7 @@ const { Title } = Typography;
 const columns = [
   {
     title: "Project Name",
-    dataIndex: "name",
+    render: (row: any) => `${row.id} - ${row.name}`,
     key: "name",
     defaultSortOrder: "ascend" as SortOrder,
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
@@ -55,18 +55,16 @@ const RankingTable = () => {
             <Title level={4}>{category.name}</Title>
             {category.projects.forEach((project: Project) => {
               let score = 0;
-              let number = 0;
-              let ballotsNumber = 0;
+              let numJudged = 0;
               const judges = new Set();
               let editButton;
               category.criterias.forEach((criteria: Criteria) => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
-                    ballotsNumber++;
 
                     if (!judges.has(ballot.userId)) {
-                      number++;
+                      numJudged += 1;
                       judges.add(ballot.userId);
                     }
                   }
@@ -74,9 +72,10 @@ const RankingTable = () => {
               });
 
               data.push({
+                id: project.id,
                 name: project.name,
-                average: ballotsNumber > 0 ? score / ballotsNumber : 0,
-                numJudged: number,
+                average: numJudged > 0 ? score / numJudged : 0,
+                numJudged,
                 editScore: editButton,
               });
             })}
