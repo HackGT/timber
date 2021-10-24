@@ -10,11 +10,14 @@ import ProjectTableContainer from "./ProjectTableContainer";
 const { Title } = Typography;
 
 const Dashboard = () => {
-  const [{ data: projects, loading: projectLoading, error: projectError }] = useAxios("/projects");
+  const [{ data: projects, loading: projectLoading, error: projectError }, refetch] =
+    useAxios("/projects");
+
+  console.log(projects);
 
   return (
     <div>
-      <ProjectTableContainer projects={projects} isSponsor={false}/>
+      <ProjectTableContainer projects={projects} isSponsor={false} refetch={refetch} />
     </div>
   );
 };

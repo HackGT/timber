@@ -12,6 +12,21 @@ const columns = [
     dataIndex: "total",
     key: "total",
   },
+  {
+    title: "Edit Score",
+    dataIndex: "editScore",
+    key: "editScore",
+  },
+  {
+    title: "Delete Score",
+    dataIndex: "deleteScore",
+    key: "deleteScore",
+  },
+  {
+    title: "",
+    dataIndex: "modal",
+    key: "modal",
+  },
 ];
 
 type ProjectTableType = {

@@ -16,39 +16,35 @@ const CategoryGroup: React.FC = () => {
   const [{ data, loading, error }] = useAxios(
     `/projects/special/category-group/${categoryGroupId}`
   );
-  const [{ data: categoryGroup, loading: categoryGroupLoading, error: categoryGroupError }] = useAxios(
-    `/categorygroups/${categoryGroupId}`
-  );
+  const [{ data: categoryGroup, loading: categoryGroupLoading, error: categoryGroupError }] =
+    useAxios(`/categorygroups/${categoryGroupId}`);
 
-  if (loading) {
+  if (loading || categoryGroupLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
+  if (error || categoryGroupError) {
     return <ErrorDisplay error={error} />;
   }
+  console.log(categoryGroup);
 
   return (
     <>
       <Title>{categoryGroup.name}</Title>
-      
-        <Title level={2}>Projects</Title>
-        <List
+
+      <Title level={2}>Projects</Title>
+      <List
         grid={{ gutter: 8, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
         loading={loading}
         dataSource={data}
         renderItem={(project: Project) => (
           <List.Item>
-            <ProjectCard
-              key={project.id}
-              project={project}
-            />
+            <ProjectCard key={project.id} project={project} />
           </List.Item>
         )}
       />
-        <Title level={2}> Scores </Title>
-        <ProjectTableContainer projects={data} isSponsor />
-      
+      <Title level={2}> Scores </Title>
+      <ProjectTableContainer projects={data} isSponsor />
     </>
   );
 };

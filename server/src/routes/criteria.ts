@@ -16,7 +16,12 @@ criteriaRoutes.route("/").get(
       filter.categoryId = categoryId;
     }
 
-    const criteria = await prisma.criteria.findMany({ where: filter });
+    const criteria = await prisma.criteria.findMany({
+      where: filter,
+      include: {
+        ballots: true,
+      },
+    });
     res.status(200).json(criteria);
   })
 );

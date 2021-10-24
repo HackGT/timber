@@ -7,7 +7,7 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
-import RankingEditFormModal from "./RankingEditFormModal";
+import RankingEditFormModal from "./BallotEditFormModal";
 import { ModalState } from "../../util/FormModalProps";
 
 const { Title } = Typography;
@@ -28,11 +28,6 @@ const columns = [
     dataIndex: "numJudged",
     key: "numJudged",
   },
-  {
-    title: "Edit Score",
-    dataIndex: "editScore",
-    key: "editScore",
-  },
 ];
 
 const Ranking = () => {
@@ -45,18 +40,6 @@ const Ranking = () => {
     visible: false,
     initialValues: null,
   } as ModalState);
-
-  // TODO: Update to match ballot info
-  const openModal = (values: any) => {
-    // const newBallot = values.ballot.map((ballot: any) => ballot.name);
-    console.log(values);
-
-    setModalState({
-      visible: true,
-      initialValues: { ...values },
-    });
-  };
-  const Modal = RankingEditFormModal;
   return (
     <div>
       {categoryLoading || ballotLoading ? (
@@ -80,11 +63,7 @@ const Ranking = () => {
                       if (ballot.projectId === project.id) {
                         score += ballot.score;
                         ballotsNumber++;
-                        editButton = (
-                          <Button type="primary" onClick={() => openModal(ballot)}>
-                            Edit
-                          </Button>
-                        );
+
                         if (!judges.has(ballot.userId)) {
                           number++;
                           judges.add(ballot.userId);
@@ -113,7 +92,6 @@ const Ranking = () => {
           })}
         </>
       )}
-      <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />
     </div>
   );
 };
