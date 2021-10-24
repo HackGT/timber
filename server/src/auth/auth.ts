@@ -5,10 +5,11 @@ import dotenv from "dotenv";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { Strategy as GroundTruthStrategy } from "passport-ground-truth";
 import { UserRole } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
 
 import { app } from "../app";
 import { prisma } from "../common";
-import { StatusCodes } from "http-status-codes";
+import { queryRegistration } from "../registration";
 
 dotenv.config();
 
@@ -101,6 +102,47 @@ passport.use(
       callbackURL: "/auth/login/callback",
     },
     async (req, accessToken, refreshToken, profile, done) => {
+      const query = `
+          query($search: String!) {
+              search_user(search: $search, offset: 0, n: 1) {
+                  users {
+                      confirmed
+                      confirmationBranch
+                      application {
+                          type
+                      }
+                  }
+              }
+          }
+      `;
+
+      const variables = {
+        search: profile.email,
+      };
+
+      let userRole: UserRole = UserRole.GENERAL;
+      let userIsJudging = false;
+      try {
+        const data = await queryRegistration(query, variables);
+
+        if (
+          data &&
+          data.data.search_user.users.length > 0 &&
+          data.data.search_user.users[0].confirmed &&
+          data.data.search_user.users[0].confirmationBranch
+        ) {
+          const { confirmationBranch } = data.data.search_user.users[0];
+
+          if (confirmationBranch === "Judge Confirmation") {
+            userIsJudging = true;
+          } else if (confirmationBranch === "Sponsor Confirmation") {
+            userRole = UserRole.SPONSOR;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
       let user = await prisma.user.findUnique({
         where: {
           email: profile.email,
@@ -114,7 +156,8 @@ passport.use(
             uuid: profile.uuid,
             email: profile.email,
             token: profile.token,
-            role: UserRole.GENERAL,
+            role: userRole,
+            isJudging: userIsJudging,
           },
         });
       } else {
