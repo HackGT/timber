@@ -19,14 +19,20 @@ const ProjectCard: React.FC<Props> = props => {
   return (
     <Card
       key={props.key}
-      title={props.project.name}
+      title={
+        <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
+      }
       extra={
         props.user &&
         [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
       }
     >
       <p>Expo: #{props.project.expo}</p>
-      <p>Table: {props.project.table}</p>
+      <p>
+        <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
+          Join Video Call
+        </a>
+      </p>
       {tags.map((tag: string) => (
         <Tag>{tag}</Tag>
       ))}

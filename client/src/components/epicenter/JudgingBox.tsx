@@ -88,7 +88,7 @@ const JudgingBox: React.FC<Props> = props => {
         })}
       </>
       <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
-        Join Meeting Room
+        Join Video Call
       </a>
       <Text strong>Change Round</Text>
       <div>
