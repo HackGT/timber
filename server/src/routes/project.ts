@@ -62,7 +62,6 @@ projectRoutes.route("/special/prize-validation").post(async (req, res) => {
   } else {
     res.status(200).json(resp);
   }
-  res.status(200).send({ error: false });
 });
 
 projectRoutes.route("/special/devpost-validation").post(async (req, res) => {
