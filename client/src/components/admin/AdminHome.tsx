@@ -6,6 +6,7 @@ import {
   SettingOutlined,
   ContainerOutlined,
   FolderOutlined,
+  GroupOutlined,
 } from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
@@ -19,7 +20,7 @@ const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
-  const paneKeys = ["config", "users", "categories", "categorygroups"];
+  const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
   const history = useHistory();
 
@@ -118,6 +119,34 @@ const AdminHome: React.FC = () => {
         />
       );
       break;
+    case "tablegroups":
+      content = (
+        <AdminContentList
+          queryUrl="/tablegroups"
+          title="Table Groups"
+          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+          modal={CategoryFormModal}
+          searchFilterField="name"
+          renderItem={(item, index, openModal) => (
+            <List.Item style={{ backgroundColor: "white" }}>
+              <List.Item.Meta
+                title={item.name}
+                description={item.criterias
+                  .map(
+                    (criteria: any) =>
+                      `${criteria.name} [${criteria.minScore}-${criteria.maxScore}]`
+                  )
+                  .join(", ")}
+                avatar={<ContainerOutlined />}
+              />
+              <Button onClick={() => openModal(item)}>Edit</Button>
+            </List.Item>
+          )}
+          key="tablegroups"
+          listBordered
+        />
+      );
+      break;
   }
 
   const handleMenuClick = (event: any) => {
@@ -153,6 +182,9 @@ const AdminHome: React.FC = () => {
             </Menu.Item>
             <Menu.Item key="categorygroups" icon={<FolderOutlined />}>
               Category Groups
+            </Menu.Item>
+            <Menu.Item key="tablegroups" icon={<GroupOutlined />}>
+              Table Groups
             </Menu.Item>
           </Menu>
         </Sider>
