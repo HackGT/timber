@@ -41,7 +41,13 @@ const CategoryGroup: React.FC = () => {
         dataSource={data}
         renderItem={(project: Project) => (
           <List.Item>
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} tablegroup={{
+              id: "",
+              name: "",
+              color: "",
+              shortCode: "",
+              hackathonId: ""
+            }} />
           </List.Item>
         )}
       />
