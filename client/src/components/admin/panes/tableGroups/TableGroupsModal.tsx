@@ -65,7 +65,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
   return (
     <Modal
       visible={props.modalState.visible}
-      title={props.modalState.initialValues ? `Manage Config` : `Create Config`}
+      title={props.modalState.initialValues ? `Manage Table Groups` : `Create Table Group`}
       okText={props.modalState.initialValues ? "Update" : "Create"}
       cancelText="Cancel"
       onCancel={() => props.setModalState({ visible: false, initialValues: null })}
