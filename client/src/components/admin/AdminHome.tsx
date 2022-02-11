@@ -14,6 +14,7 @@ import UserFormModal from "./panes/users/UserFormModal";
 import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
+import TableGroupsModal from "./panes/tableGroups/TableGroupsModal";
 import CategoryCard from "./panes/categories/CategoryCard";
 
 const { Title, Text } = Typography;
@@ -125,18 +126,13 @@ const AdminHome: React.FC = () => {
           queryUrl="/tablegroups"
           title="Table Groups"
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
-          modal={CategoryFormModal}
+          modal={TableGroupsModal}
           searchFilterField="name"
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
                 title={item.name}
-                description={item.criterias
-                  .map(
-                    (criteria: any) =>
-                      `${criteria.name} [${criteria.minScore}-${criteria.maxScore}]`
-                  )
-                  .join(", ")}
+                description={`[${item.shortCode}] - ${item.color}`}
                 avatar={<ContainerOutlined />}
               />
               <Button onClick={() => openModal(item)}>Edit</Button>
