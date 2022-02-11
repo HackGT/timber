@@ -6,7 +6,7 @@ import {
   SettingOutlined,
   ContainerOutlined,
   FolderOutlined,
-  GroupOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
@@ -133,7 +133,7 @@ const AdminHome: React.FC = () => {
               <List.Item.Meta
                 title={item.name}
                 description={`[${item.shortCode}] - ${item.color}`}
-                avatar={<ContainerOutlined />}
+                avatar={<TableOutlined />}
               />
               <Button onClick={() => openModal(item)}>Edit</Button>
             </List.Item>
@@ -179,7 +179,7 @@ const AdminHome: React.FC = () => {
             <Menu.Item key="categorygroups" icon={<FolderOutlined />}>
               Category Groups
             </Menu.Item>
-            <Menu.Item key="tablegroups" icon={<GroupOutlined />}>
+            <Menu.Item key="tablegroups" icon={<TableOutlined />}>
               Table Groups
             </Menu.Item>
           </Menu>
