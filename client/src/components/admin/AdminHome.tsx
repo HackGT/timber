@@ -6,6 +6,7 @@ import {
   SettingOutlined,
   ContainerOutlined,
   FolderOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
@@ -13,13 +14,14 @@ import UserFormModal from "./panes/users/UserFormModal";
 import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
+import TableGroupsModal from "./panes/tableGroups/TableGroupsModal";
 import CategoryCard from "./panes/categories/CategoryCard";
 
 const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
-  const paneKeys = ["config", "users", "categories", "categorygroups"];
+  const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
   const history = useHistory();
 
@@ -118,6 +120,29 @@ const AdminHome: React.FC = () => {
         />
       );
       break;
+    case "tablegroups":
+      content = (
+        <AdminContentList
+          queryUrl="/tablegroups"
+          title="Table Groups"
+          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+          modal={TableGroupsModal}
+          searchFilterField="name"
+          renderItem={(item, index, openModal) => (
+            <List.Item style={{ backgroundColor: "white" }}>
+              <List.Item.Meta
+                title={item.name}
+                description={`[${item.shortCode}] - ${item.color}`}
+                avatar={<TableOutlined />}
+              />
+              <Button onClick={() => openModal(item)}>Edit</Button>
+            </List.Item>
+          )}
+          key="tablegroups"
+          listBordered
+        />
+      );
+      break;
   }
 
   const handleMenuClick = (event: any) => {
@@ -153,6 +178,9 @@ const AdminHome: React.FC = () => {
             </Menu.Item>
             <Menu.Item key="categorygroups" icon={<FolderOutlined />}>
               Category Groups
+            </Menu.Item>
+            <Menu.Item key="tablegroups" icon={<TableOutlined />}>
+              Table Groups
             </Menu.Item>
           </Menu>
         </Sider>
