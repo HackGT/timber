@@ -29,7 +29,7 @@ const ProjectCard: React.FC<Props> = props => {
         [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
       }
     >
-      <p>{props.tablegroup.color}+ {props.tablegroup.name}</p>
+      <p>{props.tablegroup.color}+ {props.tablegroup.shortCode}</p>
       <p>Expo: #{props.project.expo}</p>
       <p>
         <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
