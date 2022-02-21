@@ -134,7 +134,7 @@ const ProjectGallery: React.FC<Props> = props => {
               key={project.id}
               project={project}
               user={props.user}
-              tablegroup={tablegroupsData}
+              tablegroups={tablegroupsData}
               onClick={() => openModal(project)}
             />
           </List.Item>

@@ -1,8 +1,8 @@
 export type TableGroup = {
-    id: string;
+    id: number;
     name: string;
     color: string;
     shortCode: string;
-    hackathonId: string;
+    hackathonId: number;
 
   };
