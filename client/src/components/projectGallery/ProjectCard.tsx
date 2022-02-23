@@ -16,9 +16,8 @@ interface Props {
 }
 
 const ProjectCard: React.FC<Props> = props => {
-  const tags = props.project.categories.map((category: Category) => category.name);
   const tablegroup = props.tablegroups.filter((group: TableGroup) => group.id==props.project.id);
-  return (
+  const tags = props.project.categories.map((category: Category) => category.name);  return (
     <Card
       key={props.key}
       title={
@@ -29,7 +28,7 @@ const ProjectCard: React.FC<Props> = props => {
         [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
       }
     >
-      <p>{tablegroup[0].name}: {tablegroup[0].color}</p>
+      <p>{tablegroup[0].name}:  {tablegroup[0].color}</p>
       <p>Expo: #{props.project.expo}</p>
       <p>
         <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
