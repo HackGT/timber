@@ -249,6 +249,8 @@ projectRoutes.route("/:id").patch(
   asyncHandler(async (req, res) => {
     let members: any[] = [];
     let categories: any[] = [];
+    let tableGroup;
+
     if (req.body.members) {
       members = req.body.members;
       delete req.body.members;
@@ -259,11 +261,27 @@ projectRoutes.route("/:id").patch(
       delete req.body.categories;
     }
 
+    if (req.body.tableGroupId) {
+      tableGroup = parseInt(req.body.tableGroupId);
+      delete req.body.tableGroupId;
+    }
+
     const dbCategories = await prisma.category.findMany({
       where: { name: { in: categories } },
     });
 
     categories = dbCategories.map((category: any) => ({ id: category.id }));
+    
+    if (tableGroup !== undefined) {
+      const dbTableGroup = await prisma.tableGroup.findUnique({
+        where: { id: tableGroup },
+      });
+      if (dbTableGroup !== null) {
+        tableGroup = {id: dbTableGroup.id}
+      }
+      console.log(tableGroup);
+    }
+
 
     const updated = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
@@ -283,10 +301,14 @@ projectRoutes.route("/:id").patch(
         categories: {
           connect: categories,
         },
+        tableGroup: {
+          connect: tableGroup !== undefined ? tableGroup : {id: 1},
+        }
       },
       include: {
         categories: true,
         members: true,
+        tableGroup: true,
       },
     });
 
