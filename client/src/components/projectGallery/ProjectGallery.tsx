@@ -38,7 +38,6 @@ const ProjectGallery: React.FC<Props> = props => {
 
   const openModal = (values: any) => {
     const newCategories = values.categories.map((category: any) => category.name);
-    // const newTableGroup = values.tablegroup.map((tableGroup: any) => tableGroup.id);
     console.log(values);
     setModalState({
       visible: true,
