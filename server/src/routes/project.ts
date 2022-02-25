@@ -279,7 +279,6 @@ projectRoutes.route("/:id").patch(
       if (dbTableGroup !== null) {
         tableGroup = {id: dbTableGroup.id}
       }
-      console.log(tableGroup);
     }
 
 
