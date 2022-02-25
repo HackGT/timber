@@ -16,28 +16,38 @@ const EpicenterProjectBoxes: React.FC = () => {
     useAxios("/projects");
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
     useAxios("/categories");
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError}] =
+    useAxios("/tablegroups")
+  
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
   const [sortCondition, setSortCondition] = useState("default");
   const [round, setRound] = useState(0);
   const [expo, setExpo] = useState(0);
+  const [tableGroup, setTableGroup] = useState(0)
+  const [tableNumber, setTableNumber] = useState(0)
 
-  if (projectsLoading || categoriesLoading) {
+  if (projectsLoading || categoriesLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError) {
+  if (projectsError || categoriesError || tableGroupsLoading) {
     return <ErrorDisplay error={projectsError} />;
   }
-
+  
   let updatedData = projectsData
     ? projectsData
         .filter((project: any) => project.name.toLowerCase().includes(searchText.toLowerCase()))
         .filter((project: any) => round === 0 || project.round === round)
         .filter((project: any) => expo === 0 || project.expo === expo)
-    : [];
+        .filter((project: any) => tableGroup === 0 || project.tableGroupId === tableGroup)
+        .filter((project: any) => tableNumber === 0 || project.table === tableNumber)
+        
 
+    : [];
+    console.log(projectsData)
+    console.log(tableGroupsData)
   updatedData = selectedCategory
     ? updatedData.filter((project: any) =>
         project.categories.map((category: any) => category.id).includes(selectedCategory)
@@ -67,18 +77,37 @@ const EpicenterProjectBoxes: React.FC = () => {
         value: category.id,
       }))
     : [];
+  let maxRound = 0
+  let maxExpo = 0
+  let maxTableNumber = 0
+  for (let i = 0; i < projectsData.length; i++ ) {
+    if (projectsData[i].round > maxRound) {
+      maxRound = projectsData[i].round
+    }
+    if (projectsData[i].expo > maxExpo) {
+      maxExpo = projectsData[i].expo
+    }
+    if (projectsData[i].table > maxTableNumber) {
+      maxTableNumber = projectsData[i].table
 
+    }
+  }
+  
+  const maxRoundArr = new Array(maxRound).fill(0);
+  const maxExpoArr = new Array(maxExpo).fill(0);
+  const maxTableNumberArr = new Array(maxTableNumber).fill(0);
+  
   return (
     <>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
-        <Col xs={24} sm={8} md={6}>
+        <Col xs={24} sm={8} md={5}>
           <Search
             placeholder="Search"
             value={searchText}
             onChange={event => setSearchText(event.target.value)}
           />
         </Col>
-        <Col xs={24} sm={16} md={8}>
+        <Col xs={24} sm={16} md={5}>
           <Select
             placeholder="Filter by Category"
             style={{ width: "100%" }}
@@ -88,19 +117,40 @@ const EpicenterProjectBoxes: React.FC = () => {
             allowClear
           />
         </Col>
-        <Col xs={24} sm={8} md={3}>
+        <Col xs={24} sm={8} md={2}>
           <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
-            <Option value={0}>R: All</Option>
-            <Option value={1}>R: 1</Option>
+          <Option value={0}>R: All</Option>
+          {maxRoundArr.map((project: any, index)=><Option value={index + 1}> R: {index + 1}</Option>)}
+            {/* <Option value={1}>R: 1</Option>
             <Option value={2}>R: 2</Option>
-            <Option value={3}>R: 2</Option>
+            <Option value={3}>R: 3</Option> */}
+          </Select>
+        </Col>
+        <Col xs={24} sm={8} md={2}>
+          <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>
+            <Option value={0}>E: All</Option>
+            {/* // Needs to be coverted to Project type */}
+            {maxExpoArr.map((project: any, index)=><Option value={index + 1}> E: {index + 1}</Option>)}
+            {/* <Option value={1}>E: 1</Option>}
+            <Option value={2}>E: 2</Option> */}
           </Select>
         </Col>
         <Col xs={24} sm={8} md={3}>
-          <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>
-            <Option value={0}>E: All</Option>
-            <Option value={1}>E: 1</Option>
-            <Option value={2}>E: 2</Option>
+          <Select value={tableGroup} style={{ width: "100%" }} onChange={value => setTableGroup(value)}>
+            <Option value={0}>Table Group: All</Option>
+            {tableGroupsData.map((tableG: any)=><Option value={tableG.id}> Table Group: {tableG.name}</Option>)}
+            {/* <Option value={1}>Table Group: 1</Option>
+            <Option value={2}>Table Group: 2</Option>
+            <Option value={3}>Table Group: 3</Option> */}
+          </Select>
+        </Col>
+        <Col xs={24} sm={8} md={3}>
+          <Select value={tableNumber} style={{ width: "100%" }} onChange={value => setTableNumber(value)}>
+            <Option value={0}>Table Number: All</Option>
+            {maxTableNumberArr.map((project: any, index)=><Option value={index + 1}> Table Number: {index + 1}</Option>)}
+            {/* <Option value={1}>Table Number: 1</Option>
+            <Option value={2}>Table Number: 2</Option>
+            <Option value={3}>Table Number: 3</Option> */}
           </Select>
         </Col>
         <Col xs={24} sm={8} md={4}>
