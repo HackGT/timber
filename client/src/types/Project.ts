@@ -15,8 +15,8 @@ export type Project = {
   categories: Category[];
   assignment: Assignment[];
   ballots: Ballot[];
+  tableGroupId: number;
   /*
-  tableGroup: TableGroup?;
   hackathon: Hackathon?;
   members: User[];
   */

@@ -16,9 +16,14 @@ interface Props {
 }
 
 const ProjectCard: React.FC<Props> = props => {
-  const tablegroup = props.tablegroups.filter((group: TableGroup) => group.id==props.project.id);
-  const tags = props.project.categories.map((category: Category) => category.name); 
-  return(
+  console.log(props.tablegroups);
+  const tablegroup = props.tablegroups.filter(
+    (group: TableGroup) => group.id === props.project.tableGroupId
+  );
+  const tags = props.project.categories.map((category: Category) => category.name);
+
+  console.log(tablegroup);
+  return (
     <Card
       key={props.key}
       title={
