@@ -7,17 +7,27 @@ import axios from "axios";
 import { FORM_RULES } from "../../util/util";
 import { FormModalProps } from "../../util/FormModalProps";
 import { Category } from "../../types/Category";
+import { TableGroup } from "../../types/TableGroup";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
-  const [{ data: categoryData, loading }] = useAxios("/categories", { useCache: false });
+  const [{ data: categoryData, loading: categoryLoading }] = useAxios("/categories", { useCache: false });
+
+  const [{ data: tableGroupData, loading: tableGroupLoading }] = useAxios("/tablegroups", { useCache: false });
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
-  const categoryOptions = loading
+  const categoryOptions = categoryLoading
     ? []
     : categoryData.map((category: Category) => ({
         label: category.name,
         value: category.name,
+      }));
+
+  const tableGroupOptions = tableGroupLoading
+    ? []
+    : tableGroupData.map((tableGroup: TableGroup) => ({
+        label: tableGroup.name,
+        value: tableGroup.id,
       }));
 
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
@@ -136,7 +146,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                   placeholder="Select categories"
                   mode="multiple"
                   options={categoryOptions}
-                  loading={loading}
+                  loading={categoryLoading}
                   showSearch
                   optionFilterProp="label"
                 />
@@ -174,6 +184,20 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             <Col xs={24} sm={12}>
               <Form.Item name="expo" label="Expo">
                 <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={[8, 0]}>
+            <Col span={24}>
+              <Form.Item name="tableGroupId" label="Table Group">
+                <Select
+                  placeholder="Select table group"
+                  options={tableGroupOptions}
+                  loading={tableGroupLoading}
+                  showSearch
+                  optionFilterProp="label"
+                />
               </Form.Item>
             </Col>
           </Row>
