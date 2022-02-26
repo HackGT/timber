@@ -12,6 +12,7 @@ import ProjectEditFormModal from "./ProjectEditFormModal";
 import { config } from "process";
 import { UserRole } from "../../types/UserRole";
 import { FORM_RULES } from "../../util/util";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -26,6 +27,9 @@ const ProjectGallery: React.FC<Props> = props => {
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
     useAxios("/categories");
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
+  
+  const [{ loading: tablegroupsLoading, data: tablegroupsData, error: tablegroupsError }] = useAxios("/tablegroups")
+  
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
@@ -35,6 +39,7 @@ const ProjectGallery: React.FC<Props> = props => {
     visible: false,
     initialValues: null,
   } as ModalState);
+
 
   const openModal = (values: any) => {
     const newCategories = values.categories.map((category: any) => category.name);
@@ -129,6 +134,7 @@ const ProjectGallery: React.FC<Props> = props => {
               key={project.id}
               project={project}
               user={props.user}
+              tablegroups={tablegroupsData}
               onClick={() => openModal(project)}
             />
           </List.Item>

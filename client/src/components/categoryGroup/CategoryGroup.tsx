@@ -39,11 +39,6 @@ const CategoryGroup: React.FC = () => {
         grid={{ gutter: 8, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
         loading={loading}
         dataSource={data}
-        renderItem={(project: Project) => (
-          <List.Item>
-            <ProjectCard key={project.id} project={project} />
-          </List.Item>
-        )}
       />
       <Title level={2}> Scores </Title>
       <CategoryGroupProjectTableContainer projects={data} categoryIds={categoryIds} isSponsor />

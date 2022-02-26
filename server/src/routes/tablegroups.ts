@@ -2,6 +2,7 @@ import express from "express";
 
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
+import { getConfig } from "../utils/utils";
 import { isAdmin } from "../auth/auth";
 
 export const tableGroupRoutes = express.Router();
@@ -24,8 +25,13 @@ tableGroupRoutes.route("/").get(
 tableGroupRoutes.route("/").post(
   isAdmin,
   asyncHandler(async (req, res) => {
+    const config = await getConfig();
+
     const createdTableGroup = await prisma.tableGroup.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        hackathonId: config.currentHackathonId,
+      },
     });
 
     res.status(201).json(createdTableGroup);
