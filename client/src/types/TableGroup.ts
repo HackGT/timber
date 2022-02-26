@@ -5,6 +5,6 @@ export type TableGroup = {
   name: string;
   shortcode: string;
   color: string;
-  projects: Project[];
   hackathonId: number;
+  projects: Project[];
 };
