@@ -22,6 +22,19 @@ tableGroupRoutes.route("/").get(
   })
 );
 
+tableGroupRoutes.route("/:id").get(
+  asyncHandler(async (req, res) => {
+    const tableGroupId: number = parseInt(req.params.id);
+    const tableGroup = await prisma.tableGroup.findUnique({
+      where: {
+        id: tableGroupId,
+      },
+    });
+
+    res.status(200).json(tableGroup);
+  })
+);
+
 tableGroupRoutes.route("/").post(
   isAdmin,
   asyncHandler(async (req, res) => {
