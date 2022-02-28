@@ -174,12 +174,13 @@ model Session {
 }
 
 model TableGroup {
-  id        Int       @id @default(autoincrement())
-  name      String
-  shortCode String
-  color     String
-  projects  Project[]
-  hackathon Hackathon @relation(fields: [hackathonId], references: [id])
+  id            Int       @id @default(autoincrement())
+  name          String
+  shortCode     String
+  color         String
+  projects      Project[]
+  hackathon     Hackathon @relation(fields: [hackathonId], references: [id])
+  tableCapacity Int
 
   hackathonId Int
   @@map("table_group")
