@@ -180,6 +180,7 @@ model TableGroup {
   color     String
   projects  Project[]
   hackathon Hackathon @relation(fields: [hackathonId], references: [id])
+  tableSize Int
 
   hackathonId Int
   @@map("table_group")
