@@ -96,99 +96,99 @@ projectRoutes.route("/").post(async (req, res) => {
 
   const data = req.body.submission;
 
-  const teamValidation = await validateTeam(req.user, data.members);
-  if (teamValidation.error) {
-    res.status(400).send(teamValidation);
-    return;
-  }
+  // const teamValidation = await validateTeam(req.user, data.members);
+  // if (teamValidation.error) {
+  //   res.status(400).send(teamValidation);
+  //   return;
+  // }
 
-  const devpostValidation = await validateDevpost(data.devpostUrl, data.name);
-  if (devpostValidation.error) {
-    res.status(400).send(devpostValidation);
-    return;
-  }
+  // const devpostValidation = await validateDevpost(data.devpostUrl, data.name);
+  // if (devpostValidation.error) {
+  //   res.status(400).send(devpostValidation);
+  //   return;
+  // }
 
   let dailyUrl;
-  try {
-    const response = await axios.post(
-      "https://api.daily.co/v1/rooms",
-      {},
-      {
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
-        },
-      }
-    );
+  // try {
+  //   const response = await axios.post(
+  //     "https://api.daily.co/v1/rooms",
+  //     {},
+  //     {
+  //       headers: {
+  //         "Accept": "application/json",
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
+  //       },
+  //     }
+  //   );
 
-    dailyUrl = response.data.url || "";
-  } catch (err) {
-    console.error(err);
-    res.status(400).send({
-      error: true,
-      message: "Submission could not be saved - There was an error creating a Daily call",
-    });
-    return;
-  }
+  //   dailyUrl = response.data.url || "";
+  // } catch (err) {
+  //   console.error(err);
+  //   res.status(400).send({
+  //     error: true,
+  //     message: "Submission could not be saved - There was an error creating a Daily call",
+  //   });
+  //   return;
+  // }
   console.log(data);
-  try {
-    const logInteractions = (teamValidation.registrationUsers || []).map(
-      (registrationMember: any) =>
-        new Promise<null>((resolve, reject) => {
-          if (registrationMember.id) {
-            try {
-              axios.post(
-                String(process.env.CHECK_IN_URL),
-                {
-                  uuid: registrationMember.id,
-                  eventID: "616f450fd020f00022987288",
-                  eventType: "submission-expo",
-                  interactionType: "inperson",
-                },
-                {
-                  headers: {
-                    "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
+  // try {
+  //   const logInteractions = /* teamValidation.registrationUsers || */ [].map(
+  //     (registrationMember: any) =>
+  //       new Promise<null>((resolve, reject) => {
+  //         if (registrationMember.id) {
+  //           try {
+  //             axios.post(
+  //               String(process.env.CHECK_IN_URL),
+  //               {
+  //                 uuid: registrationMember.id,
+  //                 eventID: "616f450fd020f00022987288",
+  //                 eventType: "submission-expo",
+  //                 interactionType: "inperson",
+  //               },
+  //               {
+  //                 headers: {
+  //                   "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
+  //                   "Accept": "application/json",
+  //                   "Content-Type": "application/json",
+  //                 },
+  //               }
+  //             );
 
-              resolve(null);
-            } catch (err) {
-              console.error(err);
-              reject(err);
-            }
-          }
-        })
-    );
+  //             resolve(null);
+  //           } catch (err) {
+  //             console.error(err);
+  //             reject(err);
+  //           }
+  //         }
+  //       })
+  //   );
 
-    await Promise.all(logInteractions);
-  } catch (error: any) {
-    console.error(error);
-  }
+  //   await Promise.all(logInteractions);
+  // } catch (error: any) {
+  //   console.error(error);
+  // }
 
-  const bestOverall: any = await prisma.category.findFirst({
-    where: {
-      name: { in: ["HackGT - Best Overall"] },
-    },
-  });
+  // const bestOverall: any = await prisma.category.findFirst({
+  //   where: {
+  //     name: { in: ["HackGT - Best Overall"] },
+  //   },
+  // });
 
-  const openSource: any = await prisma.category.findFirst({
-    where: {
-      name: { in: ["HackGT - Best Open Source Hack"] },
-    },
-  });
+  // const openSource: any = await prisma.category.findFirst({
+  //   where: {
+  //     name: { in: ["HackGT - Best Open Source Hack"] },
+  //   },
+  // });
 
-  if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
-    res.status(400).send({
-      error: true,
-      message: "If you submit to open source you can only submit to that category",
-    });
-  } else if (!data.prizes.includes(openSource.id)) {
-    data.prizes.push(bestOverall.id);
-  }
+  // if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
+  //   res.status(400).send({
+  //     error: true,
+  //     message: "If you submit to open source you can only submit to that category",
+  //   });
+  // } else if (!data.prizes.includes(openSource.id)) {
+  //   data.prizes.push(bestOverall.id);
+  // }
 
   try {
     await prisma.project.create({
@@ -205,12 +205,12 @@ projectRoutes.route("/").post(async (req, res) => {
           },
         },
         members: {
-          connectOrCreate: teamValidation.registrationUsers?.map((user: any) => ({
+          connectOrCreate: data.members.map((user: any) => ({
             where: {
               email: user.email,
             },
             create: {
-              name: user.name,
+              name: "", // user.name,
               email: user.email,
             },
           })),
@@ -271,16 +271,15 @@ projectRoutes.route("/:id").patch(
     });
 
     categories = dbCategories.map((category: any) => ({ id: category.id }));
-    
+
     if (tableGroup !== undefined) {
       const dbTableGroup = await prisma.tableGroup.findUnique({
         where: { id: tableGroup },
       });
       if (dbTableGroup !== null) {
-        tableGroup = {id: dbTableGroup.id}
+        tableGroup = { id: dbTableGroup.id };
       }
     }
-
 
     const updated = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
@@ -301,8 +300,8 @@ projectRoutes.route("/:id").patch(
           connect: categories,
         },
         tableGroup: {
-          connect: tableGroup !== undefined ? tableGroup : {id: 1},
-        }
+          connect: tableGroup !== undefined ? tableGroup : { id: 1 },
+        },
       },
       include: {
         categories: true,

@@ -17,18 +17,21 @@ interface Props {
 const DetailInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
+    hide();
+    props.updateData(values);
+    props.nextStep();
 
-    axios
-      .post("/projects/special/detail-validation", values)
-      .then(res => {
-        hide();
-        props.updateData(values);
-        props.nextStep();
-      })
-      .catch(err => {
-        hide();
-        handleAxiosError(err);
-      });
+    // axios
+    //   .post("/projects/special/detail-validation", values)
+    //   .then(res => {
+    //     hide();
+    //     props.updateData(values);
+    //     props.nextStep();
+    //   })
+    //   .catch(err => {
+    //     hide();
+    //     handleAxiosError(err);
+    //   });
   };
 
   const onFinishFailed = (errorInfo: any) => {
