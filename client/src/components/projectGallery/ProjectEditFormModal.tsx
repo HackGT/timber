@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Input, message, Modal, Row, Select, InputNumber } from "antd";
+import { Button, Col, Form, Input, message, Modal, Row, Select, InputNumber, Table } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -8,14 +8,25 @@ import { FORM_RULES } from "../../util/util";
 import { FormModalProps } from "../../util/FormModalProps";
 import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup";
+import TableGroupsModal from "../admin/panes/tableGroups/TableGroupsModal";
+import LoadingDisplay from "../../displays/LoadingDisplay";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
+  useEffect(() => form.resetFields(), [form, props.modalState.initialValues]);
   const [{ data: categoryData, loading: categoryLoading }] = useAxios("/categories", { useCache: false });
 
-  const [{ data: tableGroupData, loading: tableGroupLoading }] = useAxios("/tablegroups", { useCache: false });
 
-  useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+  const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(`/tablegroups`, { useCache: false });
+
+  // const [{ data: tableGroupData, loading: tableGroupLoading }] = useAxios(`/tablegroups/${props.modalState.initialValues.tableGroupId}`, { useCache: false });
+
+
+  console.log(props.modalState.initialValues)
+ // github.com/ant-design/ant-design/issues/22372
+  if (categoryLoading || tableGroupsLoading) {
+    return <LoadingDisplay />;
+  }
   const categoryOptions = categoryLoading
     ? []
     : categoryData.map((category: Category) => ({
@@ -23,12 +34,13 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
         value: category.name,
       }));
 
-  const tableGroupOptions = tableGroupLoading
+  const tableGroupsOptions = tableGroupsLoading
     ? []
-    : tableGroupData.map((tableGroup: TableGroup) => ({
+    : tableGroupsData.map((tableGroup: TableGroup) => ({
         label: tableGroup.name,
-        value: tableGroup.id,
+        value: tableGroup.id
       }));
+
 
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
     label: round,
@@ -193,8 +205,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
               <Form.Item name="tableGroupId" label="Table Group">
                 <Select
                   placeholder="Select table group"
-                  options={tableGroupOptions}
-                  loading={tableGroupLoading}
+                  options={tableGroupsOptions}
+                  loading={tableGroupsLoading}
                   showSearch
                   optionFilterProp="label"
                 />
@@ -205,7 +217,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
           <Row gutter={[8, 0]}>
             <Col span={24}>
               <Form.Item name="table" label="Table Number">
-                <InputNumber style={{ width: "100%" }} precision={0} />
+                <InputNumber min={1} max={15} style={{ width: "100%" }} precision={0} />
               </Form.Item>
             </Col>
           </Row>

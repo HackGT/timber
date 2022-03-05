@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal } from "antd";
+import { Form, Input, InputNumber, message, Modal } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
 
@@ -84,6 +84,10 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
 
         <Form.Item name="shortCode" rules={[FORM_RULES.requiredRule]} label="Short Code">
           <Input placeholder="Hardware" />
+        </Form.Item>
+
+        <Form.Item name="tableCapacity" rules={[FORM_RULES.requiredRule]} label="Table Capacity">
+          <InputNumber placeholder="Table Capacity" />
         </Form.Item>
 
         <Form.Item name="color" rules={[FORM_RULES.requiredRule]} label="Color">
