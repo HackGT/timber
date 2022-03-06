@@ -14,19 +14,20 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]);
-  const [{ data: categoryData, loading: categoryLoading }] = useAxios("/categories", { useCache: false });
+  const [{ data: categoryData, loading: categoryLoading }] = useAxios("/categories", {
+    useCache: false,
+  });
 
+  const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(`/tablegroups`, {
+    useCache: false,
+  });
 
-  const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(`/tablegroups`, { useCache: false });
-
-  // const [{ data: tableGroupData, loading: tableGroupLoading }] = useAxios(`/tablegroups/${props.modalState.initialValues.tableGroupId}`, { useCache: false });
-
-
-  console.log(props.modalState.initialValues)
- // github.com/ant-design/ant-design/issues/22372
+  // github.com/ant-design/ant-design/issues/22372
   if (categoryLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
+
+  console.log(tableGroupsData);
   const categoryOptions = categoryLoading
     ? []
     : categoryData.map((category: Category) => ({
@@ -38,9 +39,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     ? []
     : tableGroupsData.map((tableGroup: TableGroup) => ({
         label: tableGroup.name,
-        value: tableGroup.id
+        value: tableGroup.id,
       }));
-
 
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
     label: round,
@@ -217,7 +217,18 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
           <Row gutter={[8, 0]}>
             <Col span={24}>
               <Form.Item name="table" label="Table Number">
-                <InputNumber min={1} max={15} style={{ width: "100%" }} precision={0} />
+                <InputNumber
+                  min={1}
+                  max={
+                    tableGroupsData && props.modalState.initialValues
+                      ? tableGroupsData.find(
+                          (group: any) => group.id === props.modalState.initialValues.tableGroupId
+                        ).tableCapacity
+                      : 16
+                  }
+                  style={{ width: "100%" }}
+                  precision={0}
+                />
               </Form.Item>
             </Col>
           </Row>
