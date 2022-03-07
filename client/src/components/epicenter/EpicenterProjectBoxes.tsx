@@ -5,7 +5,9 @@ import React, { useState } from "react";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Ballot } from "../../types/Ballot";
+import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
+import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
 
 const { Option } = Select;
@@ -32,32 +34,32 @@ const EpicenterProjectBoxes: React.FC = () => {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || tableGroupsLoading) {
+  if (projectsError || categoriesError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
   
   let updatedData = projectsData
     ? projectsData
-        .filter((project: any) => project.name.toLowerCase().includes(searchText.toLowerCase()))
-        .filter((project: any) => round === 0 || project.round === round)
-        .filter((project: any) => expo === 0 || project.expo === expo)
-        .filter((project: any) => tableGroup === 0 || project.tableGroupId === tableGroup)
-        .filter((project: any) => tableNumber === 0 || project.table === tableNumber)
+        .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
+        .filter((project: Project) => round === 0 || project.round === round)
+        .filter((project: Project) => expo === 0 || project.expo === expo)
+        .filter((project: Project) => tableGroup === 0 || project.tableGroupId === tableGroup)
+        .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
         
 
     : [];
     console.log(projectsData)
     console.log(tableGroupsData)
   updatedData = selectedCategory
-    ? updatedData.filter((project: any) =>
-        project.categories.map((category: any) => category.id).includes(selectedCategory)
+    ? updatedData.filter((project: Project) =>
+        project.categories.map((category: Category) => category.id).includes(selectedCategory)
       )
     : updatedData;
 
   if (selectedCategory && sortCondition === "highest") {
     const scoreData: any = {};
 
-    updatedData.forEach((project: any) => {
+    updatedData.forEach((project: Project) => {
       console.log(updatedData);
       project.ballots.forEach((ballot: Ballot) => {
         if (ballot.criteria.categoryId === selectedCategory) {
@@ -72,7 +74,7 @@ const EpicenterProjectBoxes: React.FC = () => {
   }
 
   const categoryOptions = categoriesData
-    ? categoriesData.map((category: any) => ({
+    ? categoriesData.map((category: Category) => ({
         label: category.name,
         value: category.id,
       }))
@@ -120,25 +122,22 @@ const EpicenterProjectBoxes: React.FC = () => {
         <Col xs={24} sm={8} md={2}>
           <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
           <Option value={0}>R: All</Option>
-          {maxRoundArr.map((project: any, index)=><Option value={index + 1}> R: {index + 1}</Option>)}
-            {/* <Option value={1}>R: 1</Option>
-            <Option value={2}>R: 2</Option>
-            <Option value={3}>R: 3</Option> */}
+          {maxRoundArr.map((project: Project, index)=><Option value={index + 1}> R: {index + 1}</Option>)}
+            
           </Select>
         </Col>
         <Col xs={24} sm={8} md={2}>
           <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>
             <Option value={0}>E: All</Option>
-            {/* // Needs to be coverted to Project type */}
-            {maxExpoArr.map((project: any, index)=><Option value={index + 1}> E: {index + 1}</Option>)}
-            {/* <Option value={1}>E: 1</Option>}
-            <Option value={2}>E: 2</Option> */}
+           
+            {maxExpoArr.map((project: Project, index)=><Option value={index + 1}> E: {index + 1}</Option>)}
+            
           </Select>
         </Col>
         <Col xs={24} sm={8} md={3}>
           <Select value={tableGroup} style={{ width: "100%" }} onChange={value => setTableGroup(value)}>
             <Option value={0}>Table Group: All</Option>
-            {tableGroupsData.map((tableG: any)=><Option value={tableG.id}> Table Group: {tableG.name}</Option>)}
+            {tableGroupsData.map((tableG: TableGroup)=><Option value={tableG.id}> Table Group: {tableG.name}</Option>)}
             {/* <Option value={1}>Table Group: 1</Option>
             <Option value={2}>Table Group: 2</Option>
             <Option value={3}>Table Group: 3</Option> */}
@@ -147,7 +146,7 @@ const EpicenterProjectBoxes: React.FC = () => {
         <Col xs={24} sm={8} md={3}>
           <Select value={tableNumber} style={{ width: "100%" }} onChange={value => setTableNumber(value)}>
             <Option value={0}>Table Number: All</Option>
-            {maxTableNumberArr.map((project: any, index)=><Option value={index + 1}> Table Number: {index + 1}</Option>)}
+            {maxTableNumberArr.map((project: Project, index)=><Option value={index + 1}> Table Number: {index + 1}</Option>)}
             {/* <Option value={1}>Table Number: 1</Option>
             <Option value={2}>Table Number: 2</Option>
             <Option value={3}>Table Number: 3</Option> */}
@@ -157,7 +156,7 @@ const EpicenterProjectBoxes: React.FC = () => {
           <Select
             placeholder="Sort"
             style={{ width: "100%" }}
-            onChange={(value: any) => setSortCondition(value)}
+            onChange={(value: string) => setSortCondition(value)}
             disabled={!selectedCategory}
             value={sortCondition}
           >
