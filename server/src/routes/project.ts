@@ -190,6 +190,51 @@ projectRoutes.route("/").post(async (req, res) => {
   //   data.prizes.push(bestOverall.id);
   // }
 
+  // find all table groups
+  const tableGroups = await prisma.tableGroup.findMany()
+  // loop over length of table groups
+  let openTableGroup;
+  let projectsWithOpenTableGroup
+  for (const tableGroup of tableGroups) {
+    // eslint-disable-next-line no-await-in-loop
+    const projectsWithTableGroupId = await prisma.project.findMany({
+      where: {
+        tableGroupId: tableGroup.id,
+      }
+    })
+    if (projectsWithTableGroupId.length !== tableGroup.tableCapacity) {
+      openTableGroup = tableGroup
+      projectsWithOpenTableGroup = projectsWithTableGroupId
+      break;
+    } 
+  }
+  
+  if (openTableGroup === undefined || projectsWithOpenTableGroup === undefined) {
+    res.status(400).send({
+      error: true,
+      message: "Submission could not be saved due to issue with table groups - please contact help desk",
+    });
+    return
+  }
+  let tableNumber;
+  if (openTableGroup !== undefined && projectsWithOpenTableGroup !== undefined) {
+    const tableNumberSet = new Set()
+    for (const project of projectsWithOpenTableGroup) {
+      tableNumberSet.add(project.table);
+    }
+    for (let i = 1; i <= openTableGroup.tableCapacity; i++) {
+      if (!tableNumberSet.has(i)) {
+        tableNumber = i;
+        break;
+      }
+    }
+  }
+    
+  console.log(openTableGroup)
+  console.log(projectsWithOpenTableGroup)
+
+  // in loop call all projects with table group id
+  // find first available table
   try {
     await prisma.project.create({
       data: {
@@ -199,6 +244,7 @@ projectRoutes.route("/").post(async (req, res) => {
         githubUrl: "",
         expo: Math.floor(Math.random() * 2 + 1),
         roomUrl: dailyUrl,
+        table: tableNumber,
         hackathon: {
           connect: {
             id: currentHackathon.id,
@@ -218,6 +264,9 @@ projectRoutes.route("/").post(async (req, res) => {
         categories: {
           connect: data.prizes.map((prizeId: any) => ({ id: prizeId })),
         },
+        tableGroup: {
+          connect: openTableGroup !== undefined ? {id: openTableGroup.id} : {},
+        }
       },
     });
   } catch (err) {
