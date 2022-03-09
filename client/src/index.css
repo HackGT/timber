@@ -36,10 +36,10 @@ html {
   position: static;
   top: 0;
   left: 990px;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   margin: 5px;
-  padding: 12px 14px;
+  padding: 8px 14px;
   color: white;
   background: #212121;
 }
@@ -55,6 +55,7 @@ html {
 .judging-box-project-id {
   font-size: 20px;
   line-height: 0;
+  margin-bottom: 12px;
 }
 
 .judging-box-bottom-row {
@@ -62,7 +63,7 @@ html {
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  font-size: 15px;
+  font-size: 12px;
 }
 *,
 *::before,
