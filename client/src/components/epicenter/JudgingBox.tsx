@@ -1,13 +1,16 @@
 import React from "react";
 import { Button, Popover, Tag, Typography } from "antd";
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
-import { RefetchOptions } from "axios-hooks";
+import useAxios, { RefetchOptions } from "axios-hooks";
 
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
 import { handleAxiosError } from "../../util/util";
 import { Category } from "../../types/Category";
+import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
+import LoadingDisplay from "../../displays/LoadingDisplay";
+import ErrorDisplay from "../../displays/ErrorDisplay";
 
 const { Title, Text } = Typography;
 
@@ -35,6 +38,18 @@ const JudgingBox: React.FC<Props> = props => {
         handleAxiosError(err);
       });
   };
+
+  const [{ loading: tablegroupsLoading, data: tablegroupData, error: tablegroupsError }] = useAxios(
+    `/tablegroups/${props.project.tableGroupId}`
+  );
+
+  if (tablegroupsLoading) {
+    return <LoadingDisplay />;
+  }
+
+  if (tablegroupsError) {
+    return <ErrorDisplay error={tablegroupsError} />;
+  }
 
   const updateExpo = async (difference: number) => {
     axios
@@ -68,6 +83,8 @@ const JudgingBox: React.FC<Props> = props => {
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         {props.project.devpostUrl}
       </a>
+      <Text>Table Group: {tablegroupData.color}</Text>
+      <Text>Table Number: {props.project.table}</Text>
       <div>
         {props.project.categories.map(category => (
           <Tag>{category.name}</Tag>
@@ -125,6 +142,11 @@ const JudgingBox: React.FC<Props> = props => {
           <p>R:{props.project.round}</p>
         </div>
         <p className="judging-box-project-id">P{props.project.id}</p>
+        <div className="judging-box-bottom-row">
+          <p>
+            {tablegroupData.color} {props.project.table}
+          </p>
+        </div>
       </div>
     </Popover>
   );

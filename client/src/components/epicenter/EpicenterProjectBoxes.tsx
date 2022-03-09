@@ -20,6 +20,7 @@ const EpicenterProjectBoxes: React.FC = () => {
     useAxios("/categories");
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError}] =
     useAxios("/tablegroups")
+    
   
 
   const [searchText, setSearchText] = useState("");
@@ -50,6 +51,11 @@ const EpicenterProjectBoxes: React.FC = () => {
     : [];
     console.log(projectsData)
     console.log(tableGroupsData)
+
+  // let updatedTableGroupsData = tableGroupsData
+  //   ? tableGroupsData
+  //     .filter((tablegroup: any) => tablegroup.id === updatedData.tableGroupId)
+    
   updatedData = selectedCategory
     ? updatedData.filter((project: Project) =>
         project.categories.map((category: Category) => category.id).includes(selectedCategory)
