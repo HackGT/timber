@@ -6,6 +6,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Ballot } from "../../types/Ballot";
 import { Project } from "../../types/Project";
+import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
 
 const { Option } = Select;
@@ -18,6 +19,7 @@ const EpicenterProjectBoxes: React.FC = () => {
     useAxios("/categories");
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError}] =
     useAxios("/tablegroups")
+    
   
 
   const [searchText, setSearchText] = useState("");
@@ -32,7 +34,7 @@ const EpicenterProjectBoxes: React.FC = () => {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || tableGroupsLoading) {
+  if (projectsError || categoriesError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
   
@@ -48,6 +50,11 @@ const EpicenterProjectBoxes: React.FC = () => {
     : [];
     console.log(projectsData)
     console.log(tableGroupsData)
+
+  // let updatedTableGroupsData = tableGroupsData
+  //   ? tableGroupsData
+  //     .filter((tablegroup: any) => tablegroup.id === updatedData.tableGroupId)
+    
   updatedData = selectedCategory
     ? updatedData.filter((project: any) =>
         project.categories.map((category: any) => category.id).includes(selectedCategory)
