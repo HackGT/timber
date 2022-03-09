@@ -127,6 +127,9 @@ const Dashboard: React.FC<Props> = props => {
                         title={project.name}
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
+                      <br />
+                      <p>Table Group: {project.table}</p>
+                      <p>Table Number: {project.table}</p>
                     </Card>
                   </Link>
                 </List.Item>

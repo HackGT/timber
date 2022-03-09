@@ -6,6 +6,7 @@ import useAxios from "axios-hooks";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import DailyWindow from "../video/DailyWindow";
+import { config } from "process";
 
 const { Title, Text } = Typography;
 
@@ -19,14 +20,19 @@ const ProjectDetails: React.FC = props => {
   const { projectId } = useParams<any>();
 
   const [{ data, loading, error }] = useAxios(`/projects/${projectId}`);
+  const [{ data: configData, loading: configLoading, error: configError }] = useAxios("/config");
+  const [{ data: tablegroupData, loading: tablegroupLoading, error: tablegroupError }] = useAxios(
+    `/tablegroups/project/${projectId}`
+  );
 
-  if (loading) {
+  if (loading || tablegroupLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
+  if (error || tablegroupError || configError) {
     return <ErrorDisplay error={error} />;
   }
+  console.log(configData);
 
   // const createMessage = () => {
   //   switch (data.submission.round) {
@@ -87,6 +93,16 @@ const ProjectDetails: React.FC = props => {
         <Descriptions.Item label={<Label name="Selected Prizes" />}>
           {data.categories.map((category: any) => category.name).join(", ")}
         </Descriptions.Item>
+        {configData.isJudgingOn && (
+          <>
+            <Descriptions.Item label={<Label name="Table Group" />}>
+              {tablegroupData.name}
+            </Descriptions.Item>
+            <Descriptions.Item label={<Label name="Table Number" />}>
+              {data.table}
+            </Descriptions.Item>
+          </>
+        )}
       </Descriptions>
 
       {/* <Title level={2} style={{ textAlign: "center", marginTop: "25px" }}>
