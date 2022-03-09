@@ -39,7 +39,7 @@ const JudgingHome: React.FC<Props> = props => {
       <a href={data.devpostUrl} target="_blank" rel="noreferrer">
         Devpost Submission
       </a>
-      <DailyWindow videoUrl={data.roomUrl} />
+      {/* <DailyWindow videoUrl={data.roomUrl} /> */}
       <JudgingCardsContainer data={data} />
     </>
   );
