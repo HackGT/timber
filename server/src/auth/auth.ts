@@ -102,28 +102,28 @@ passport.use(
       callbackURL: "/auth/login/callback",
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      let userRole: UserRole = UserRole.GENERAL;
-      let userIsJudging = false;
-      try {
-        const response = await queryRegistration(profile.email);
+      const userRole: UserRole = UserRole.GENERAL;
+      const userIsJudging = false;
+      // try {
+      //   const response = await queryRegistration(profile.email);
 
-        if (
-          response.data &&
-          response.data.data.search_user.users.length > 0 &&
-          response.data.data.search_user.users[0].confirmed &&
-          response.data.data.search_user.users[0].confirmationBranch
-        ) {
-          const { confirmationBranch } = response.data.data.search_user.users[0];
+      //   if (
+      //     response.data &&
+      //     response.data.data.search_user.users.length > 0 &&
+      //     response.data.data.search_user.users[0].confirmed &&
+      //     response.data.data.search_user.users[0].confirmationBranch
+      //   ) {
+      //     const { confirmationBranch } = response.data.data.search_user.users[0];
 
-          if (confirmationBranch === "Judge Confirmation") {
-            userIsJudging = true;
-          } else if (confirmationBranch === "Sponsor Confirmation") {
-            userRole = UserRole.SPONSOR;
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      //     if (confirmationBranch === "Judge Confirmation") {
+      //       userIsJudging = true;
+      //     } else if (confirmationBranch === "Sponsor Confirmation") {
+      //       userRole = UserRole.SPONSOR;
+      //     }
+      //   }
+      // } catch (err) {
+      //   console.error(err);
+      // }
 
       let user = await prisma.user.findUnique({
         where: {
