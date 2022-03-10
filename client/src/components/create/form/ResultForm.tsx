@@ -7,6 +7,7 @@ const ResultForm: React.FC = () => (
   <Result
     icon={<SmileOutlined />}
     title="Great, you finished your submission!"
+    subTitle="Be sure to look at the event Slack for any updates!"
     extra={
       <Link to="/">
         <Button type="primary">View Dashboard</Button>
