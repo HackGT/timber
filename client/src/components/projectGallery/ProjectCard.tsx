@@ -43,9 +43,8 @@ const ProjectCard: React.FC<Props> = props => {
         [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
       }
     >
-      <p>TableGroup Name: {tablegroupData.name}</p>
+      <p>Table Group: {tablegroupData.name}</p>
       <p>Table Number: {props.project.table}</p>
-      <p>TableGroup Color: {tablegroupData.color}</p>
       <p>Expo: #{props.project.expo}</p>
       <p>
         <a href={props.project.roomUrl} target="_blank" rel="noreferrer">

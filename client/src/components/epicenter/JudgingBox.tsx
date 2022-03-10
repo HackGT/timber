@@ -144,7 +144,7 @@ const JudgingBox: React.FC<Props> = props => {
         <p className="judging-box-project-id">P{props.project.id}</p>
         <div className="judging-box-bottom-row">
           <p>
-            {tablegroupData.color} {props.project.table}
+            {tablegroupData.shortCode} {props.project.table}
           </p>
         </div>
       </div>
