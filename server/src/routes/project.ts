@@ -4,7 +4,12 @@ import axios from "axios";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig, getCurrentHackathon } from "../utils/utils";
-import { validateTeam, validateDevpost, validatePrizes } from "../utils/validationHelpers";
+import {
+  validateTeam,
+  validateDevpost,
+  validatePrizes,
+  getEligiblePrizes,
+} from "../utils/validationHelpers";
 import { isAdmin } from "../auth/auth";
 
 export const projectRoutes = express.Router();
@@ -72,6 +77,15 @@ projectRoutes.route("/special/detail-validation").post(async (req, res) => {
 
 projectRoutes.route("/special/devpost-validation").post(async (req, res) => {
   const resp = await validateDevpost(req.body.devpostUrl, req.body.name);
+  if (resp.error) {
+    res.status(400).json(resp);
+  } else {
+    res.status(200).json(resp);
+  }
+});
+
+projectRoutes.route("/special/get-eligible-prizes").get(async (req, res) => {
+  const resp = await getEligiblePrizes([]);
   if (resp.error) {
     res.status(400).json(resp);
   } else {
@@ -191,34 +205,35 @@ projectRoutes.route("/").post(async (req, res) => {
   // }
 
   // find all table groups
-  const tableGroups = await prisma.tableGroup.findMany()
+  const tableGroups = await prisma.tableGroup.findMany();
   // loop over length of table groups
   let openTableGroup;
-  let projectsWithOpenTableGroup
+  let projectsWithOpenTableGroup;
   for (const tableGroup of tableGroups) {
     // eslint-disable-next-line no-await-in-loop
     const projectsWithTableGroupId = await prisma.project.findMany({
       where: {
         tableGroupId: tableGroup.id,
-      }
-    })
+      },
+    });
     if (projectsWithTableGroupId.length !== tableGroup.tableCapacity) {
-      openTableGroup = tableGroup
-      projectsWithOpenTableGroup = projectsWithTableGroupId
+      openTableGroup = tableGroup;
+      projectsWithOpenTableGroup = projectsWithTableGroupId;
       break;
-    } 
+    }
   }
-  
+
   if (openTableGroup === undefined || projectsWithOpenTableGroup === undefined) {
     res.status(400).send({
       error: true,
-      message: "Submission could not be saved due to issue with table groups - please contact help desk",
+      message:
+        "Submission could not be saved due to issue with table groups - please contact help desk",
     });
-    return
+    return;
   }
   let tableNumber;
   if (openTableGroup !== undefined && projectsWithOpenTableGroup !== undefined) {
-    const tableNumberSet = new Set()
+    const tableNumberSet = new Set();
     for (const project of projectsWithOpenTableGroup) {
       tableNumberSet.add(project.table);
     }
@@ -229,9 +244,9 @@ projectRoutes.route("/").post(async (req, res) => {
       }
     }
   }
-    
-  console.log(openTableGroup)
-  console.log(projectsWithOpenTableGroup)
+
+  console.log(openTableGroup);
+  console.log(projectsWithOpenTableGroup);
 
   // in loop call all projects with table group id
   // find first available table
@@ -265,8 +280,8 @@ projectRoutes.route("/").post(async (req, res) => {
           connect: data.prizes.map((prizeId: any) => ({ id: prizeId })),
         },
         tableGroup: {
-          connect: openTableGroup !== undefined ? {id: openTableGroup.id} : {},
-        }
+          connect: openTableGroup !== undefined ? { id: openTableGroup.id } : {},
+        },
       },
     });
   } catch (err) {

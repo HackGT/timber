@@ -85,7 +85,17 @@ export const getEligiblePrizes = async (users: any[]) => {
       });
       return generalDBPrizes;
     }
-
+    case "Horizons": {
+      const { generalPrizes } = prizeConfig.hackathons.Horizons;
+      const generalDBPrizes = await prisma.category.findMany({
+        where: {
+          name: {
+            in: generalPrizes,
+          },
+        },
+      });
+      return generalDBPrizes;
+    }
     default: {
       return [];
     }
