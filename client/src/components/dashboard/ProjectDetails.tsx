@@ -93,7 +93,7 @@ const ProjectDetails: React.FC = props => {
         <Descriptions.Item label={<Label name="Selected Prizes" />}>
           {data.categories.map((category: any) => category.name).join(", ")}
         </Descriptions.Item>
-        {configData.isJudgingOn && (
+        {configData.revealTableGroups && (
           <>
             <Descriptions.Item label={<Label name="Table Group" />}>
               {tablegroupData.name}

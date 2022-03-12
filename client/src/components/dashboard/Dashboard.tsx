@@ -133,7 +133,7 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {configData.isJudgingOn && (
+                      {configData.revealTableGroups && (
                         <>
                           <p>
                             Table Group:{" "}
