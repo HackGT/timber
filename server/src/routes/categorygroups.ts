@@ -56,7 +56,7 @@ categoryGroupRoutes.route("/").post(
     const createdCategoryGroup = await prisma.categoryGroup.create({
       data: {
         ...req.body,
-        // categories: { connect: req.body.categories?.map((id: number) => ({ id })) ?? undefined },
+        categories: { connect: req.body.categories?.map((id: number) => ({ id })) ?? undefined },
         users: { connect: req.body.users?.map((id: number) => ({ id })) ?? undefined },
         hackathonId: currentHackathon.id,
       },
