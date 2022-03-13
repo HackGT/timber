@@ -222,8 +222,6 @@ export const validatePrizes = async (prizes: any[]) => {
       return { error: false };
     }
     case "Horizons": {
-      console.log(prizeNames);
-      console.log();
       if (
         prizeNames.filter(prize => prizeConfig.hackathons.Horizons.tracks.includes(prize)).length >
         1
@@ -231,6 +229,16 @@ export const validatePrizes = async (prizes: any[]) => {
         return {
           error: true,
           message: "You are only eligible to submit for one track.",
+        };
+      }
+
+      if (
+        prizeNames.filter(prize => prizeConfig.hackathons.Horizons.tracks.includes(prize))
+          .length === 0
+      ) {
+        return {
+          error: true,
+          message: "You must submit to at least one track.",
         };
       }
 
