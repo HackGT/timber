@@ -231,6 +231,7 @@ projectRoutes.route("/").post(async (req, res) => {
     });
     return;
   }
+
   let tableNumber;
   if (openTableGroup !== undefined && projectsWithOpenTableGroup !== undefined) {
     const tableNumberSet = new Set();

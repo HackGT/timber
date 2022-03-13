@@ -86,11 +86,12 @@ export const getEligiblePrizes = async (users: any[]) => {
       return generalDBPrizes;
     }
     case "Horizons": {
-      const { generalPrizes } = prizeConfig.hackathons.Horizons;
+      const { tracks, challenges } = prizeConfig.hackathons.Horizons;
+
       const generalDBPrizes = await prisma.category.findMany({
         where: {
           name: {
-            in: generalPrizes,
+            in: tracks.concat(challenges),
           },
         },
       });
@@ -200,23 +201,39 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
 */
 export const validatePrizes = async (prizes: any[]) => {
   const currentHackathon = await getCurrentHackathon();
+  const prizeObjects = await prisma.category.findMany({
+    where: {
+      id: {
+        in: prizes,
+      },
+    },
+  });
+  const prizeNames = prizeObjects.map(prize => prize.name);
+
   switch (currentHackathon.name) {
     case "HackGT 8": {
-      const prizeObjects = await prisma.category.findMany({
-        where: {
-          id: {
-            in: prizes,
-          },
-        },
-      });
-      for (let i = 0; i < prizeObjects.length; i++) {
-        if (prizeObjects[i].name === "HackGT - Best Open Source Hack" && prizeObjects.length > 1) {
-          return {
-            error: true,
-            message: "If you are submitting to open source you can only submit to that prize",
-          };
-        }
+      if (prizeNames.includes("HackGT - Best Open Source Hack") && prizeObjects.length > 1) {
+        return {
+          error: true,
+          message: "If you are submitting to open source you can only submit to that prize",
+        };
       }
+
+      return { error: false };
+    }
+    case "Horizons": {
+      console.log(prizeNames);
+      console.log();
+      if (
+        prizeNames.filter(prize => prizeConfig.hackathons.Horizons.tracks.includes(prize)).length >
+        1
+      ) {
+        return {
+          error: true,
+          message: "You are only eligible to submit for one track.",
+        };
+      }
+
       return { error: false };
     }
     default: {

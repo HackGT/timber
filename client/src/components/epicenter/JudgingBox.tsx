@@ -104,9 +104,11 @@ const JudgingBox: React.FC<Props> = props => {
           return <Text>{`${category[0]}: ${scoreString}`}</Text>;
         })}
       </>
-      <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
-        Join Video Call
-      </a>
+      {props.project.roomUrl && (
+        <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
+          Join Video Call
+        </a>
+      )}
       <Text strong>Change Round</Text>
       <div>
         <Button disabled={props.project.round === 1} onClick={() => updateRound(-1)} size="small">

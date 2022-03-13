@@ -59,16 +59,8 @@
       ]
     },
     "Horizons": {
-      "generalPrizes": [
-        "Digital Track",
-        "Physical Track",
-        "Best Overall",
-        "Sustainability Challenge",
-        "Educational Challenge",
-        "Music Tech Challenge",
-        "People's Choice",
-        "Most Creative"
-      ]
+      "tracks": ["Digital Track", "Physical Track"],
+      "challenges": ["Sustainability Challenge", "Educational Challenge", "Music Tech Challenge"]
     }
   }
 }

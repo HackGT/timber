@@ -46,11 +46,13 @@ const ProjectCard: React.FC<Props> = props => {
       <p>Table Group: {tablegroupData.name}</p>
       <p>Table Number: {props.project.table}</p>
       <p>Expo: #{props.project.expo}</p>
-      <p>
-        <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
-          Join Video Call
-        </a>
-      </p>
+      {props.project.roomUrl && (
+        <p>
+          <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
+            Join Video Call
+          </a>
+        </p>
+      )}
       {tags.map((tag: string) => (
         <Tag>{tag}</Tag>
       ))}

@@ -69,16 +69,18 @@ const JudgingHome: React.FC<Props> = props => {
       }
     }
   }
+
   let nextTableGroupName = "";
   for (const tableGroup of tableGroupsData) {
-    if (tableGroup.id == data.tableGroupId) {
+    if (tableGroup.id === data.tableGroupId) {
       tableGroupName = tableGroup.name;
     }
-    if (tableGroup.id == nextTableGroupId) {
+    if (tableGroup.id === nextTableGroupId) {
       nextTableGroupName = tableGroup.name;
     }
   }
-  let next = <h3>"You have no projects up next!"</h3>;
+
+  let next;
   if (nextProjectID) {
     next = (
       <h3>
@@ -86,6 +88,8 @@ const JudgingHome: React.FC<Props> = props => {
         {nextTableGroupName}.
       </h3>
     );
+  } else {
+    next = <h3>You have no projects up next!</h3>;
   }
 
   return (
@@ -100,7 +104,7 @@ const JudgingHome: React.FC<Props> = props => {
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
       <JudgingCardsContainer data={data} />
 
-      {next}
+      <div style={{ marginTop: "5px" }}>{next}</div>
     </>
   );
 };
