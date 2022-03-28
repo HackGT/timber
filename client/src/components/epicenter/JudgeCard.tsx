@@ -5,10 +5,12 @@ import JudgingBox from "./JudgingBox";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
 import { AssignmentStatus } from "../../types/AssignmentStatus";
+import { TableGroup } from "../../types/TableGroup";
 
 interface Props {
   key: string;
   user: User;
+  tableGroupMap: Map<number, TableGroup>;
 }
 
 const JudgeCard: React.FC<Props> = props => {
@@ -21,18 +23,18 @@ const JudgeCard: React.FC<Props> = props => {
     switch (assignment.status) {
       case AssignmentStatus.QUEUED:
         queuedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
         );
         break;
       case AssignmentStatus.STARTED:
         startedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
         );
         break;
       case AssignmentStatus.COMPLETED:
       case AssignmentStatus.SKIPPED:
         completedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} />
+          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
         );
         break;
     }
