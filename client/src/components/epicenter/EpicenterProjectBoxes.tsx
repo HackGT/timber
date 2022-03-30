@@ -105,6 +105,12 @@ const EpicenterProjectBoxes: React.FC = () => {
   const maxExpoArr = new Array(maxExpo).fill(0);
   const maxTableNumberArr = new Array(maxTableNumber).fill(0);
   
+  const tableGroupMap = new Map<number, TableGroup>();
+
+  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
+    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
+  })
+
   return (
     <>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
@@ -173,7 +179,7 @@ const EpicenterProjectBoxes: React.FC = () => {
       </Row>
       <div id="judging">
         {updatedData.map((project: Project) => (
-          <JudgingBox key={project.id} project={project} refetch={refetchProjects} />
+          <JudgingBox key={project.id} project={project} tableGroup={tableGroupMap.get(project.tableGroupId)} refetch={refetchProjects} />
         ))}
       </div>
     </>

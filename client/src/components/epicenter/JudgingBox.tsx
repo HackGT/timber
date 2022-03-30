@@ -18,6 +18,7 @@ interface Props {
   key: number;
   project: Project;
   assignment?: Assignment;
+  tableGroup: TableGroup | undefined;
   refetch?: (
     config?: AxiosRequestConfig | undefined,
     options?: RefetchOptions | undefined
@@ -38,18 +39,6 @@ const JudgingBox: React.FC<Props> = props => {
         handleAxiosError(err);
       });
   };
-
-  const [{ loading: tablegroupsLoading, data: tablegroupData, error: tablegroupsError }] = useAxios(
-    `/tablegroups/${props.project.tableGroupId}`
-  );
-
-  if (tablegroupsLoading) {
-    return <LoadingDisplay />;
-  }
-
-  if (tablegroupsError) {
-    return <ErrorDisplay error={tablegroupsError} />;
-  }
 
   const updateExpo = async (difference: number) => {
     axios
@@ -76,14 +65,15 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
-
+  console.log(props.project)
+  console.log(props.tableGroup)
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       <Title level={5}>{props.project.name}</Title>
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         {props.project.devpostUrl}
       </a>
-      <Text>Table Group: {tablegroupData.color}</Text>
+      <Text>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : 1}</Text>
       <Text>Table Number: {props.project.table}</Text>
       <div>
         {props.project.categories.map(category => (
@@ -146,7 +136,7 @@ const JudgingBox: React.FC<Props> = props => {
         <p className="judging-box-project-id">P{props.project.id}</p>
         <div className="judging-box-bottom-row">
           <p>
-            {tablegroupData.shortCode} {props.project.table}
+            {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
           </p>
         </div>
       </div>

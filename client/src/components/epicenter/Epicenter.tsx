@@ -11,6 +11,7 @@ import { User } from "../../types/User";
 import { handleAxiosError } from "../../util/util";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 
@@ -19,6 +20,9 @@ const Epicenter: React.FC = () => {
     useAxios("/user");
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios("/categorygroups");
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError}] =
+    useAxios("/tablegroups")
+  
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
   const [judgingModalOpen, setJudgingModalOpen] = useState(false);
 
@@ -49,11 +53,11 @@ const Epicenter: React.FC = () => {
     }
   };
 
-  if (userLoading || categoryGroupsLoading || configLoading) {
+  if (userLoading || categoryGroupsLoading || configLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (userError || categoryGroupsError || configError) {
+  if (userError || categoryGroupsError || configError || tableGroupsError) {
     return <ErrorDisplay error={userError} />;
   }
 
@@ -63,6 +67,11 @@ const Epicenter: React.FC = () => {
 
   const categoryGroups = [...categoryGroupsData, { name: "Unassigned", id: null }];
 
+  const tableGroupMap = new Map<number, TableGroup>();
+
+  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
+    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
+  })
   return (
     <>
       {configData.isJudgingOn ? (
@@ -101,7 +110,7 @@ const Epicenter: React.FC = () => {
             dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
             renderItem={(user: User) => (
               <List.Item>
-                <JudgeCard key={user.id} user={user} />
+                <JudgeCard key={user.id} user={user} tableGroupMap={tableGroupMap}/>
               </List.Item>
             )}
           />
