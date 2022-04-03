@@ -249,6 +249,9 @@ projectRoutes.route("/").post(async (req, res) => {
   console.log(openTableGroup);
   console.log(projectsWithOpenTableGroup);
 
+  // TODO: MOVE THIS INTO A CONFIG
+  const numberOfExpos = 1;
+
   // in loop call all projects with table group id
   // find first available table
   try {
@@ -258,7 +261,7 @@ projectRoutes.route("/").post(async (req, res) => {
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        expo: Math.floor(Math.random() * 2 + 1),
+        expo: Math.floor(Math.random() * numberOfExpos + 1),
         roomUrl: dailyUrl,
         table: tableNumber,
         hackathon: {
