@@ -46,6 +46,7 @@ const ProjectCard: React.FC<Props> = props => {
       <p>Table Group: {tablegroupData.name}</p>
       <p>Table Number: {props.project.table}</p>
       <p>Expo: #{props.project.expo}</p>
+      <a href={props.project.devpostUrl}>View Devpost</a>
       {props.project.roomUrl && (
         <p>
           <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
