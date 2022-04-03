@@ -97,6 +97,19 @@ export const getEligiblePrizes = async (users: any[]) => {
       });
       return generalDBPrizes;
     }
+    case "Prototypical 2022": {
+      const { tracks } = prizeConfig.hackathons["Prototypical 2022"];
+
+      const generalDBPrizes = await prisma.category.findMany({
+        where: {
+          name: {
+            in: tracks,
+          },
+        },
+      });
+
+      return generalDBPrizes;
+    }
     default: {
       return [];
     }
