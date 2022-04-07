@@ -334,6 +334,24 @@ projectRoutes.route("/:id").patch(
       delete req.body.tableGroupId;
     }
 
+    if (req.body.table) {
+      const tableNumber = parseInt(req.body.table);
+      const projectsInSameGroup = await prisma.project.findMany({
+        where: { tableGroupId: tableGroup },
+      });
+
+      const isDuplicate = projectsInSameGroup.some(
+        project => project.id !== parseInt(req.params.id) && project.table === tableNumber
+      );
+      if (isDuplicate) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Duplicate Table Number.",
+        });
+        return;
+      }
+    }
+
     const dbCategories = await prisma.category.findMany({
       where: { name: { in: categories } },
     });
