@@ -14,24 +14,24 @@ interface Props {
   key: number;
   project: Project;
   user?: User;
+  tableGroup: TableGroup | undefined;
   onClick?: (data: any) => any;
 }
 
 const ProjectCard: React.FC<Props> = props => {
-  const [{ loading: tablegroupsLoading, data: tablegroupData, error: tablegroupsError }] = useAxios(
-    `/tablegroups/${props.project.tableGroupId}`
-  );
+  // const [{ loading: tablegroupsLoading, data: tablegroupData, error: tablegroupsError }] = useAxios(
+  //   `/tablegroups/${props.project.tableGroupId}`
+  // );
 
-  if (tablegroupsLoading) {
-    return <LoadingDisplay />;
-  }
+  // if (tablegroupsLoading) {
+  //   return <LoadingDisplay />;
+  // }
 
-  if (tablegroupsError) {
-    return <ErrorDisplay error={tablegroupsError} />;
-  }
+  // if (tablegroupsError) {
+  //   return <ErrorDisplay error={tablegroupsError} />;
+  // }
   const tags = props.project.categories.map((category: Category) => category.name);
 
-  console.log(tablegroupData);
   return (
     <Card
       key={props.key}
@@ -43,7 +43,7 @@ const ProjectCard: React.FC<Props> = props => {
         [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
       }
     >
-      <p>Table Group: {tablegroupData.name}</p>
+      <p>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : 1}</p>
       <p>Table Number: {props.project.table}</p>
       <p>Expo: #{props.project.expo}</p>
       <a href={props.project.devpostUrl}>View Devpost</a>
