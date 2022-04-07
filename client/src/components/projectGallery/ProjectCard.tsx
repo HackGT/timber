@@ -19,17 +19,6 @@ interface Props {
 }
 
 const ProjectCard: React.FC<Props> = props => {
-  // const [{ loading: tablegroupsLoading, data: tablegroupData, error: tablegroupsError }] = useAxios(
-  //   `/tablegroups/${props.project.tableGroupId}`
-  // );
-
-  // if (tablegroupsLoading) {
-  //   return <LoadingDisplay />;
-  // }
-
-  // if (tablegroupsError) {
-  //   return <ErrorDisplay error={tablegroupsError} />;
-  // }
   const tags = props.project.categories.map((category: Category) => category.name);
 
   return (
