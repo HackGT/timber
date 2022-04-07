@@ -76,7 +76,6 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
 
   const handleSubmit = async () => {
     const user: User = userData.find((o: User) => o.id === selectedUser);
-    user.assignments = [];
     const hide = message.loading("Loading...", 0);
     try {
       const submittedAssignment = await axios.post("/assignments", {
