@@ -191,13 +191,28 @@ projectRoutes.route("/").post(async (req, res) => {
   }
 
   try {
+    let min_expo = 100000;
+    let min_expo_number = -1;
+    for (let i = 1; i <= config.numberOfExpo; i ++){
+      const aggregations = await prisma.project.count({
+        where: {
+          expo: i,
+        }
+      })
+      if (min_expo <= aggregations){
+        min_expo = aggregations
+        min_expo_number = i
+      }
+
+    }
+
     await prisma.project.create({
       data: {
         name: data.name,
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        expo: Math.floor(Math.random() * 2 + 1),
+        expo: min_expo_number,
         roomUrl: dailyUrl,
         hackathon: {
           connect: {
@@ -211,7 +226,7 @@ projectRoutes.route("/").post(async (req, res) => {
             },
             create: {
               name: user.name,
-              email: user.email,
+              email: user.email
             },
           })),
         },
