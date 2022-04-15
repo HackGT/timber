@@ -28,7 +28,7 @@ const ProjectGallery: React.FC<Props> = props => {
     useAxios("/categories");
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
   
-  const [{ loading: tablegroupsLoading, data: tablegroupsData, error: tablegroupsError }] = useAxios("/tablegroups")
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios("/tablegroups")
   
 
   const [searchText, setSearchText] = useState("");
@@ -50,11 +50,11 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (projectsLoading || categoriesLoading || configLoading) {
+  if (projectsLoading || categoriesLoading || configLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError) {
+  if (projectsError || categoriesError || configError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -91,6 +91,12 @@ const ProjectGallery: React.FC<Props> = props => {
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
+
+  const tableGroupMap = new Map<number, TableGroup>();
+
+  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
+    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
+  })
 
   return (
     <>
@@ -134,6 +140,7 @@ const ProjectGallery: React.FC<Props> = props => {
               key={project.id}
               project={project}
               user={props.user}
+              tableGroup={tableGroupMap.get(project.tableGroupId)}
               onClick={() => openModal(project)}
             />
           </List.Item>
