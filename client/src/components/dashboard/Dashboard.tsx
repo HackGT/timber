@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
+import { groupEnd } from "console";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -16,12 +18,15 @@ interface Props {
 
 const Dashboard: React.FC<Props> = props => {
   const [{ data, loading, error }] = useAxios("/projects/special/dashboard", { useCache: false });
+  const [{ data: tablegroupsData, loading: tablegroupsLoading, error: tablegroupsError }] =
+    useAxios("/tablegroups", { useCache: false });
+  const [{ data: configData, loading: configLoading, error: configError }] = useAxios("/config");
 
-  if (loading) {
+  if (loading || configLoading || tablegroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
+  if (error || configError || tablegroupsError) {
     return <ErrorDisplay error={error} />;
   }
 
@@ -127,6 +132,20 @@ const Dashboard: React.FC<Props> = props => {
                         title={project.name}
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
+                      <br />
+                      {configData.revealTableGroups && (
+                        <>
+                          <p>
+                            Table Group:{" "}
+                            {
+                              tablegroupsData.find(
+                                (group: TableGroup) => group.id === project.tableGroupId
+                              ).name
+                            }
+                          </p>
+                          <p>Table Number: {project.table}</p>
+                        </>
+                      )}
                     </Card>
                   </Link>
                 </List.Item>

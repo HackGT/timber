@@ -1,13 +1,16 @@
 import React from "react";
 import { Button, Popover, Tag, Typography } from "antd";
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
-import { RefetchOptions } from "axios-hooks";
+import useAxios, { RefetchOptions } from "axios-hooks";
 
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
 import { handleAxiosError } from "../../util/util";
 import { Category } from "../../types/Category";
+import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
+import LoadingDisplay from "../../displays/LoadingDisplay";
+import ErrorDisplay from "../../displays/ErrorDisplay";
 
 const { Title, Text } = Typography;
 
@@ -15,6 +18,7 @@ interface Props {
   key: number;
   project: Project;
   assignment?: Assignment;
+  tableGroup: TableGroup | undefined;
   refetch?: (
     config?: AxiosRequestConfig | undefined,
     options?: RefetchOptions | undefined
@@ -61,13 +65,16 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
-
+  console.log(props.project)
+  console.log(props.tableGroup)
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       <Title level={5}>{props.project.name}</Title>
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         {props.project.devpostUrl}
       </a>
+      <Text>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : 1}</Text>
+      <Text>Table Number: {props.project.table}</Text>
       <div>
         {props.project.categories.map(category => (
           <Tag>{category.name}</Tag>
@@ -87,9 +94,11 @@ const JudgingBox: React.FC<Props> = props => {
           return <Text>{`${category[0]}: ${scoreString}`}</Text>;
         })}
       </>
-      <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
-        Join Video Call
-      </a>
+      {props.project.roomUrl && (
+        <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
+          Join Video Call
+        </a>
+      )}
       <Text strong>Change Round</Text>
       <div>
         <Button disabled={props.project.round === 1} onClick={() => updateRound(-1)} size="small">
@@ -125,6 +134,11 @@ const JudgingBox: React.FC<Props> = props => {
           <p>R:{props.project.round}</p>
         </div>
         <p className="judging-box-project-id">P{props.project.id}</p>
+        <div className="judging-box-bottom-row">
+          <p>
+            {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
+          </p>
+        </div>
       </div>
     </Popover>
   );

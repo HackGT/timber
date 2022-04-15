@@ -16,6 +16,7 @@ interface Props {
 const PrizeInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
+    hide();
 
     axios
       .post("/projects/special/prize-validation", values)

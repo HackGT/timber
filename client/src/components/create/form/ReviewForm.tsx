@@ -18,6 +18,7 @@ const ReviewForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
 
+    console.log(props.data);
     axios
       .post("/projects", { submission: props.data })
       .then(res => {

@@ -35,6 +35,25 @@ tableGroupRoutes.route("/:id").get(
   })
 );
 
+// Get by projectId
+tableGroupRoutes.route("/project/:id").get(
+  asyncHandler(async (req, res) => {
+    const projectId: number = parseInt(req.params.id);
+    console.log(projectId);
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+    const tableGroup = await prisma.tableGroup.findUnique({
+      where: {
+        id: project?.tableGroupId || 1,
+      },
+    });
+    res.status(200).json(tableGroup);
+  })
+);
+
 tableGroupRoutes.route("/").post(
   isAdmin,
   asyncHandler(async (req, res) => {

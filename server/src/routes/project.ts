@@ -4,8 +4,15 @@ import axios from "axios";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../common";
 import { getConfig, getCurrentHackathon } from "../utils/utils";
-import { validateTeam, validateDevpost, validatePrizes } from "../utils/validationHelpers";
-import { isAdmin } from "../auth/auth";
+import {
+  validateTeam,
+  validateDevpost,
+  validatePrizes,
+  getEligiblePrizes,
+} from "../utils/validationHelpers";
+import { isAdmin, isAdminOrIsJudging } from "../auth/auth";
+import { TableGroup } from "@prisma/client";
+import { PrismaClientInitializationError } from "@prisma/client/runtime";
 
 export const projectRoutes = express.Router();
 
@@ -79,6 +86,15 @@ projectRoutes.route("/special/devpost-validation").post(async (req, res) => {
   }
 });
 
+projectRoutes.route("/special/get-eligible-prizes").get(async (req, res) => {
+  const resp = await getEligiblePrizes([]);
+  if (resp.error) {
+    res.status(400).json(resp);
+  } else {
+    res.status(200).json(resp);
+  }
+});
+
 // Last step of the form, all the data is passed in here and a submission should be created
 projectRoutes.route("/").post(async (req, res) => {
   const config = await getConfig();
@@ -109,65 +125,65 @@ projectRoutes.route("/").post(async (req, res) => {
   }
 
   let dailyUrl;
-  try {
-    const response = await axios.post(
-      "https://api.daily.co/v1/rooms",
-      {},
-      {
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
-        },
-      }
-    );
+  // try {
+  //   const response = await axios.post(
+  //     "https://api.daily.co/v1/rooms",
+  //     {},
+  //     {
+  //       headers: {
+  //         "Accept": "application/json",
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${String(process.env.DAILY_KEY)}`,
+  //       },
+  //     }
+  //   );
 
-    dailyUrl = response.data.url || "";
-  } catch (err) {
-    console.error(err);
-    res.status(400).send({
-      error: true,
-      message: "Submission could not be saved - There was an error creating a Daily call",
-    });
-    return;
-  }
+  //   dailyUrl = response.data.url || "";
+  // } catch (err) {
+  //   console.error(err);
+  //   res.status(400).send({
+  //     error: true,
+  //     message: "Submission could not be saved - There was an error creating a Daily call",
+  //   });
+  //   return;
+  // }
   console.log(data);
-  try {
-    const logInteractions = (teamValidation.registrationUsers || []).map(
-      (registrationMember: any) =>
-        new Promise<null>((resolve, reject) => {
-          if (registrationMember.id) {
-            try {
-              axios.post(
-                String(process.env.CHECK_IN_URL),
-                {
-                  uuid: registrationMember.id,
-                  eventID: "616f450fd020f00022987288",
-                  eventType: "submission-expo",
-                  interactionType: "inperson",
-                },
-                {
-                  headers: {
-                    "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
+  // try {
+  //   const logInteractions = /* teamValidation.registrationUsers || */ [].map(
+  //     (registrationMember: any) =>
+  //       new Promise<null>((resolve, reject) => {
+  //         if (registrationMember.id) {
+  //           try {
+  //             axios.post(
+  //               String(process.env.CHECK_IN_URL),
+  //               {
+  //                 uuid: registrationMember.id,
+  //                 eventID: "616f450fd020f00022987288",
+  //                 eventType: "submission-expo",
+  //                 interactionType: "inperson",
+  //               },
+  //               {
+  //                 headers: {
+  //                   "Authorization": `Bearer ${String(process.env.CHECK_IN_KEY)}`,
+  //                   "Accept": "application/json",
+  //                   "Content-Type": "application/json",
+  //                 },
+  //               }
+  //             );
 
-              resolve(null);
-            } catch (err) {
-              console.error(err);
-              reject(err);
-            }
-          }
-        })
-    );
+  //             resolve(null);
+  //           } catch (err) {
+  //             console.error(err);
+  //             reject(err);
+  //           }
+  //         }
+  //       })
+  //   );
 
-    await Promise.all(logInteractions);
-  } catch (error: any) {
-    console.error(error);
-  }
+  //   await Promise.all(logInteractions);
+  // } catch (error: any) {
+  //   console.error(error);
+  // }
 
   const bestOverall: any = await prisma.category.findFirst({
     where: {
@@ -190,20 +206,70 @@ projectRoutes.route("/").post(async (req, res) => {
     data.prizes.push(bestOverall.id);
   }
 
+  // find all table groups
+  const tableGroups = await prisma.tableGroup.findMany();
+  // loop over length of table groups
+  let openTableGroup;
+  let projectsWithOpenTableGroup;
+  for (const tableGroup of tableGroups) {
+    // eslint-disable-next-line no-await-in-loop
+    const projectsWithTableGroupId = await prisma.project.findMany({
+      where: {
+        tableGroupId: tableGroup.id,
+      },
+    });
+    if (projectsWithTableGroupId.length !== tableGroup.tableCapacity) {
+      openTableGroup = tableGroup;
+      projectsWithOpenTableGroup = projectsWithTableGroupId;
+      break;
+    }
+  }
+
+  if (openTableGroup === undefined || projectsWithOpenTableGroup === undefined) {
+    res.status(400).send({
+      error: true,
+      message:
+        "Submission could not be saved due to issue with table groups - please contact help desk",
+    });
+    return;
+  }
+
+  let tableNumber;
+  if (openTableGroup !== undefined && projectsWithOpenTableGroup !== undefined) {
+    const tableNumberSet = new Set();
+    for (const project of projectsWithOpenTableGroup) {
+      tableNumberSet.add(project.table);
+    }
+    for (let i = 1; i <= openTableGroup.tableCapacity; i++) {
+      if (!tableNumberSet.has(i)) {
+        tableNumber = i;
+        break;
+      }
+    }
+  }
+
+  console.log(openTableGroup);
+  console.log(projectsWithOpenTableGroup);
+
+  // TODO: MOVE THIS INTO A CONFIG
+  // const numberOfExpos = 1;
+
+  // in loop call all projects with table group id
+  // find first available table
   try {
-    let min_expo = 100000;
-    let min_expo_number = -1;
-    for (let i = 1; i <= config.numberOfExpo; i ++){
+    let minExpo = 100000;
+    let minExpoNumber = -1;
+    for (let i = 1; i <= config.numberOfExpo; i++) {
+      // eslint-disable-next-line no-await-in-loop
       const aggregations = await prisma.project.count({
         where: {
           expo: i,
-        }
-      })
-      if (min_expo <= aggregations){
-        min_expo = aggregations
-        min_expo_number = i
+        },
+      });
+      if (minExpo <= aggregations) {
+        minExpo = aggregations;
+        minExpoNumber = i;
       }
-
     }
 
     await prisma.project.create({
@@ -212,26 +278,30 @@ projectRoutes.route("/").post(async (req, res) => {
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        expo: min_expo_number,
+        expo: minExpoNumber,
         roomUrl: dailyUrl,
+        table: tableNumber,
         hackathon: {
           connect: {
             id: currentHackathon.id,
           },
         },
         members: {
-          connectOrCreate: teamValidation.registrationUsers?.map((user: any) => ({
+          connectOrCreate: data.members.map((user: any) => ({
             where: {
               email: user.email,
             },
             create: {
               name: user.name,
-              email: user.email
+              email: user.email,
             },
           })),
         },
         categories: {
           connect: data.prizes.map((prizeId: any) => ({ id: prizeId })),
+        },
+        tableGroup: {
+          connect: openTableGroup !== undefined ? { id: openTableGroup.id } : {},
         },
       },
     });
@@ -279,6 +349,62 @@ projectRoutes.route("/:id").patch(
     if (req.body.tableGroupId) {
       tableGroup = parseInt(req.body.tableGroupId);
       delete req.body.tableGroupId;
+      const currentProject = await prisma.project.findUnique({
+        where: { id: parseInt(req.params.id) },
+      });
+
+      if (tableGroup !== currentProject?.tableGroupId) {
+        // reassign
+      }
+    }
+
+    if (req.body.table) {
+      const tableNumber = parseInt(req.body.table);
+      const projectsInSameGroup = await prisma.project.findMany({
+        where: { tableGroupId: tableGroup },
+      });
+
+      const tableGroups = await prisma.tableGroup.findMany();
+
+      const maxTableCap = Math.max(...tableGroups.map((group: TableGroup) => group.tableCapacity));
+      console.log("Max table cap", maxTableCap);
+      if (tableNumber > maxTableCap) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Table Number Too Large.",
+        });
+        return;
+      }
+
+      const isDuplicate = projectsInSameGroup.some(
+        project => project.id !== parseInt(req.params.id) && project.table === tableNumber
+      );
+
+      if (isDuplicate) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Duplicate Table Number.",
+        });
+        return;
+      }
+    }
+
+    if (req.body.table) {
+      const tableNumber = parseInt(req.body.table);
+      const projectsInSameGroup = await prisma.project.findMany({
+        where: { tableGroupId: tableGroup },
+      });
+
+      const isDuplicate = projectsInSameGroup.some(
+        project => project.id !== parseInt(req.params.id) && project.table === tableNumber
+      );
+      if (isDuplicate) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Duplicate Table Number.",
+        });
+        return;
+      }
     }
 
     const dbCategories = await prisma.category.findMany({
@@ -286,16 +412,15 @@ projectRoutes.route("/:id").patch(
     });
 
     categories = dbCategories.map((category: any) => ({ id: category.id }));
-    
+
     if (tableGroup !== undefined) {
       const dbTableGroup = await prisma.tableGroup.findUnique({
         where: { id: tableGroup },
       });
       if (dbTableGroup !== null) {
-        tableGroup = {id: dbTableGroup.id}
+        tableGroup = { id: dbTableGroup.id };
       }
     }
-
 
     const updated = await prisma.project.update({
       where: { id: parseInt(req.params.id) },
@@ -316,8 +441,8 @@ projectRoutes.route("/:id").patch(
           connect: categories,
         },
         tableGroup: {
-          connect: tableGroup !== undefined ? tableGroup : {id: 1},
-        }
+          connect: tableGroup !== undefined ? tableGroup : { id: 1 },
+        },
       },
       include: {
         categories: true,

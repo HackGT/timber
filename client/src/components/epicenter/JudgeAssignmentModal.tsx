@@ -76,6 +76,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
 
   const handleSubmit = async () => {
     const user: User = userData.find((o: User) => o.id === selectedUser);
+    user.assignments = [];
     const hide = message.loading("Loading...", 0);
     try {
       const submittedAssignment = await axios.post("/assignments", {
@@ -101,18 +102,25 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     <Modal visible={visible} onCancel={handleCancel} onOk={handleSubmit} okText="Create Assignment">
       <Form>
         <Title level={3}>Manual Assignment</Title>
-        <Select style={{ width: 240 }} onChange={handleChange} placeholder="Project">
-          {data.map((project: Project) => (
+        <Select style={{ width: 240 }} showSearch
+        placeholder="Select a Project"  optionFilterProp="children" filterOption={(input, option) =>
+          option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        } onChange={handleChange} >
+          {data.map((project: Project) => (  
             <Option value={project.id} key={project.id}>
               {project.name}
             </Option>
           ))}
         </Select>
         <Select
-          placeholder="Judge"
+        showSearch
+        placeholder="Select a Judge"
           style={{ width: 240, marginTop: 10 }}
           onChange={handleUserChange}
           disabled={users.length === 0}
+          optionFilterProp="children" filterOption={(input, option) =>
+            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
         >
           {users.map(user => (
             <Option value={user.id} key={user.id}>

@@ -5,6 +5,9 @@ import axios from "axios";
 
 import { User } from "../../../types/User";
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
+import LoadingDisplay from "../../../displays/LoadingDisplay";
+import ErrorDisplay from "../../../displays/ErrorDisplay";
+import useAxios from "axios-hooks";
 
 const { Title, Text } = Typography;
 
@@ -16,11 +19,22 @@ interface Props {
 }
 
 const TeamInfoForm: React.FC<Props> = props => {
+  const [{ data: prizesData, loading: prizesLoading, error: prizesError }] = useAxios(
+    "/projects/special/get-eligible-prizes"
+  );
+  if (prizesLoading) {
+    return <LoadingDisplay />;
+  }
+
+  if (prizesError) {
+    return <ErrorDisplay error={prizesError} />;
+  }
+
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     const newValues = {
-      members: values.members.map((value: any) => ({email: value.email}))
-    }
+      members: values.members.map((value: any) => ({ email: value.email })),
+    };
 
     axios
       .post("/projects/special/team-validation", newValues)

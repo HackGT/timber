@@ -92,6 +92,15 @@ const ConfigEditPane: React.FC = props => {
               <Switch />
             </Form.Item>
           </Col>
+          <Col span={6}>
+            <Form.Item
+              name="revealTableGroups"
+              label="Are Table Groups Revealed"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
         </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
