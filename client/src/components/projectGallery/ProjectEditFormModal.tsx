@@ -219,13 +219,13 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
               <Form.Item name="table" label="Table Number">
                 <InputNumber
                   min={1}
-                  max={
-                    tableGroupsData && props.modalState.initialValues
-                      ? tableGroupsData.find(
-                          (group: any) => group.id === props.modalState.initialValues.tableGroupId
-                        ).tableCapacity
-                      : 16
-                  }
+                  // max={
+                  //   tableGroupsData && props.modalState.initialValues
+                  //     ? tableGroupsData.find(
+                  //         (group: any) => group.id === props.modalState.initialValues.tableGroupId
+                  //       ).tableCapacity
+                  //     : 16
+                  // }
                   style={{ width: "100%" }}
                   precision={0}
                 />
