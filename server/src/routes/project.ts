@@ -112,17 +112,17 @@ projectRoutes.route("/").post(async (req, res) => {
 
   const data = req.body.submission;
 
-  // const teamValidation = await validateTeam(req.user, data.members);
-  // if (teamValidation.error) {
-  //   res.status(400).send(teamValidation);
-  //   return;
-  // }
+  const teamValidation = await validateTeam(req.user, data.members);
+  if (teamValidation.error) {
+    res.status(400).send(teamValidation);
+    return;
+  }
 
-  // const devpostValidation = await validateDevpost(data.devpostUrl, data.name);
-  // if (devpostValidation.error) {
-  //   res.status(400).send(devpostValidation);
-  //   return;
-  // }
+  const devpostValidation = await validateDevpost(data.devpostUrl, data.name);
+  if (devpostValidation.error) {
+    res.status(400).send(devpostValidation);
+    return;
+  }
 
   let dailyUrl;
   // try {
@@ -185,26 +185,26 @@ projectRoutes.route("/").post(async (req, res) => {
   //   console.error(error);
   // }
 
-  // const bestOverall: any = await prisma.category.findFirst({
-  //   where: {
-  //     name: { in: ["HackGT - Best Overall"] },
-  //   },
-  // });
+  const bestOverall: any = await prisma.category.findFirst({
+    where: {
+      name: { in: ["HackGT - Best Overall"] },
+    },
+  });
 
-  // const openSource: any = await prisma.category.findFirst({
-  //   where: {
-  //     name: { in: ["HackGT - Best Open Source Hack"] },
-  //   },
-  // });
+  const openSource: any = await prisma.category.findFirst({
+    where: {
+      name: { in: ["HackGT - Best Open Source Hack"] },
+    },
+  });
 
-  // if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
-  //   res.status(400).send({
-  //     error: true,
-  //     message: "If you submit to open source you can only submit to that category",
-  //   });
-  // } else if (!data.prizes.includes(openSource.id)) {
-  //   data.prizes.push(bestOverall.id);
-  // }
+  if (data.prizes.includes(openSource.id) && data.prizes.length > 1) {
+    res.status(400).send({
+      error: true,
+      message: "If you submit to open source you can only submit to that category",
+    });
+  } else if (!data.prizes.includes(openSource.id)) {
+    data.prizes.push(bestOverall.id);
+  }
 
   // find all table groups
   const tableGroups = await prisma.tableGroup.findMany();
