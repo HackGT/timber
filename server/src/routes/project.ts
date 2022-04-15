@@ -10,7 +10,9 @@ import {
   validatePrizes,
   getEligiblePrizes,
 } from "../utils/validationHelpers";
-import { isAdmin } from "../auth/auth";
+import { isAdmin, isAdminOrIsJudging } from "../auth/auth";
+import { TableGroup } from "@prisma/client";
+import { PrismaClientInitializationError } from "@prisma/client/runtime";
 
 export const projectRoutes = express.Router();
 
@@ -332,6 +334,44 @@ projectRoutes.route("/:id").patch(
     if (req.body.tableGroupId) {
       tableGroup = parseInt(req.body.tableGroupId);
       delete req.body.tableGroupId;
+      const currentProject = await prisma.project.findUnique({
+        where: { id: parseInt(req.params.id) },
+      });
+
+      if (tableGroup !== currentProject?.tableGroupId) {
+        // reassign
+      }
+    }
+
+    if (req.body.table) {
+      const tableNumber = parseInt(req.body.table);
+      const projectsInSameGroup = await prisma.project.findMany({
+        where: { tableGroupId: tableGroup },
+      });
+
+      const tableGroups = await prisma.tableGroup.findMany();
+
+      const maxTableCap = Math.max(...tableGroups.map((group: TableGroup) => group.tableCapacity));
+      console.log("Max table cap", maxTableCap);
+      if (tableNumber > maxTableCap) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Table Number Too Large.",
+        });
+        return;
+      }
+
+      const isDuplicate = projectsInSameGroup.some(
+        project => project.id !== parseInt(req.params.id) && project.table === tableNumber
+      );
+
+      if (isDuplicate) {
+        res.status(200).send({
+          error: true,
+          message: "Error: Duplicate Table Number.",
+        });
+        return;
+      }
     }
 
     if (req.body.table) {
