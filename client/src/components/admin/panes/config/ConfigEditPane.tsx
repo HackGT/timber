@@ -50,6 +50,12 @@ const ConfigEditPane: React.FC = props => {
           <Col span={4}>
             <Form.Item name="currentExpo" rules={[FORM_RULES.requiredRule]} label="Current Expo">
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
+              
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item name="numberOfExpo" rules={[FORM_RULES.requiredRule]} label="Number Expos">
+              <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>

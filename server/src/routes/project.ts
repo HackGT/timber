@@ -252,18 +252,33 @@ projectRoutes.route("/").post(async (req, res) => {
   console.log(projectsWithOpenTableGroup);
 
   // TODO: MOVE THIS INTO A CONFIG
-  const numberOfExpos = 1;
+  // const numberOfExpos = 1;
 
   // in loop call all projects with table group id
   // find first available table
   try {
+    let minExpo = 100000;
+    let minExpoNumber = -1;
+    for (let i = 1; i <= config.numberOfExpo; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const aggregations = await prisma.project.count({
+        where: {
+          expo: i,
+        },
+      });
+      if (minExpo <= aggregations) {
+        minExpo = aggregations;
+        minExpoNumber = i;
+      }
+    }
+
     await prisma.project.create({
       data: {
         name: data.name,
         description: data.description,
         devpostUrl: data.devpostUrl,
         githubUrl: "",
-        expo: Math.floor(Math.random() * numberOfExpos + 1),
+        expo: minExpoNumber,
         roomUrl: dailyUrl,
         table: tableNumber,
         hackathon: {
@@ -277,7 +292,7 @@ projectRoutes.route("/").post(async (req, res) => {
               email: user.email,
             },
             create: {
-              name: "", // user.name,
+              name: user.name,
               email: user.email,
             },
           })),
