@@ -17,13 +17,13 @@ const columns = [
     title: "Project Name",
     render: (row: any) => `${row.id} - ${row.name}`,
     key: "name",
-    defaultSortOrder: "ascend" as SortOrder,
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
   {
     title: "Average Score",
     dataIndex: "average",
     key: "average",
+    defaultSortOrder: "descend" as SortOrder,
     sorter: (a: any, b: any) => a.average - b.average,
   },
   {
