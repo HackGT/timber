@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { Form, Input, message, Modal, Select } from "antd";
+import {Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
+
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
@@ -23,7 +24,29 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   if (userError || categoriesError) {
     return <ErrorDisplay error={userError} />;
   }
+  const onDelete = async () => {
+    try {
 
+      if (props.modalState.initialValues) {
+        axios
+          .delete(`/categorygroups/${props.modalState.initialValues.id}`)
+          .then(res => {
+            message.success("Category group successfully deleted", 2);
+            props.setModalState({ visible: false, initialValues: null });
+            props.refetch();
+          })
+          .catch(err => {
+            handleAxiosError(err);
+          });
+      } else {
+         
+        message.error("Category group could not be deleted");
+           
+      }
+    } catch (error) {
+      console.log("Validate Failed:", error);
+    }
+  };
   const onSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -82,9 +105,26 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       visible={props.modalState.visible}
       title={props.modalState.initialValues ? `Manage Category Group` : `Create Category Group`}
       okText={props.modalState.initialValues ? "Update" : "Create"}
+      onCancel = {() => props.setModalState({ visible: false, initialValues: null })}
       cancelText="Cancel"
-      onCancel={() => props.setModalState({ visible: false, initialValues: null })}
-      onOk={onSubmit}
+      
+      footer={[
+        <Popconfirm
+        title="Are you sure you want to delete this category group?"
+        onConfirm={onDelete}
+        okText="Yes"
+        cancelText="No"
+      >
+         <Button danger style={{float: 'left'}}>
+          Delete
+        </Button>
+      </Popconfirm>,
+       
+       
+        <Button key="2" onClick={() => props.setModalState({ visible: false, initialValues: null })}>Cancel</Button>,
+        <Button key="1" onClick={onSubmit} type="primary">{props.modalState.initialValues ? "Update" : "Create"}</Button>
+        
+      ]}
       bodyStyle={{ paddingBottom: 0 }}
     >
       <Form form={form} layout="vertical" autoComplete="off">
