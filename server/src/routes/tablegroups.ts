@@ -85,3 +85,21 @@ tableGroupRoutes.route("/:id").patch(
     res.status(200).json(updatedTableGroup);
   })
 );
+
+
+tableGroupRoutes.route("/:id").delete(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const tableGroupId: number = parseInt(req.params.id);
+
+    const deletedCategoryGroup = await prisma.tableGroup.deleteMany({
+      where: {
+        id: tableGroupId,
+      },
+    });
+
+    res.status(204).end();
+  })
+);
+
+
