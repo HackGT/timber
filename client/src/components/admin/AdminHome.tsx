@@ -43,6 +43,8 @@ const AdminHome: React.FC = () => {
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={UserFormModal}
           searchFilterField="name"
+          userRoleFilterField="general"
+          showSortUsersByRoleButton
           hideAddButton
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
@@ -77,6 +79,7 @@ const AdminHome: React.FC = () => {
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={CategoryFormModal}
           searchFilterField="name"
+          userRoleFilterField="general"
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
@@ -105,6 +108,7 @@ const AdminHome: React.FC = () => {
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={CategoryGroupFormModal}
           searchFilterField="name"
+          userRoleFilterField="general"
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
@@ -128,6 +132,7 @@ const AdminHome: React.FC = () => {
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={TableGroupsModal}
           searchFilterField="name"
+          userRoleFilterField="general"
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
