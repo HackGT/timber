@@ -1,6 +1,6 @@
 import { TableColumnGroupType } from "antd";
 import useAxios from "axios-hooks";
-import React from "react";
+import React, {useState} from "react";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -9,19 +9,29 @@ import JudgingCardsContainer from "./JudgingCardsContainer";
 import { TableGroup } from "../../types/TableGroup";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
+import JudgingIntermediary from "./JudgingIntermediary";
 
 interface Props {
   user: User;
 }
 
 const JudgingHome: React.FC<Props> = props => {
-  const [{ data, loading, error }] = useAxios("/assignments/current-project");
+  const [intermediaryState, setIntermediaryState] = useState(0);
+  const [{ data, loading, error }, refetchCurrentProject] = useAxios("/assignments/current-project");
   const [{ data: assignmentsData, loading: assignmentsLoad, error: assignmentError }] =
     useAxios("/assignments");
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
     useAxios("/tablegroups");
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
     useAxios("/projects");
+
+  const displayIntermediary = () => {
+    setIntermediaryState(1);
+  };
+
+  const hideIntermediary = () => {
+    setIntermediaryState(0);
+  }
 
   if (!props.user.categoryGroupId) {
     return (
@@ -93,7 +103,9 @@ const JudgingHome: React.FC<Props> = props => {
   }
 
   return (
-    <>
+    <div> 
+    {intermediaryState === 1 && <JudgingIntermediary hideIntermediary={hideIntermediary}/>}
+    {intermediaryState === 0 && <>
       <h1>Project Name: {data.name}</h1>
       <h3>Table Number: {data.table} </h3>
       <h3>Table Group: {tableGroupName}</h3>
@@ -102,10 +114,11 @@ const JudgingHome: React.FC<Props> = props => {
         Devpost Submission
       </a>
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
-      <JudgingCardsContainer data={data} />
+      <JudgingCardsContainer data={data} displayIntermediary={displayIntermediary} refetchCurrentProject={refetchCurrentProject} />
 
       <div style={{ marginTop: "5px" }}>{next}</div>
-    </>
+    </>}
+    </div>
   );
 };
 

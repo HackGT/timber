@@ -8,6 +8,8 @@ import CriteriaCardContainer from "./CriteriaCardContainer";
 
 interface Props {
   data: any;
+  displayIntermediary: () => void;
+  refetchCurrentProject: () => void;
 }
 const JudgingCardsContainer: React.FC<Props> = props => {
   const [projectScores, setProjectScores] = useState({});
@@ -54,7 +56,8 @@ const JudgingCardsContainer: React.FC<Props> = props => {
         data: { status: "COMPLETED" },
       });
       hide();
-      window.location.reload();
+      props.displayIntermediary();
+      props.refetchCurrentProject();
     } catch (err: any) {
       hide();
       handleAxiosError(err);
@@ -65,7 +68,8 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     try {
       await axios.patch(`/assignments/${props.data.assignmentId}`, { data: { status: "SKIPPED" } });
       hide();
-      window.location.reload();
+      props.displayIntermediary();
+      props.refetchCurrentProject();
     } catch (err: any) {
       hide();
       handleAxiosError(err);
