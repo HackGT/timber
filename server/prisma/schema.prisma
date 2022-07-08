@@ -20,6 +20,13 @@ enum UserRole {
   ADMIN
 }
 
+enum WinnerRank {
+  FIRST
+  SECOND
+  THIRD
+  GENERAL
+}
+
 model Assignment {
   id          Int              @id @default(autoincrement())
   user        User             @relation(fields: [userId], references: [id])
@@ -204,4 +211,13 @@ model User {
 
   categoryGroupId Int?
   @@map("user")
+}
+
+model Winner {
+  id         Int        @id @default(autoincrement())
+  categoryId Int
+  projectId  Int
+  rank       WinnerRank @default(GENERAL)
+
+  @@map("winner")
 }
