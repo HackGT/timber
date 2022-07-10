@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Typography } from "antd";
+import { Card, Tabs, Typography } from "antd";
 import useAxios from "axios-hooks";
 
 import ProjectTableContainer from "../projectStatus/ProjectTableContainer";
@@ -25,6 +25,11 @@ const Winners: React.FC = () => {
   return (
     <>
       <Title level={2}>Winners</Title>
+      <Card
+      title="hi"
+    >
+      <p> content </p>
+    </Card>
       
     </>
   );
