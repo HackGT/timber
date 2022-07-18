@@ -22,6 +22,7 @@ import AdminRoute from "./util/AdminRoute";
 import JudgeRoute from "./util/JudgeRoute";
 import SponsorRoute from "./util/SponsorRoute";
 import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
+import Winners from "./components/winners/Winners";
 
 const { Content } = Layout;
 
@@ -62,6 +63,8 @@ function App() {
               <AdminRoute exact path="/admin/:activePane?" component={AdminHome} user={data} />
               <AdminRoute exact path="/epicenter" component={Epicenter} user={data} />
               <AdminRoute exact path="/project-status" component={ProjectStatusHome} user={data} />
+              <AdminRoute exact path="/winners" component={Winners} user={data} />
+
               <Route component={NotFoundDisplay} />
             </Switch>
           </Content>

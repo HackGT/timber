@@ -43,6 +43,7 @@ export const routes = [
   new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
   new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
   new Page("Project Status", "/project-status", user => [UserRole.ADMIN].includes(user.role)),
+  new Page("Winners", "/winners", user => [UserRole.ADMIN].includes(user.role))
 ];
 
 interface Props {
