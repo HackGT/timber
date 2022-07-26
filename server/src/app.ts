@@ -38,6 +38,7 @@ import { ballotsRoutes } from "./routes/ballots";
 import { assignmentRoutes } from "./routes/assignments";
 import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
+import { winnersRoutes } from "./routes/winners";
 
 app.get("/status", (req, res) => {
   res.status(200).send("Success");
@@ -55,7 +56,7 @@ app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/ballots", isAuthenticated, ballotsRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
 app.use("/rubric", isAuthenticated, rubricRoutes);
-
+app.use("/winners", isAuthenticated, winnersRoutes);
 app.use("/public", isAuthenticated, express.static(path.join(__dirname, "/public")));
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
