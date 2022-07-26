@@ -6,6 +6,7 @@ import { isAdmin } from "../auth/auth";
 
 export const winnerRoutes = express.Router();
 
+// add new winner
 winnerRoutes.route("/").post(
     isAdmin,
     asyncHandler(async (req, res) => {
@@ -16,7 +17,7 @@ winnerRoutes.route("/").post(
     })
   );
 
-
+// edit existing winner
 winnerRoutes.route("/:id").patch(
     isAdmin,
     asyncHandler(async (req, res) => {
@@ -33,6 +34,7 @@ winnerRoutes.route("/:id").patch(
     })
   );
   
+  // delete existing winner
   winnerRoutes.route("/:id").delete(
     isAdmin,
     asyncHandler(async (req, res) => {
