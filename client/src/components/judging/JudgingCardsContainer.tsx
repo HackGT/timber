@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Popconfirm, message } from "antd";
+import { Button, Popconfirm, message, Modal } from "antd";
 
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
@@ -12,16 +12,18 @@ interface Props {
 const JudgingCardsContainer: React.FC<Props> = props => {
   const [projectScores, setProjectScores] = useState({});
   const [categoryToCriteriaMapping, setCategoryToCriteriaMapping] = useState({})
+  
 
   useEffect(() => {
-    if (!props.data || props.data.length === 0) {
+    if (!props.data[0] || props.data[0].length === 0) {
       return;
     }
+    console.log(props.data[0])
 
     const newCriteriaArray: any[] = [];
     const newCategoryToCriteriaMapping: any = {}
 
-    props.data.categories.forEach((category: any) => {
+    props.data[0].categories.forEach((category: any) => {
       category.criterias.forEach((criteria: any) => {
         newCriteriaArray.push(criteria)
         if (newCategoryToCriteriaMapping[category.name]) {
@@ -39,22 +41,34 @@ const JudgingCardsContainer: React.FC<Props> = props => {
 
     setProjectScores(mapping);
     setCategoryToCriteriaMapping(newCategoryToCriteriaMapping)
-  }, [props.data, setProjectScores, setCategoryToCriteriaMapping]);
+  }, [props.data[0], setProjectScores, setCategoryToCriteriaMapping]);
 
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
     const ballots: any = {
       criterium: projectScores,
-      round: props.data.round,
-      projectId: props.data.id,
+      round: props.data[0].round,
+      projectId: props.data[0].id,
     };
     try {
       await axios.post("/ballots", ballots);
-      await axios.patch(`/assignments/${props.data.assignmentId}`, {
+      await axios.patch(`/assignments/${props.data[0].assignmentId}`, {
         data: { status: "COMPLETED" },
       });
       hide();
-      window.location.reload();
+
+      Modal.info({
+        title: 'Notification',
+        okText: "I'm Here",
+        content: (
+          props.data[1]
+        ),
+        
+        
+        onOk() {window.location.reload();},
+      });
+
+      
     } catch (err: any) {
       hide();
       handleAxiosError(err);
@@ -63,9 +77,19 @@ const JudgingCardsContainer: React.FC<Props> = props => {
   const onSkip = async () => {
     const hide = message.loading("Loading...", 0);
     try {
-      await axios.patch(`/assignments/${props.data.assignmentId}`, { data: { status: "SKIPPED" } });
+      await axios.patch(`/assignments/${props.data[0].assignmentId}`, { data: { status: "SKIPPED" } });
       hide();
-      window.location.reload();
+      Modal.info({
+        title: 'Notification',
+        okText: "I'm Here",
+        content: (
+          props.data[1]
+        ),
+
+        
+        onOk() {window.location.reload();},
+        
+      });
     } catch (err: any) {
       hide();
       handleAxiosError(err);
