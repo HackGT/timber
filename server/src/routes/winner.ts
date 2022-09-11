@@ -29,6 +29,20 @@ winnerRoutes.route("/:id").get(
   })
 );
 
+// Get winners by Category id
+winnerRoutes.route("/category/:id").get(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const categoryId: number = parseInt(req.params.id);
+    const categoryWinners = await prisma.winner.findMany({
+      where: {
+        categoryId,
+      },
+    });
+    res.status(200).json(categoryWinners);
+  })
+);
+
 // add new winner
 winnerRoutes.route("/").post(
   isAdmin,
