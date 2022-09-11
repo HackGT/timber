@@ -15,6 +15,20 @@ winnerRoutes.route("/").get(
   })
 );
 
+// Get winner by id
+winnerRoutes.route("/:id").get(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const winnerId: number = parseInt(req.params.id);
+    const winner = await prisma.winner.findUnique({
+      where: {
+        id: winnerId,
+      },
+    });
+    res.status(200).json(winner);
+  })
+);
+
 // add new winner
 winnerRoutes.route("/").post(
   isAdmin,
