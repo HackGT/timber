@@ -102,7 +102,7 @@ const JudgingHome: React.FC<Props> = props => {
         Devpost Submission
       </a>
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
-      <JudgingCardsContainer data={data} />
+      <JudgingCardsContainer data={[data,next]} />
 
       <div style={{ marginTop: "5px" }}>{next}</div>
     </>
