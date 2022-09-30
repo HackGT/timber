@@ -43,6 +43,14 @@ winnerRoutes.route("/category/:id").get(
   })
 );
 
+winnerRoutes.route("/winnerCards").get(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const winners = await prisma.winner.findMany({});
+    res.status(200).json(winners);
+  })
+);
+
 // add new winner
 winnerRoutes.route("/").post(
   isAdmin,

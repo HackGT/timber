@@ -13,24 +13,39 @@ const { TabPane } = Tabs;
 const Winners: React.FC = () => {
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
     useAxios("/projects");
+  const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetchWinners] =
+    useAxios("/winners");
+    
 
-  if (projectsLoading) {
+  if (projectsLoading || winnersLoading) {
     return <LoadingDisplay />;
   }
+
 
   if (projectsError) {
     return <ErrorDisplay error={projectsError} />;
   }
+  if (winnersError) {
+    return <ErrorDisplay error={winnersError} />;
+  }
+
+  const winnersChoices = winnersData
+    ? winnersData.map((item: any) => (
+        <Card
+            title={item.id}
+          >
+            <p> content </p>
+        </Card>
+      ))
+    : [];
+
 
   return (
     <>
       <Title level={2}>Winners</Title>
-      <Card
-      title="hi"
-    >
-      <p> content </p>
-    </Card>
-      
+      <div>
+        {winnersChoices}
+      </div>
     </>
   );
 };
