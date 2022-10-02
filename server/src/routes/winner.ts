@@ -10,7 +10,14 @@ export const winnerRoutes = express.Router();
 winnerRoutes.route("/").get(
   isAdmin,
   asyncHandler(async (req, res) => {
-    const winners = await prisma.winner.findMany({});
+    const winners = await prisma.winner.findMany({
+      include: {
+        project: true,
+        category: true,
+        members: true,
+        hackathon: true,
+      },
+    });
     res.status(200).json(winners);
   })
 );
