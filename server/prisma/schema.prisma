@@ -67,6 +67,7 @@ model Category {
   categoryGroups CategoryGroup[]
   criterias      Criteria[]
   projects       Project[]
+  winners        Winner[]
   hackathon      Hackathon       @relation(fields: [hackathonId], references: [id])
 
   hackathonId Int
@@ -123,6 +124,7 @@ model Hackathon {
   notifications  Notification[]
   tableGroups    TableGroup[]
   projects       Project[]
+  winners        Winner[]
   config         Config?
 
   @@map("hackathon")
@@ -142,24 +144,25 @@ model Notification {
 }
 
 model Project {
-  id          Int          @id @default(autoincrement())
-  name        String
-  description String?
-  devpostUrl  String?
-  githubUrl   String
-  roomUrl     String?
-  expo        Int?         @default(1)
-  round       Int?         @default(1)
-  table       Int?
-  tableGroup  TableGroup?  @relation(fields: [tableGroupId], references: [id])
-  hackathon   Hackathon    @relation(fields: [hackathonId], references: [id])
-  members     User[]
-  categories  Category[]
-  ballots     Ballot[]
-  assignment  Assignment[]
-
+  id           Int          @id @default(autoincrement())
+  name         String
+  description  String?
+  devpostUrl   String?
+  githubUrl    String
+  roomUrl      String?
+  expo         Int?         @default(1)
+  round        Int?         @default(1)
+  table        Int?
+  tableGroup   TableGroup?  @relation(fields: [tableGroupId], references: [id])
+  hackathon    Hackathon    @relation(fields: [hackathonId], references: [id])
+  members      User[]
+  categories   Category[]
+  ballots      Ballot[]
+  assignment   Assignment[]
+  winners      Winner[]
   tableGroupId Int?
   hackathonId  Int
+
   @@map("project")
 }
 
@@ -208,16 +211,22 @@ model User {
   projects      Project[]
   assignments   Assignment[]
   notifications Notification[]
+  winner        Winner[]
 
   categoryGroupId Int?
   @@map("user")
 }
 
 model Winner {
-  id         Int        @id @default(autoincrement())
-  categoryId Int
-  projectId  Int
-  rank       WinnerRank @default(GENERAL)
+  id          Int        @id @default(autoincrement())
+  rank        WinnerRank @default(GENERAL)
+  project     Project    @relation(fields: [projectId], references: [id])
+  category    Category   @relation(fields: [categoryId], references: [id])
+  hackathon   Hackathon  @relation(fields: [hackathonId], references: [id])
+  members     User[]
+  categoryId  Int
+  projectId   Int
+  hackathonId Int
 
   @@map("winner")
 }
