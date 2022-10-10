@@ -1,42 +1,54 @@
 import React from "react";
-import { Card, Tag, Divider } from "antd";
+import { Card, Tag } from "antd";
+
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 import { Category } from "../../types/Category";
 import { Hackathon } from "../../types/Hackathon";
 
-
 interface Props {
-    project: Project;
-    category: Category;
-    members: User[];
-    hackathon: Hackathon;
+  project: Project;
+  category: Category;
+  members: User[];
+  hackathon: Hackathon;
+  rank: string;
 }
 
-// category use a preset tag
-
 const WinnerCard: React.FC<Props> = props => {
-    const memberNames = props.members.map((member) =>
-        <li>{member}</li>
-    );
-    console.log(props);
-    return (
-        <Card title={<span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>}>   
+  const colors = {
+    FIRST: "gold",
+    SECOND: "#C0C0C0",
+    THIRD: "#cd7f32",
+    GENERAL: "purple",
+  };
 
+  const rankColor = colors[props.rank as keyof typeof colors];
+
+  return (
+    <Card
+      title={
+        <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
+      }
+    >
+      <p>
+        <b>Hexathon:</b> {props.hackathon.name}
+      </p>
+      <p>
+        <b>Rank:</b> <Tag color={rankColor}>{props.rank}</Tag>
+      </p>
+      <p>
         <b>Category:</b> <Tag color="blue">{props.category.name}</Tag>
-        <Divider />
-
-        <b>Members</b>
-        <p>{props.members.map((member) =>
-            <li>{member.name}</li>
-        )}</p>
-        <Divider />
-
-        <p><b>Hackathon:</b> {props.hackathon.name}</p>
-
-
-        </Card>
-    );
+      </p>
+      <b>Members</b>
+      <p>
+        {props.members.map(member => (
+          <li>
+            {member.name} - {member.email}
+          </li>
+        ))}
+      </p>
+    </Card>
+  );
 };
 
 export default WinnerCard;
