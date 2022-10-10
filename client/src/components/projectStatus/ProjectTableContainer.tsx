@@ -71,7 +71,9 @@ const ProjectTableContainer: React.FC<Props> = props => {
   const BallotModal = BallotEditFormModal;
 
   function showConfirm(values: any) {
+    console.log(values)
     const ballotIds = values.scores.map((ballot: any) => ballot.id);
+    console.log(ballotIds)
     confirm({
       title: "Do you want to delete these scores?",
       icon: <ExclamationCircleOutlined />,
@@ -106,6 +108,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
           });
 
           const newData = Object.entries(data).map((e: any) => {
+            console.log(e)
             const editButton = (
               <Button
                 type="primary"

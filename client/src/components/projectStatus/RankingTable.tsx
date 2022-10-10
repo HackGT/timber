@@ -1,8 +1,7 @@
-import { Typography, Table } from "antd/lib";
+import { Typography, Table, Button, message, Modal } from "antd/lib";
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { Props, useState } from "react";
 import { SortOrder } from "antd/lib/table/interface";
-
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
@@ -11,6 +10,10 @@ import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { ModalState } from "../../util/FormModalProps";
+import ProjectCard from "../projectGallery/ProjectCard";
 
 const { Title } = Typography;
 
@@ -40,6 +43,12 @@ const columns = [
     key: "numJudged",
     sorter: (a: any, b: any) => a.numJudged - b.numJudged,
   },
+  {
+    title: "Winner",
+    dataIndex: "winner",
+    key: "winner",
+    sorter: (a: any, b: any) => a.winner.localeCompare(b.winner),
+  }
 ];
 
 const RankingTable = () => {
@@ -52,6 +61,48 @@ const RankingTable = () => {
 
   if (categoryError) {
     return <ErrorDisplay error={categoryError} />;
+  }
+
+  const winner = async (project: { id: any; }, category: { id: any; hackathonId: any; }) => {
+
+    const winnerData =  {
+      id: project.id,
+      categoryId: category.id,
+      projectId: project.id,
+      rank: "FIRST",
+      hackathonId: category.hackathonId
+    }
+    console.log(winnerData);
+
+    try {
+      axios
+        .post("/winner", { data: winnerData })
+        .then(res => {
+          if (res.data.error) {
+            message.error(res.data.message, 2);
+          } else {
+            message.success("Success!", 2);
+          }
+        })
+        .catch(err => {
+          message.error("Error: Please ask for help", 2);
+          console.log(err);
+        });
+    } catch (info) {
+      console.log("Validate Failed:", info);
+    }
+  };
+  const { confirm } = Modal;
+  function showConfirm(project: any, category: any) {
+
+    confirm({
+      title: "Do you want to make this project the winner?",
+      icon: <ExclamationCircleOutlined />,
+      content: "This cannot be undone",
+      onOk() {
+        winner(project, category);
+      },
+    });
   }
 
   return (
@@ -77,8 +128,17 @@ const RankingTable = () => {
                     }
                   }
                 });
-              });
-
+              })
+                const winnerButton = (
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      showConfirm(project, category)
+                    }}
+                  >
+                    Winner
+                  </Button>
+                );
               data.push({
                 id: project.id,
                 name: project.name,
@@ -86,9 +146,11 @@ const RankingTable = () => {
                 average: numJudged > 0 ? score / numJudged : 0,
                 numJudged,
                 editScore: editButton,
-              });
-            })}
+                winner: winnerButton,
 
+              });
+              
+            })}
             <Table
               key={category.id}
               columns={columns}
@@ -105,3 +167,11 @@ const RankingTable = () => {
 };
 
 export default RankingTable;
+function setModalState(arg0: { visible: boolean; initialValues: any; }) {
+  throw new Error("Function not implemented.");
+}
+
+  function openModal(arg0: { scores: any; }) {
+    throw new Error("Function not implemented.");
+  }
+
