@@ -22,60 +22,56 @@ winnerRoutes.route("/").get(
   })
 );
 
-
 winnerRoutes.route("/export").get(
   isAdmin,
   asyncHandler(async (req, res) => {
-
-  // const hackId = req.query
-  const winners = await prisma.winner.findMany({
-    select: {
-      rank: true,
-      hackathon: {
-        select: {
-          name: true,
+    const winners = await prisma.winner.findMany({
+      select: {
+        rank: true,
+        hackathon: {
+          select: {
+            name: true,
+          },
         },
-      },
-      project: {
-        select: {
-          name : true,
-          devpostUrl: true,
+        project: {
+          select: {
+            name: true,
+            devpostUrl: true,
+          },
         },
-      },
-      category: {
-        select: {
-          name: true,
+        category: {
+          select: {
+            name: true,
+          },
         },
-        },
-      members: {
-        select: {
-          name: true,
-          email: true,
+        members: {
+          select: {
+            name: true,
+            email: true,
           },
         },
       },
     });
 
-let combinedWinners = "Hackathon, Project Name, Category Name, Rank, Devpost Link, Participant 1 name, Participant 1 email, Participant 2 name, Participant 2 email, Participant 3 name, Participant 3 email, Participant 4 name, Participant 4 email\n"
+    let combinedWinners =
+      "Hackathon, Project Name, Category Name, Rank, Devpost Link, Participant 1 name, Participant 1 email, Participant 2 name, Participant 2 email, Participant 3 name, Participant 3 email, Participant 4 name, Participant 4 email\n";
 
-winners.forEach(element => {
-  combinedWinners += element.hackathon.name + ","
-  combinedWinners += element.project.name + ","
-  combinedWinners += element.category.name + ","
-  combinedWinners += element.rank + ","
-  combinedWinners += element.project.devpostUrl + ","
-  element.members.forEach(member =>{
-    combinedWinners += member.name + ","
-    combinedWinners += member.email + ","
+    winners.forEach(element => {
+      combinedWinners += element.hackathon.name + ",";
+      combinedWinners += element.project.name + ",";
+      combinedWinners += element.category.name + ",";
+      combinedWinners += element.rank + ",";
+      combinedWinners += element.project.devpostUrl + ",";
+      element.members.forEach(member => {
+        combinedWinners += member.name + ",";
+        combinedWinners += member.email + ",";
+      });
+      combinedWinners += "\n";
+    });
+    res.header("Content-Type", "text/csv");
+    res.status(200).send(combinedWinners);
   })
-  combinedWinners += "\n"
-});
-  console.log()
-  res.header("Content-Type", "text/csv")
-  res.status(200).send(combinedWinners);
-
-})
-)
+);
 
 // Get winner by id
 winnerRoutes.route("/:id").get(
@@ -102,6 +98,14 @@ winnerRoutes.route("/category/:id").get(
       },
     });
     res.status(200).json(categoryWinners);
+  })
+);
+
+winnerRoutes.route("/winnerCards").get(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const winners = await prisma.winner.findMany({});
+    res.status(200).json(winners);
   })
 );
 
@@ -148,6 +152,3 @@ winnerRoutes.route("/:id").delete(
     res.status(204).end();
   })
 );
-
-
-

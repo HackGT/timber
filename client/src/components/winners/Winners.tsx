@@ -1,63 +1,71 @@
 import React from "react";
-import { Button, Card, Tabs, Typography } from "antd";
+import { List, Button, Typography, Divider } from "antd";
 import useAxios from "axios-hooks";
-
-import ProjectTableContainer from "../projectStatus/ProjectTableContainer";
-import RankingTable from "../projectStatus/RankingTable";
-import ErrorDisplay from "../../displays/ErrorDisplay";
-import LoadingDisplay from "../../displays/LoadingDisplay";
 import axios from "axios";
 import DownloadOutlined from "@ant-design/icons/lib/icons/DownloadOutlined";
 
+import ErrorDisplay from "../../displays/ErrorDisplay";
+import LoadingDisplay from "../../displays/LoadingDisplay";
+import WinnerCard from "./WinnerCard";
+
 const { Title } = Typography;
-const { TabPane } = Tabs;
 
 const handleDownload = async () => {
-  const url = `${window.location.origin}/winner/export`
-  await axios.get("/winner/export", { responseType: 'blob' }).then(response => {
+  await axios.get("/winner/export", { responseType: "blob" }).then(response => {
     const href = URL.createObjectURL(response.data);
 
-    // create "a" HTLM element with href to file & click
-    const link = document.createElement('a');
+    // create "a" HTML element with href to file & click
+    const link = document.createElement("a");
     link.href = href;
-    link.setAttribute('download', 'winnersData.csv'); // or any other extension
+    link.setAttribute("download", "Winners.csv");
     document.body.appendChild(link);
     link.click();
 
     // clean up "a" element & remove ObjectURL
     document.body.removeChild(link);
     URL.revokeObjectURL(href);
-    })
-  }
-const Winners: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios("/projects");
+  });
+};
 
-  if (projectsLoading) {
+const Winners: React.FC = () => {
+  const [{ loading: winnersLoading, data: winnersData, error: winnersError }] = useAxios("/winner");
+
+  if (winnersLoading) {
     return <LoadingDisplay />;
   }
-
-  if (projectsError) {
-    return <ErrorDisplay error={projectsError} />;
+  if (winnersError) {
+    return <ErrorDisplay error={winnersError} />;
   }
-  
 
   return (
     <>
       <Title level={2}>Winners</Title>
-      <Card
-      title="hi"
-    >
-      <p> content </p>
-    </Card>
-    <Button type="primary" icon={<DownloadOutlined/>} onClick={handleDownload}>
+      <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload}>
         Download
       </Button>
-      
+      <Divider />
+
+      <div>
+        <List
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+          loading={winnersLoading}
+          dataSource={winnersData}
+          renderItem={(winner: any) => (
+            <List.Item>
+              <WinnerCard
+                id={winner.id}
+                project={winner.project}
+                category={winner.category}
+                members={winner.members}
+                hackathon={winner.hackathon}
+                rank={winner.rank}
+              />
+            </List.Item>
+          )}
+        />
+      </div>
     </>
   );
 };
 
 export default Winners;
-
-
