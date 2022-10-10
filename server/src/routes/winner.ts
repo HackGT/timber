@@ -21,6 +21,16 @@ winnerRoutes.route("/").get(
     res.status(200).json(winners);
   })
 );
+// add new winner
+winnerRoutes.route("/").post(
+  isAdmin,
+  asyncHandler(async (req, res) => {
+    const createdWinner = await prisma.winner.create({
+      data: req.body.data,
+    });
+    res.status(201).json(createdWinner);
+  })
+);
 
 // Get winner by id
 winnerRoutes.route("/:id").get(
@@ -50,16 +60,7 @@ winnerRoutes.route("/category/:id").get(
   })
 );
 
-// add new winner
-winnerRoutes.route("/").post(
-  isAdmin,
-  asyncHandler(async (req, res) => {
-    const createdWinner = await prisma.winner.create({
-      data: req.body.data,
-    });
-    res.status(201).json(createdWinner);
-  })
-);
+
 
 // edit existing winner
 winnerRoutes.route("/:id").patch(
