@@ -38,7 +38,11 @@ import { ballotsRoutes } from "./routes/ballots";
 import { assignmentRoutes } from "./routes/assignments";
 import { rubricRoutes } from "./routes/rubric";
 import { handleError } from "./utils/handleError";
+<<<<<<< HEAD
 import { winnerRoutes } from "./routes/winner";
+=======
+import { winnersRoutes } from "./routes/winners";
+>>>>>>> ea24f6433de826099ed9eba5e58b84b578ac5dc7
 
 app.get("/status", (req, res) => {
   res.status(200).send("Success");
@@ -56,8 +60,12 @@ app.use("/criteria", isAuthenticated, criteriaRoutes);
 app.use("/ballots", isAuthenticated, ballotsRoutes);
 app.use("/assignments", isAuthenticated, assignmentRoutes);
 app.use("/rubric", isAuthenticated, rubricRoutes);
+<<<<<<< HEAD
 app.use("/winner", isAuthenticated, winnerRoutes);
 
+=======
+app.use("/winners", isAuthenticated, winnersRoutes);
+>>>>>>> ea24f6433de826099ed9eba5e58b84b578ac5dc7
 app.use("/public", isAuthenticated, express.static(path.join(__dirname, "/public")));
 
 app.use(isAuthenticated, express.static(path.join(__dirname, "../../client/build")));
