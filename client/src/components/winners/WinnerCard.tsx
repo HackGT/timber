@@ -7,6 +7,7 @@ import { Category } from "../../types/Category";
 import { Hackathon } from "../../types/Hackathon";
 
 interface Props {
+  id: number;
   project: Project;
   category: Category;
   members: User[];
@@ -26,6 +27,7 @@ const WinnerCard: React.FC<Props> = props => {
 
   return (
     <Card
+      key={props.id}
       title={
         <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
       }
@@ -42,7 +44,7 @@ const WinnerCard: React.FC<Props> = props => {
       <b>Members</b>
       <p>
         {props.members.map(member => (
-          <li>
+          <li key={member.id}>
             {member.name} - {member.email}
           </li>
         ))}
