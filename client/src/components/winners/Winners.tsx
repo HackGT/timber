@@ -23,23 +23,27 @@ const Winners: React.FC = () => {
     return <ErrorDisplay error={winnersError} />;
   }
 
-  const winnerCards = winnersData.map((item: any) => (
-      <List.Item>
-        <WinnerCard
-            project={item.project}
-            category={item.category}
-            members={item.members}
-            hackathon={item.hackathon}
-          />
-        </List.Item>
-      ));
-
+  console.log(winnersData);
 
   return (
     <>
       <Title level={2}>Winners</Title>
       <div>
-        {winnerCards}
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+        loading={winnersLoading}
+        dataSource={winnersData}
+        renderItem={(winner: any) => (
+          <List.Item>
+            <WinnerCard
+              project={winner.project}
+              category={winner.category}
+              members={winner.members}
+              hackathon={winner.hackathon}
+            />
+          </List.Item>
+        )}
+      />
       </div>
     </>
   );
