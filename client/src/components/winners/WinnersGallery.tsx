@@ -37,8 +37,6 @@ const Winners: React.FC = () => {
     return <ErrorDisplay error={winnersError} />;
   }
 
-  console.log(winnersData);
-
   return (
     <>
       <Title level={2}>Winners</Title>

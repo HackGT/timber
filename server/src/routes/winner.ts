@@ -40,6 +40,7 @@ winnerRoutes.route("/export").get(
           select: {
             name: true,
             devpostUrl: true,
+            members: true,
           },
         },
         category: {
@@ -47,12 +48,6 @@ winnerRoutes.route("/export").get(
             name: true,
           },
         },
-        // members: {
-        //   select: {
-        //     name: true,
-        //     email: true,
-        //   },
-        // },
       },
     });
 
@@ -65,10 +60,10 @@ winnerRoutes.route("/export").get(
       combinedWinners += `${element.category.name},`;
       combinedWinners += `${element.rank},`;
       combinedWinners += `${element.project.devpostUrl},`;
-      // element.members.forEach(member => {
-      //   combinedWinners += member.name + ",";
-      //   combinedWinners += member.email + ",";
-      // });
+      element.project.members.forEach(member => {
+        combinedWinners += `${member.name},`;
+        combinedWinners += `${member.email},`;
+      });
       combinedWinners += "\n";
     });
     res.header("Content-Type", "text/csv");
