@@ -22,7 +22,7 @@ import AdminRoute from "./util/AdminRoute";
 import JudgeRoute from "./util/JudgeRoute";
 import SponsorRoute from "./util/SponsorRoute";
 import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
-import Winners from "./components/winners/Winners";
+import Winners from "./components/winners/WinnersGallery";
 
 const { Content } = Layout;
 
