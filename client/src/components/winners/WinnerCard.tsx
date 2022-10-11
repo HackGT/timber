@@ -41,7 +41,7 @@ const WinnerCard: React.FC<Props> = props => {
       <p>
         <b>Category:</b> <Tag color="blue">{props.category.name}</Tag>
       </p>
-      <b>Members</b>
+      <b>Members:</b>
       <p>
         {props.members.map(member => (
           <li key={member.id}>

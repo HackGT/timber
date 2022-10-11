@@ -12,9 +12,12 @@ winnerRoutes.route("/").get(
   asyncHandler(async (req, res) => {
     const winners = await prisma.winner.findMany({
       include: {
-        project: true,
+        project: {
+          include: {
+            members: true,
+          },
+        },
         category: true,
-        members: true,
         hackathon: true,
       },
     });
@@ -44,12 +47,12 @@ winnerRoutes.route("/export").get(
             name: true,
           },
         },
-        members: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
+        // members: {
+        //   select: {
+        //     name: true,
+        //     email: true,
+        //   },
+        // },
       },
     });
 
@@ -57,15 +60,15 @@ winnerRoutes.route("/export").get(
       "Hackathon, Project Name, Category Name, Rank, Devpost Link, Participant 1 name, Participant 1 email, Participant 2 name, Participant 2 email, Participant 3 name, Participant 3 email, Participant 4 name, Participant 4 email\n";
 
     winners.forEach(element => {
-      combinedWinners += element.hackathon.name + ",";
-      combinedWinners += element.project.name + ",";
-      combinedWinners += element.category.name + ",";
-      combinedWinners += element.rank + ",";
-      combinedWinners += element.project.devpostUrl + ",";
-      element.members.forEach(member => {
-        combinedWinners += member.name + ",";
-        combinedWinners += member.email + ",";
-      });
+      combinedWinners += `${element.hackathon.name},`;
+      combinedWinners += `${element.project.name},`;
+      combinedWinners += `${element.category.name},`;
+      combinedWinners += `${element.rank},`;
+      combinedWinners += `${element.project.devpostUrl},`;
+      // element.members.forEach(member => {
+      //   combinedWinners += member.name + ",";
+      //   combinedWinners += member.email + ",";
+      // });
       combinedWinners += "\n";
     });
     res.header("Content-Type", "text/csv");

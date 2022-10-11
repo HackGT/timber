@@ -211,7 +211,6 @@ model User {
   projects      Project[]
   assignments   Assignment[]
   notifications Notification[]
-  winner        Winner[]
 
   categoryGroupId Int?
   @@map("user")
@@ -223,7 +222,6 @@ model Winner {
   project     Project    @relation(fields: [projectId], references: [id])
   category    Category   @relation(fields: [categoryId], references: [id])
   hackathon   Hackathon  @relation(fields: [hackathonId], references: [id])
-  members     User[]
   categoryId  Int
   projectId   Int
   hackathonId Int
