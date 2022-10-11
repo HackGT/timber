@@ -23,23 +23,23 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("Session secret not specified");
 }
 
-app.use(
-  session({
-    cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // ms
-    },
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: true,
-    store: new PrismaSessionStore(prisma, {
-      checkPeriod: 2 * 60 * 1000, // ms
-      dbRecordIdIsSessionId: true,
-    }),
-  })
-);
+// app.use(
+//   session({
+//     cookie: {
+//       maxAge: 7 * 24 * 60 * 60 * 1000, // ms
+//     },
+//     secret: process.env.SESSION_SECRET,
+//     saveUninitialized: false,
+//     resave: true,
+//     store: new PrismaSessionStore(prisma, {
+//       checkPeriod: 2 * 60 * 1000, // ms
+//       dbRecordIdIsSessionId: true,
+//     }),
+//   })
+// );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 export function isAuthenticated(
   request: express.Request,
@@ -47,11 +47,8 @@ export function isAuthenticated(
   next: express.NextFunction
 ): void {
   response.setHeader("Cache-Control", "private");
-  if (!request.isAuthenticated() || !request.user) {
-    if (request.session) {
-      request.session.returnTo = request.originalUrl;
-    }
-    response.redirect("/auth/login");
+  if (!request.user) {
+    throw new Error("user is not authenticated");
   } else {
     next();
   }
