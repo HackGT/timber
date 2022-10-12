@@ -6,6 +6,7 @@ import { URL } from "url";
 import { prisma, prizeConfig } from "../common";
 import { getConfig, getCurrentHackathon } from "./utils";
 import { queryRegistration } from "../registration";
+import admin from "firebase-admin";
 
 /*
     - Classify team into prize based on user tracks (from registration)
@@ -135,7 +136,7 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
     return { error: true, message: "Email does not match current user" };
   }
 
-  let registrationError = null;
+  let registrationError: { error: boolean; message: string } | null = null;
   const currentHackathon = await getCurrentHackathon();
 
   const registrationUsers: any[] = await Promise.all(
@@ -169,13 +170,20 @@ export const validateTeam = async (currentUser: User | undefined, members: any[]
       });
 
       if (!user) {
-        await prisma.user.create({
-          data: {
-            name: searchUsers[0].name,
-            email,
-            role: UserRole.GENERAL,
-          },
-        });
+        try {
+          const newUser = await admin.auth().getUserByEmail(email);
+
+          await prisma.user.create({
+            data: {
+              name: searchUsers[0].name,
+              email,
+              role: UserRole.GENERAL,
+              userId: newUser.uid,
+            },
+          });
+        } catch (error) {
+          return registrationError;
+        }
       } else {
         const existingProject = await prisma.project.findFirst({
           where: {

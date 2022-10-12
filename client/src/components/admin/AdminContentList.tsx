@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import { Button, List, Typography, Input, Col, Select, Tag, Dropdown, Checkbox, Pagination, PaginationProps } from "antd";
+import {
+  Button,
+  List,
+  Typography,
+  Input,
+  Col,
+  Select,
+  Tag,
+  Dropdown,
+  Checkbox,
+  Pagination,
+  PaginationProps,
+} from "antd";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 
@@ -7,6 +19,7 @@ import { FormModalProps, ModalState } from "../../util/FormModalProps";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -35,7 +48,7 @@ const AdminContentList: React.FC<Props> = props => {
   const [userRole, setUserRole] = useState<any>(undefined);
   const [isJudging, setIsJudging] = useState<any>(undefined);
 
-  const [{ loading, data, error }, refetch] = useAxios(props.queryUrl);
+  const [{ loading, data, error }, refetch] = useAxios(apiUrl(Service.EXPO, props.queryUrl));
 
   const openModal = (values: any) => {
     setModalState({
@@ -60,29 +73,22 @@ const AdminContentList: React.FC<Props> = props => {
         )
     : [];
 
-    const userRoleOptions = [
-      { value: 'GENERAL', label: 'General' },
-      { value: 'SPONSOR', label: 'Sponsor' },
-      { value: 'ADMIN', label: 'Admin' }
-    ]
+  const userRoleOptions = [
+    { value: "GENERAL", label: "General" },
+    { value: "SPONSOR", label: "Sponsor" },
+    { value: "ADMIN", label: "Admin" },
+  ];
 
-    updatedData = userRole
-      ? updatedData.filter((user: User) =>
-          user.role == userRole
-        )
-      : updatedData;
+  updatedData = userRole ? updatedData.filter((user: User) => user.role == userRole) : updatedData;
 
-    const judgingOptions = [
-      { value: 'true', label: 'Is Judging' },
-      { value: 'false', label: 'Is Not Judging' }
-    ]
+  const judgingOptions = [
+    { value: "true", label: "Is Judging" },
+    { value: "false", label: "Is Not Judging" },
+  ];
 
-    updatedData = isJudging
-      ? 
-      updatedData.filter((user: User) =>
-          (user.isJudging).toString() == isJudging 
-        )
-      : updatedData;
+  updatedData = isJudging
+    ? updatedData.filter((user: User) => user.isJudging.toString() == isJudging)
+    : updatedData;
 
   const Modal = props.modal;
 
@@ -95,7 +101,7 @@ const AdminContentList: React.FC<Props> = props => {
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
       />
-      { props.showSortUsersByRoleButton && (
+      {props.showSortUsersByRoleButton && (
         <Select
           placeholder="Filter by User Role"
           style={{ width: "300px" }}
@@ -128,7 +134,7 @@ const AdminContentList: React.FC<Props> = props => {
         grid={props.listGrid}
         bordered={props.listBordered}
         pagination={{
-          pageSize: 15
+          pageSize: 15,
         }}
       />
       <Modal modalState={modalState} setModalState={setModalState} refetch={refetch} />

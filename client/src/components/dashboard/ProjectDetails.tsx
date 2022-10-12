@@ -7,6 +7,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import DailyWindow from "../video/DailyWindow";
 import { config } from "process";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -19,10 +20,12 @@ const Label: React.FC<{ name: string }> = ({ name }) => (
 const ProjectDetails: React.FC = props => {
   const { projectId } = useParams<any>();
 
-  const [{ data, loading, error }] = useAxios(`/projects/${projectId}`);
-  const [{ data: configData, loading: configLoading, error: configError }] = useAxios("/config");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, `/projects/${projectId}`));
+  const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
   const [{ data: tablegroupData, loading: tablegroupLoading, error: tablegroupError }] = useAxios(
-    `/tablegroups/project/${projectId}`
+    apiUrl(Service.EXPO, `/tablegroups/project/${projectId}`)
   );
 
   if (loading || tablegroupLoading || configLoading) {

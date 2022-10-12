@@ -8,6 +8,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
 import { groupEnd } from "console";
 import { TableGroup } from "../../types/TableGroup";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -17,10 +18,14 @@ interface Props {
 }
 
 const Dashboard: React.FC<Props> = props => {
-  const [{ data, loading, error }] = useAxios("/projects/special/dashboard", { useCache: false });
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects/special/dashboard"), {
+    useCache: false,
+  });
   const [{ data: tablegroupsData, loading: tablegroupsLoading, error: tablegroupsError }] =
-    useAxios("/tablegroups", { useCache: false });
-  const [{ data: configData, loading: configLoading, error: configError }] = useAxios("/config");
+    useAxios(apiUrl(Service.EXPO, "/tablegroups"), { useCache: false });
+  const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
 
   if (loading || configLoading || tablegroupsLoading) {
     return <LoadingDisplay />;

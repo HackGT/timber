@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
-import {Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
+import { Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
-
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
-  const [{ loading: userLoading, data: userData, error: userError }] = useAxios("/user");
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
-    useAxios("/categories");
+  const [{ loading: userLoading, data: userData, error: userError }] = useAxios(
+    apiUrl(Service.EXPO, "/user")
+  );
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
+    apiUrl(Service.EXPO, "/categories")
+  );
 
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -26,10 +29,9 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   }
   const onDelete = async () => {
     try {
-
       if (props.modalState.initialValues) {
         axios
-          .delete(`/categorygroups/${props.modalState.initialValues.id}`)
+          .delete(apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`))
           .then(res => {
             message.success("Category group successfully deleted", 2);
             props.setModalState({ visible: false, initialValues: null });
@@ -39,9 +41,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
             handleAxiosError(err);
           });
       } else {
-         
         message.error("Category group could not be deleted");
-           
       }
     } catch (error) {
       console.log("Validate Failed:", error);
@@ -56,7 +56,10 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
 
       if (props.modalState.initialValues) {
         axios
-          .patch(`/categorygroups/${props.modalState.initialValues.id}`, values)
+          .patch(
+            apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`),
+            values
+          )
           .then(res => {
             hide();
             message.success("Category group successfully updated", 2);
@@ -69,7 +72,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(`/categorygroups`, values)
+          .post(apiUrl(Service.EXPO, `/categorygroups`), values)
           .then(res => {
             hide();
             message.success("Category group successfully created", 2);
@@ -105,25 +108,29 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       visible={props.modalState.visible}
       title={props.modalState.initialValues ? `Manage Category Group` : `Create Category Group`}
       okText={props.modalState.initialValues ? "Update" : "Create"}
-      onCancel = {() => props.setModalState({ visible: false, initialValues: null })}
+      onCancel={() => props.setModalState({ visible: false, initialValues: null })}
       cancelText="Cancel"
-      
       footer={[
         <Popconfirm
-        title="Are you sure you want to delete this category group?"
-        onConfirm={onDelete}
-        okText="Yes"
-        cancelText="No"
-      >
-         <Button danger style={{float: 'left'}}>
-          Delete
-        </Button>
-      </Popconfirm>,
-       
-       
-        <Button key="2" onClick={() => props.setModalState({ visible: false, initialValues: null })}>Cancel</Button>,
-        <Button key="1" onClick={onSubmit} type="primary">{props.modalState.initialValues ? "Update" : "Create"}</Button>
-        
+          title="Are you sure you want to delete this category group?"
+          onConfirm={onDelete}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger style={{ float: "left" }}>
+            Delete
+          </Button>
+        </Popconfirm>,
+
+        <Button
+          key="2"
+          onClick={() => props.setModalState({ visible: false, initialValues: null })}
+        >
+          Cancel
+        </Button>,
+        <Button key="1" onClick={onSubmit} type="primary">
+          {props.modalState.initialValues ? "Update" : "Create"}
+        </Button>,
       ]}
       bodyStyle={{ paddingBottom: 0 }}
     >

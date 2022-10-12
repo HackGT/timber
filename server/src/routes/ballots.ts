@@ -60,14 +60,12 @@ ballotsRoutes.route("/").post(
   isAdminOrIsJudging,
   asyncHandler(async (req, res) => {
     const { criterium } = req.body;
-    const user: User = req.user as User;
-
     const data = Object.keys(criterium).map(key => ({
       score: criterium[key] || 0,
       criteriaId: parseInt(key),
       round: req.body.round,
       projectId: req.body.projectId,
-      userId: user.id,
+      userId: 1,
     }));
 
     const createdBallots = await prisma.ballot.createMany({

@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { FormModalProps } from "../../util/FormModalProps";
 import { FORM_RULES, handleAxiosError } from "../../util/util";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
@@ -21,7 +22,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
 
     try {
       axios
-        .post(`/ballots/batch/update`, scoreMappings)
+        .post(apiUrl(Service.EXPO, `/ballots/batch/update`), scoreMappings)
         .then(res => {
           hide();
 

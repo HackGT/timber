@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useAxios from "axios-hooks";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
+
+import axios from "axios";
+import { initializeApp } from "firebase/app";
+import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
+import {
+  useLogin,
+  LoadingScreen,
+  AuthProvider,
+  ErrorScreen,
+  apiUrl,
+  Service,
+} from "@hex-labs/core";
 
 import "./App.less";
 
@@ -23,56 +35,133 @@ import JudgeRoute from "./util/JudgeRoute";
 import SponsorRoute from "./util/SponsorRoute";
 import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
 import Winners from "./components/winners/WinnersGallery";
+import { UserRole } from "./types/UserRole";
+import ProtectedRoute from "./util/ProtectedRoute";
 
 const { Content } = Layout;
 
-function App() {
-  const [{ data, loading, error }] = useAxios("/auth/check");
+// Initialized the Firebase app through the credentials provided
+export const app = initializeApp({
+  apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
+  authDomain: "auth.hexlabs.org",
+});
+// Sets the Firebase persistence to in memory since we use cookies for session
+// management. These cookies are set by the backend on login/logout.
+setPersistence(getAuth(app), inMemoryPersistence);
+
+// By default sends axios requests with user session cookies so that the backend
+// can verify the user's identity.
+axios.defaults.withCredentials = true;
+
+export const App = () => {
+  const [loading, loggedIn] = useLogin(app);
+  const [userDataLoading, setUserDataLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const response = await axios.get(apiUrl(Service.EXPO, "/user/check"));
+      setUser(response.data);
+      setUserDataLoading(false);
+    };
+
+    if (loggedIn) {
+      getUserData();
+    } else {
+      setUser(null);
+    }
+  }, [loggedIn]);
 
   if (loading) {
-    return <LoadingDisplay />;
+    return <LoadingScreen />;
+  }
+  // If the user is not logged in, redirect to the login frontend with a redirect
+  // param so that the user can login and come back to the page they were on.
+  if (!loggedIn) {
+    window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
+    return <LoadingScreen />;
   }
 
-  if (error) {
-    return <ErrorDisplay error={error} />;
+  if (userDataLoading) {
+    return <LoadingScreen />;
   }
 
   return (
-    <div>
-      <Router>
-        <Layout style={{ minHeight: "100vh" }}>
-          <Navigation user={data} />
-          <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
-            <Switch>
-              <Route exact path="/" render={() => <Dashboard user={data} />} />
-              <Route exact path="/create" render={() => <SubmissionFormContainer user={data} />} />
-              <SponsorRoute
-                exact
-                path="/category-group/:categoryGroupId"
-                component={CategoryGroup}
-                user={data}
-              />
-              <Route exact path="/projectgallery" render={() => <ProjectGallery user={data} />} />
-              <Route exact path="/projects/:projectId" component={ProjectDetails} />
-              <JudgeRoute
-                exact
-                path="/judging"
-                render={() => <JudgingHome user={data} />}
-                user={data}
-              />
-              <AdminRoute exact path="/admin/:activePane?" component={AdminHome} user={data} />
-              <AdminRoute exact path="/epicenter" component={Epicenter} user={data} />
-              <AdminRoute exact path="/project-status" component={ProjectStatusHome} user={data} />
-              <AdminRoute exact path="/winners" component={Winners} user={data} />
+    <AuthProvider app={app}>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Navigation user={user} />
+        <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
+          <Routes>
+            <Route path="/" element={<Dashboard user={user} />} />
+            <Route path="/create" element={<SubmissionFormContainer user={user} />} />
 
-              <Route component={NotFoundDisplay} />
-            </Switch>
-          </Content>
-          <Footer />
-        </Layout>
-      </Router>
-    </div>
+            <Route
+              path="/category-group/:categoryGroupId"
+              element={
+                <ProtectedRoute type="sponsor" user={user}>
+                  <CategoryGroup />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/projectgallery" element={<ProjectGallery user={user} />} />
+            <Route path="/projects/:projectId" element={<ProjectDetails />} />
+
+            <Route
+              path="/judging"
+              element={
+                <ProtectedRoute type="judge" user={user}>
+                  <JudgingHome user={user} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute type="admin" user={user}>
+                  <AdminHome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/:activePane"
+              element={
+                <ProtectedRoute type="admin" user={user}>
+                  <AdminHome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/epicenter"
+              element={
+                <ProtectedRoute type="admin" user={user}>
+                  <Epicenter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/project-status"
+              element={
+                <ProtectedRoute type="admin" user={user}>
+                  <ProjectStatusHome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/winners"
+              element={
+                <ProtectedRoute type="admin" user={user}>
+                  <Winners />
+                </ProtectedRoute>
+              }
+            />
+            <Route element={<NotFoundDisplay />} />
+          </Routes>
+        </Content>
+        <Footer />
+      </Layout>
+    </AuthProvider>
   );
-}
+};
 
 export default App;

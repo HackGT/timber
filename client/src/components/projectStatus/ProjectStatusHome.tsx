@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs, Typography } from "antd";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ProjectTableContainer from "./ProjectTableContainer";
 import RankingTable from "./RankingTable";
@@ -12,7 +13,7 @@ const { TabPane } = Tabs;
 
 const ProjectStatusHome: React.FC = () => {
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios("/projects");
+    useAxios(apiUrl(Service.EXPO, "/projects"));
 
   if (projectsLoading) {
     return <LoadingDisplay />;

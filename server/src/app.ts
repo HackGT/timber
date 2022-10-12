@@ -1,5 +1,5 @@
 /* eslint-disable import/first, import/order */
-import express from "express";
+import express, { response } from "express";
 import compression from "compression";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -7,11 +7,9 @@ import morgan from "morgan";
 import path from "path";
 import "source-map-support/register";
 import { createServer } from "http";
-import * as socketio from "socket.io";
 import admin from "firebase-admin";
 import cookieParser from "cookie-parser";
 
-import { scheduleJobs } from "./jobs";
 import { prisma } from "./common";
 
 dotenv.config();
@@ -50,6 +48,7 @@ import { asyncHandler } from "./utils/asyncHandler";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { UserRole } from "@prisma/client";
 import { queryRegistration } from "./registration";
+import { apiCall } from "./utils/apiCall";
 
 app.get("/status", (req, res) => {
   res.status(200).send("Success");
@@ -86,7 +85,7 @@ app.use(
       return;
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: {
         email: decodedIdToken.email,
       },
@@ -100,8 +99,18 @@ app.use(
 
     let userRole: UserRole = UserRole.GENERAL;
     let userIsJudging = false;
+    let response;
     try {
-      const response = await queryRegistration(decodedIdToken.email ?? "");
+      response = await apiCall(
+        "users",
+        {
+          url: `/users/${decodedIdToken.uid}`,
+          method: "GET",
+        },
+        req
+      );
+
+      console.log(response.name);
 
       if (
         response.data &&
@@ -121,15 +130,17 @@ app.use(
       console.error(err);
     }
 
-    req.user = await prisma.user.create({
+    user = await prisma.user.create({
       data: {
-        name: "Test",
-        email: decodedIdToken.emai ?? "",
+        name: `${response.name.first} ${response.name.last}`,
+        userId: decodedIdToken.uid,
+        email: req.user?.email ?? "",
         role: userRole,
         isJudging: userIsJudging,
       },
     });
 
+    req.user = user;
     next();
   })
 );

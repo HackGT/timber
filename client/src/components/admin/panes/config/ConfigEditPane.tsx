@@ -6,11 +6,12 @@ import axios from "axios";
 import { FORM_RULES } from "../../../../util/util";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
 const ConfigEditPane: React.FC = props => {
-  const [{ data, loading, error }] = useAxios("/config");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
 
   if (loading) {
     return <LoadingDisplay />;
@@ -25,7 +26,7 @@ const ConfigEditPane: React.FC = props => {
     console.log("Submission values:", values);
 
     axios
-      .post("/config", values)
+      .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
         message.success("Config successfully updated", 2);
@@ -50,7 +51,6 @@ const ConfigEditPane: React.FC = props => {
           <Col span={4}>
             <Form.Item name="currentExpo" rules={[FORM_RULES.requiredRule]} label="Current Expo">
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
-              
             </Form.Item>
           </Col>
           <Col span={4}>

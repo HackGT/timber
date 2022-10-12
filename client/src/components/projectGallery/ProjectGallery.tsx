@@ -13,6 +13,7 @@ import { config } from "process";
 import { UserRole } from "../../types/UserRole";
 import { FORM_RULES } from "../../util/util";
 import { TableGroup } from "../../types/TableGroup";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -23,13 +24,16 @@ interface Props {
 
 const ProjectGallery: React.FC<Props> = props => {
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
-    useAxios("/projects");
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] =
-    useAxios("/categories");
-  const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
-  
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios("/tablegroups")
-  
+    useAxios(apiUrl(Service.EXPO, "/projects"));
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
+    apiUrl(Service.EXPO, "/categories")
+  );
+  const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
+
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios(apiUrl(Service.EXPO, "/tablegroups"));
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
@@ -39,7 +43,6 @@ const ProjectGallery: React.FC<Props> = props => {
     visible: false,
     initialValues: null,
   } as ModalState);
-
 
   const openModal = (values: any) => {
     const newCategories = values.categories.map((category: any) => category.name);
@@ -96,7 +99,7 @@ const ProjectGallery: React.FC<Props> = props => {
 
   tableGroupsData.forEach((tableGroupItem: TableGroup) => {
     tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  })
+  });
 
   return (
     <>

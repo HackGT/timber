@@ -12,6 +12,7 @@ import { User } from "../../types/User";
 import { handleAxiosError } from "../../util/util";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -26,8 +27,10 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
   const [selectedProject, setSelectedProject] = useState<Project>();
   const [selectedUser, setSelectedUser] = useState("");
 
-  const [{ data, loading, error }] = useAxios("/projects");
-  const [{ data: userData, loading: userLoading, error: userError }] = useAxios("/user");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects"));
+  const [{ data: userData, loading: userLoading, error: userError }] = useAxios(
+    apiUrl(Service.EXPO, "/user")
+  );
   const [users, setUsers] = useState<any[]>([]);
 
   // const getJudges = () => {
@@ -79,7 +82,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     user.assignments = [];
     const hide = message.loading("Loading...", 0);
     try {
-      const submittedAssignment = await axios.post("/assignments", {
+      const submittedAssignment = await axios.post(apiUrl(Service.EXPO, "/assignments"), {
         user,
         project: selectedProject,
         data: {
@@ -102,23 +105,30 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     <Modal visible={visible} onCancel={handleCancel} onOk={handleSubmit} okText="Create Assignment">
       <Form>
         <Title level={3}>Manual Assignment</Title>
-        <Select style={{ width: 240 }} showSearch
-        placeholder="Select a Project"  optionFilterProp="children" filterOption={(input, option) =>
-          option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        } onChange={handleChange} >
-          {data.map((project: Project) => (  
+        <Select
+          style={{ width: 240 }}
+          showSearch
+          placeholder="Select a Project"
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={handleChange}
+        >
+          {data.map((project: Project) => (
             <Option value={project.id} key={project.id}>
               {project.name}
             </Option>
           ))}
         </Select>
         <Select
-        showSearch
-        placeholder="Select a Judge"
+          showSearch
+          placeholder="Select a Judge"
           style={{ width: 240, marginTop: 10 }}
           onChange={handleUserChange}
           disabled={users.length === 0}
-          optionFilterProp="children" filterOption={(input, option) =>
+          optionFilterProp="children"
+          filterOption={(input, option) =>
             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >

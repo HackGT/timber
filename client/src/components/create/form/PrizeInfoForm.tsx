@@ -3,6 +3,7 @@ import axios from "axios";
 import { Alert, Button, Col, Form, message, Row, Select, Typography } from "antd";
 
 import { FORM_LAYOUT, handleAxiosError } from "../../../util/util";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -19,7 +20,7 @@ const PrizeInfoForm: React.FC<Props> = props => {
     hide();
 
     axios
-      .post("/projects/special/prize-validation", values)
+      .post(apiUrl(Service.EXPO, "/projects/special/prize-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);

@@ -2,6 +2,7 @@
 import { PrismaClient, User as PrismaUser } from "@prisma/client";
 import path from "path";
 import fs from "fs";
+import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 
 // eslint-disable-next-line import/no-mutable-exports
 export let prizeConfig: any;

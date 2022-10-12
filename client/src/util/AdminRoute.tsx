@@ -1,18 +1,13 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Navigate } from "react-router-dom";
 import { UserRole } from "../types/UserRole";
 
 function AdminRoute({ component: Component, user, ...rest }: any): any {
   if (user && [UserRole.ADMIN].includes(user.role)) {
-    return <Route {...rest} render={(props: any) => <Component {...props} />} />;
+    return <Route {...rest} element={<Component />} />;
   }
 
-  return (
-    <Route
-      {...rest}
-      render={(props: any) => <Redirect to={{ pathname: "/", state: { from: props.location } }} />}
-    />
-  );
+  return <Route {...rest} element={<Navigate to="/" />} />;
 }
 
 export default AdminRoute;

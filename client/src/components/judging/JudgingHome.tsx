@@ -9,19 +9,21 @@ import JudgingCardsContainer from "./JudgingCardsContainer";
 import { TableGroup } from "../../types/TableGroup";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
+import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   user: User;
 }
 
 const JudgingHome: React.FC<Props> = props => {
-  const [{ data, loading, error }] = useAxios("/assignments/current-project");
-  const [{ data: assignmentsData, loading: assignmentsLoad, error: assignmentError }] =
-    useAxios("/assignments");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/assignments/current-project"));
+  const [{ data: assignmentsData, loading: assignmentsLoad, error: assignmentError }] = useAxios(
+    apiUrl(Service.EXPO, "/assignments")
+  );
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
-    useAxios("/tablegroups");
+    useAxios(apiUrl(Service.EXPO, "/tablegroups"));
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios("/projects");
+    useAxios(apiUrl(Service.EXPO, "/projects"));
 
   if (!props.user.categoryGroupId) {
     return (
@@ -102,7 +104,7 @@ const JudgingHome: React.FC<Props> = props => {
         Devpost Submission
       </a>
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
-      <JudgingCardsContainer data={[data,next]} />
+      <JudgingCardsContainer data={[data, next]} />
 
       <div style={{ marginTop: "5px" }}>{next}</div>
     </>

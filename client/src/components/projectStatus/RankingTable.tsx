@@ -11,6 +11,7 @@ import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
@@ -43,8 +44,9 @@ const columns = [
 ];
 
 const RankingTable = () => {
-  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] =
-    useAxios("/categories");
+  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios(
+    apiUrl(Service.EXPO, "/categories")
+  );
 
   if (categoryLoading) {
     return <LoadingDisplay />;

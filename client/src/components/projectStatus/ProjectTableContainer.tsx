@@ -11,6 +11,7 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
@@ -26,7 +27,9 @@ const ProjectTableContainer: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
 
-  const [{ data: criteriaData, loading, error }, refetch] = useAxios("/criteria");
+  const [{ data: criteriaData, loading, error }, refetch] = useAxios(
+    apiUrl(Service.EXPO, "/criteria")
+  );
 
   if (loading) {
     return <LoadingDisplay />;
@@ -43,7 +46,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
     };
     try {
       axios
-        .delete(`/ballots/batch/delete`, { data: ids })
+        .delete(apiUrl(Service.EXPO, `/ballots/batch/delete`), { data: ids })
         .then(res => {
           if (res.data.error) {
             message.error(res.data.message, 2);

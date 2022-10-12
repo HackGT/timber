@@ -27,8 +27,8 @@ export const FORM_LAYOUT = {
   },
 };
 
-export const handleAxiosError = (error: Error | AxiosError) => {
-  if (axios.isAxiosError(error)) {
+export const handleAxiosError = (error: Error | AxiosError<any>) => {
+  if (axios.isAxiosError(error) && error.response) {
     if (error.response?.data.error || error.response?.data.message) {
       message.error(error.response?.data.message, 2);
     } else {
