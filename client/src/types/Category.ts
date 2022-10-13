@@ -7,7 +7,7 @@ export type Category = {
   name: string;
   isDefault: boolean;
   description: string;
-  hackathonId: number;
+  hexathon: string;
   projects: Project[];
   criterias: Criteria[];
   categoryGroups: CategoryGroup[];

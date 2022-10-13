@@ -20,7 +20,9 @@ const Label: React.FC<{ name: string }> = ({ name }) => (
 const ProjectDetails: React.FC = props => {
   const { projectId } = useParams<any>();
 
-  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, `/projects/${projectId}`));
+  const [{ data: projectData, loading: projectLoading, error: projectError }] = useAxios(
+    apiUrl(Service.EXPO, `/projects/${projectId}`)
+  );
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
@@ -28,14 +30,14 @@ const ProjectDetails: React.FC = props => {
     apiUrl(Service.EXPO, `/tablegroups/project/${projectId}`)
   );
 
-  if (loading || tablegroupLoading || configLoading) {
+  if (projectLoading || tablegroupLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error || tablegroupError || configError) {
-    return <ErrorDisplay error={error} />;
+  if (projectError || tablegroupError || configError) {
+    return <ErrorDisplay error={projectError} />;
   }
-  console.log(configData);
+  console.log(projectData);
 
   // const createMessage = () => {
   //   switch (data.submission.round) {
@@ -83,18 +85,18 @@ const ProjectDetails: React.FC = props => {
       {/* {createMessage()} */}
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
       <Title level={2} style={{ margin: "30px 0" }}>
-        {data.hackathon.name} Submission Details
+        {projectData.hexathon.name} Submission Details
       </Title>
       <Descriptions layout="vertical">
-        <Descriptions.Item label={<Label name="Name" />}>{data.name}</Descriptions.Item>
+        <Descriptions.Item label={<Label name="Name" />}>{projectData.name}</Descriptions.Item>
         <Descriptions.Item label={<Label name="Emails" />}>
-          {data.members.map((user: any) => user.email).join(", ")}
+          {projectData.members.map((user: any) => user.email).join(", ")}
         </Descriptions.Item>
         <Descriptions.Item label={<Label name="Devpost" />}>
-          <a href={data.devpostUrl}>{data.devpostUrl}</a>
+          <a href={projectData.devpostUrl}>{projectData.devpostUrl}</a>
         </Descriptions.Item>
         <Descriptions.Item label={<Label name="Selected Prizes" />}>
-          {data.categories.map((category: any) => category.name).join(", ")}
+          {projectData.categories.map((category: any) => category.name).join(", ")}
         </Descriptions.Item>
         {configData.revealTableGroups && (
           <>
@@ -102,7 +104,7 @@ const ProjectDetails: React.FC = props => {
               {tablegroupData.name}
             </Descriptions.Item>
             <Descriptions.Item label={<Label name="Table Number" />}>
-              {data.table}
+              {projectData.table}
             </Descriptions.Item>
           </>
         )}

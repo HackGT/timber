@@ -62,7 +62,6 @@ const Winners: React.FC = () => {
                 project={winner.project}
                 category={winner.category}
                 members={winner.project.members}
-                hackathon={winner.hackathon}
                 rank={winner.rank}
               />
             </List.Item>

@@ -18,17 +18,21 @@ const DevpostInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
 
-    axios
-      .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
-      .then(res => {
-        hide();
-        props.updateData(values);
-        props.nextStep();
-      })
-      .catch(err => {
-        hide();
-        handleAxiosError(err);
-      });
+    hide();
+    props.updateData(values);
+    props.nextStep();
+    // TODO: Uncomment this
+    // axios
+    //   .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
+    //   .then(res => {
+    //     hide();
+    //     props.updateData(values);
+    //     props.nextStep();
+    //   })
+    //   .catch(err => {
+    //     hide();
+    //     handleAxiosError(err);
+    //   });
   };
 
   const onFinishFailed = (errorInfo: any) => {
