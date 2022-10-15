@@ -21,18 +21,17 @@ const DevpostInfoForm: React.FC<Props> = props => {
     hide();
     props.updateData(values);
     props.nextStep();
-    // TODO: Uncomment this
-    // axios
-    //   .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
-    //   .then(res => {
-    //     hide();
-    //     props.updateData(values);
-    //     props.nextStep();
-    //   })
-    //   .catch(err => {
-    //     hide();
-    //     handleAxiosError(err);
-    //   });
+    axios
+      .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
+      .then(res => {
+        hide();
+        props.updateData(values);
+        props.nextStep();
+      })
+      .catch(err => {
+        hide();
+        handleAxiosError(err);
+      });
   };
 
   const onFinishFailed = (errorInfo: any) => {

@@ -41,7 +41,11 @@ const TeamInfoForm: React.FC<Props> = props => {
       .post(apiUrl(Service.EXPO, "/projects/special/team-validation"), newValues)
       .then(res => {
         hide();
-        props.updateData({ ...newValues, eligiblePrizes: res.data.eligiblePrizes });
+        props.updateData({
+          ...newValues,
+          eligiblePrizes: res.data.eligiblePrizes,
+          registrationUsers: res.data.registrationUsers,
+        });
         props.nextStep();
       })
       .catch(err => {
