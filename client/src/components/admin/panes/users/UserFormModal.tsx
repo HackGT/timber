@@ -11,13 +11,14 @@ import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import { CategoryGroup } from "../../../../types/CategoryGroup";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Text } = Typography;
 const { Option } = Select;
 
 const UserFormModal: React.FC<FormModalProps> = props => {
   const [{ data: categoryGroupsData, loading: categoryGroupsLoading, error: categoryGroupsError }] =
-    useAxios("/categorygroups");
+    useAxios(apiUrl(Service.EXPO, "/categorygroups"));
 
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -38,7 +39,7 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       console.log("Submission values:", values);
 
       axios
-        .patch(`/user/${props.modalState.initialValues.id}`, values)
+        .patch(apiUrl(Service.EXPO, `/user/${props.modalState.initialValues.id}`), values)
         .then(res => {
           hide();
           message.success("User successfully updated", 2);

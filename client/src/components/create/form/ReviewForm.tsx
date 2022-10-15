@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Form, Row, Col, message, Input, Button, Typography, Select, Alert } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 
@@ -20,7 +21,7 @@ const ReviewForm: React.FC<Props> = props => {
 
     console.log(props.data);
     axios
-      .post("/projects", { submission: props.data })
+      .post(apiUrl(Service.EXPO, "/projects"), { submission: props.data })
       .then(res => {
         hide();
         props.nextStep();

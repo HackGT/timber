@@ -16,8 +16,5 @@ export type Project = {
   assignment: Assignment[];
   ballots: Ballot[];
   tableGroupId: number;
-  /*
-  hackathon: Hackathon?;
-  members: User[];
-  */
+  hexathon: string;
 };

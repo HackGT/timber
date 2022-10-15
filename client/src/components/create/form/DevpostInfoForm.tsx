@@ -3,6 +3,7 @@ import axios from "axios";
 import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
 
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -17,8 +18,11 @@ const DevpostInfoForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
 
+    hide();
+    props.updateData(values);
+    props.nextStep();
     axios
-      .post("/projects/special/devpost-validation", values)
+      .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);

@@ -5,31 +5,31 @@ import { Button, Popconfirm, message, Modal } from "antd";
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
 import CriteriaCardContainer from "./CriteriaCardContainer";
+import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   data: any;
 }
 const JudgingCardsContainer: React.FC<Props> = props => {
   const [projectScores, setProjectScores] = useState({});
-  const [categoryToCriteriaMapping, setCategoryToCriteriaMapping] = useState({})
-  
+  const [categoryToCriteriaMapping, setCategoryToCriteriaMapping] = useState({});
 
   useEffect(() => {
     if (!props.data[0] || props.data[0].length === 0) {
       return;
     }
-    console.log(props.data[0])
+    console.log(props.data[0]);
 
     const newCriteriaArray: any[] = [];
-    const newCategoryToCriteriaMapping: any = {}
+    const newCategoryToCriteriaMapping: any = {};
 
     props.data[0].categories.forEach((category: any) => {
       category.criterias.forEach((criteria: any) => {
-        newCriteriaArray.push(criteria)
+        newCriteriaArray.push(criteria);
         if (newCategoryToCriteriaMapping[category.name]) {
-          newCategoryToCriteriaMapping[category.name].push(criteria)
+          newCategoryToCriteriaMapping[category.name].push(criteria);
         } else {
-          newCategoryToCriteriaMapping[category.name] = [criteria]
+          newCategoryToCriteriaMapping[category.name] = [criteria];
         }
       });
     });
@@ -40,7 +40,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     });
 
     setProjectScores(mapping);
-    setCategoryToCriteriaMapping(newCategoryToCriteriaMapping)
+    setCategoryToCriteriaMapping(newCategoryToCriteriaMapping);
   }, [props.data[0], setProjectScores, setCategoryToCriteriaMapping]);
 
   const onSubmit = async () => {
@@ -51,24 +51,21 @@ const JudgingCardsContainer: React.FC<Props> = props => {
       projectId: props.data[0].id,
     };
     try {
-      await axios.post("/ballots", ballots);
-      await axios.patch(`/assignments/${props.data[0].assignmentId}`, {
+      await axios.post(apiUrl(Service.EXPO, "/ballots"), ballots);
+      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignmentId}`), {
         data: { status: "COMPLETED" },
       });
       hide();
 
       Modal.info({
-        title: 'Notification',
+        title: "Notification",
         okText: "I'm Here",
-        content: (
-          props.data[1]
-        ),
-        
-        
-        onOk() {window.location.reload();},
-      });
+        content: props.data[1],
 
-      
+        onOk() {
+          window.location.reload();
+        },
+      });
     } catch (err: any) {
       hide();
       handleAxiosError(err);
@@ -77,18 +74,18 @@ const JudgingCardsContainer: React.FC<Props> = props => {
   const onSkip = async () => {
     const hide = message.loading("Loading...", 0);
     try {
-      await axios.patch(`/assignments/${props.data[0].assignmentId}`, { data: { status: "SKIPPED" } });
+      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignmentId}`), {
+        data: { status: "SKIPPED" },
+      });
       hide();
       Modal.info({
-        title: 'Notification',
+        title: "Notification",
         okText: "I'm Here",
-        content: (
-          props.data[1]
-        ),
+        content: props.data[1],
 
-        
-        onOk() {window.location.reload();},
-        
+        onOk() {
+          window.location.reload();
+        },
       });
     } catch (err: any) {
       hide();
@@ -104,12 +101,18 @@ const JudgingCardsContainer: React.FC<Props> = props => {
   };
 
   const renderCategoryContainers = (cToCMapping: any) => {
-    const categoryContainerArr = []
+    const categoryContainerArr = [];
     for (const key of Object.keys(cToCMapping)) {
-      categoryContainerArr.push(<CriteriaCardContainer criteriaArray={cToCMapping[key]} changeScore={changeScore} categoryName={key}/>)
+      categoryContainerArr.push(
+        <CriteriaCardContainer
+          criteriaArray={cToCMapping[key]}
+          changeScore={changeScore}
+          categoryName={key}
+        />
+      );
     }
     return categoryContainerArr;
-  }
+  };
 
   return (
     <>

@@ -7,11 +7,6 @@ import { isAdmin } from "../auth/auth";
 
 export const userRoutes = express.Router();
 
-function sanitizeUser(user: User) {
-  const { token, ...sanitizedUser } = user;
-  return sanitizedUser;
-}
-
 // Filter using query string in url with parameters role and category
 userRoutes.route("/").get(
   asyncHandler(async (req, res) => {
@@ -57,7 +52,7 @@ userRoutes.route("/").get(
       },
     });
 
-    res.status(200).json(users.map(user => sanitizeUser(user)));
+    res.status(200).json(users);
   })
 );
 
@@ -79,6 +74,6 @@ userRoutes.route("/:id").patch(
       data,
     });
 
-    res.status(200).json(sanitizeUser(updatedUser));
+    res.status(200).json(updatedUser);
   })
 );

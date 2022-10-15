@@ -1,31 +1,39 @@
 import React from "react";
-import { Button, Col, Form, InputNumber, message, Row, Switch, Typography } from "antd";
+import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES } from "../../../../util/util";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const ConfigEditPane: React.FC = props => {
-  const [{ data, loading, error }] = useAxios("/config");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
+  const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
+    apiUrl(Service.EXPO, "/config/hexathons")
+  );
 
-  if (loading) {
+  if (loading || hexathonsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
+  if (error || hexathonsError) {
     return <ErrorDisplay error={error} />;
   }
 
+  // console.log(hexathonsData);
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
+    values.currentHexathon = values.hexathon;
+    delete values.hexathon;
     console.log("Submission values:", values);
 
     axios
-      .post("/config", values)
+      .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
         message.success("Config successfully updated", 2);
@@ -36,6 +44,14 @@ const ConfigEditPane: React.FC = props => {
         console.log(err);
       });
   };
+
+  const hexs = hexathonsData
+    ? hexathonsData.map((hexathon: any) => (
+        <Option key={hexathon.name} value={hexathon.id}>
+          {hexathon.name}
+        </Option>
+      ))
+    : [];
 
   return (
     <>
@@ -50,12 +66,20 @@ const ConfigEditPane: React.FC = props => {
           <Col span={4}>
             <Form.Item name="currentExpo" rules={[FORM_RULES.requiredRule]} label="Current Expo">
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
-              
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item name="numberOfExpo" rules={[FORM_RULES.requiredRule]} label="Number Expos">
+            <Form.Item
+              name="numberOfExpo"
+              rules={[FORM_RULES.requiredRule]}
+              label="Number of Expos"
+            >
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item name="hexathon" rules={[FORM_RULES.requiredRule]} label="Current Hexathon">
+              <Select>{hexs}</Select>
             </Form.Item>
           </Col>
         </Row>

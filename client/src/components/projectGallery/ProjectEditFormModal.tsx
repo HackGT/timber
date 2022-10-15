@@ -10,17 +10,24 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup";
 import TableGroupsModal from "../admin/panes/tableGroups/TableGroupsModal";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]);
-  const [{ data: categoryData, loading: categoryLoading }] = useAxios("/categories", {
-    useCache: false,
-  });
+  const [{ data: categoryData, loading: categoryLoading }] = useAxios(
+    apiUrl(Service.EXPO, "/categories"),
+    {
+      useCache: false,
+    }
+  );
 
-  const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(`/tablegroups`, {
-    useCache: false,
-  });
+  const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(
+    apiUrl(Service.EXPO, `/tablegroups`),
+    {
+      useCache: false,
+    }
+  );
 
   // github.com/ant-design/ant-design/issues/22372
   if (categoryLoading || tableGroupsLoading) {
@@ -57,7 +64,9 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     console.log(props.modalState.initialValues.id);
     try {
       axios
-        .patch(`/projects/${props.modalState.initialValues.id}`, { ...values })
+        .patch(apiUrl(Service.EXPO, `/projects/${props.modalState.initialValues.id}`), {
+          ...values,
+        })
         .then(res => {
           hide();
 

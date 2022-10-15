@@ -4,14 +4,12 @@ import { Card, Tag } from "antd";
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 import { Category } from "../../types/Category";
-import { Hackathon } from "../../types/Hackathon";
 
 interface Props {
   id: number;
   project: Project;
   category: Category;
   members: User[];
-  hackathon: Hackathon;
   rank: string;
 }
 
@@ -32,9 +30,6 @@ const WinnerCard: React.FC<Props> = props => {
         <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
       }
     >
-      <p>
-        <b>Hexathon:</b> {props.hackathon.name}
-      </p>
       <p>
         <b>Rank:</b> <Tag color={rankColor}>{props.rank}</Tag>
       </p>

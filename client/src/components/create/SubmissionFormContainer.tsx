@@ -11,6 +11,7 @@ import ReviewForm from "./form/ReviewForm";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import DetailInfoForm from "./form/DetailInfoForm";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Step } = Steps;
@@ -23,7 +24,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<any>({});
 
-  const [{ data, loading, error }] = useAxios("/config");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
 
   if (loading) {
     return <LoadingDisplay />;

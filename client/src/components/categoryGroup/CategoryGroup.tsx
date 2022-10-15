@@ -8,16 +8,17 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
 import CategoryGroupProjectTableContainer from "./CategoryGroupProjectTableContainer";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
 const CategoryGroup: React.FC = () => {
   const { categoryGroupId } = useParams<any>();
   const [{ data, loading, error }] = useAxios(
-    `/projects/special/category-group/${categoryGroupId}`
+    apiUrl(Service.EXPO, `/projects/special/category-group/${categoryGroupId}`)
   );
   const [{ data: categoryGroup, loading: categoryGroupLoading, error: categoryGroupError }] =
-    useAxios(`/categorygroups/${categoryGroupId}`);
+    useAxios(apiUrl(Service.EXPO, `/categorygroups/${categoryGroupId}`));
 
   if (loading || categoryGroupLoading) {
     return <LoadingDisplay />;

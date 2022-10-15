@@ -7,6 +7,7 @@ import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import CriteriaModalCard from "./CriteriaModalCard";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { TextArea } = Input;
 
@@ -15,10 +16,9 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
   const onDelete = async () => {
     try {
-
       if (props.modalState.initialValues) {
         axios
-          .delete(`/categories/${props.modalState.initialValues.id}`)
+          .delete(apiUrl(Service.EXPO, `/categories/${props.modalState.initialValues.id}`))
           .then(res => {
             message.success("Category successfully deleted", 2);
             props.setModalState({ visible: false, initialValues: null });
@@ -28,9 +28,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
             handleAxiosError(err);
           });
       } else {
-         
         message.error("Category group could not be deleted");
-           
       }
     } catch (error) {
       console.log("Validate Failed:", error);
@@ -45,7 +43,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
 
       if (props.modalState.initialValues) {
         axios
-          .patch(`/categories/${props.modalState.initialValues.id}`, values)
+          .patch(apiUrl(Service.EXPO, `/categories/${props.modalState.initialValues.id}`), values)
           .then(res => {
             hide();
             message.success("Category successfully updated", 2);
@@ -58,7 +56,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(`/categories`, values)
+          .post(apiUrl(Service.EXPO, `/categories`), values)
           .then(res => {
             hide();
             message.success("Category successfully created", 2);
@@ -86,18 +84,24 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
       bodyStyle={{ paddingBottom: 0 }}
       footer={[
         <Popconfirm
-        title="Are you sure you want to delete this category?"
-        onConfirm={onDelete}
-        okText="Yes"
-        cancelText="No"
+          title="Are you sure you want to delete this category?"
+          onConfirm={onDelete}
+          okText="Yes"
+          cancelText="No"
         >
-          <Button danger style={{float: 'left'}}>
+          <Button danger style={{ float: "left" }}>
             Delete
           </Button>
         </Popconfirm>,
-        <Button key="2" onClick={() => props.setModalState({ visible: false, initialValues: null })}>Cancel</Button>,
-        <Button key="1" onClick={onSubmit} type="primary">{props.modalState.initialValues ? "Update" : "Create"}</Button>
-        
+        <Button
+          key="2"
+          onClick={() => props.setModalState({ visible: false, initialValues: null })}
+        >
+          Cancel
+        </Button>,
+        <Button key="1" onClick={onSubmit} type="primary">
+          {props.modalState.initialValues ? "Update" : "Create"}
+        </Button>,
       ]}
     >
       <Form

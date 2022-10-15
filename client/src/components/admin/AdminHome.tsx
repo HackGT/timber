@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Layout, Menu, Button, List, Tag } from "antd";
-import { useParams, useHistory, Redirect } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import {
   UserOutlined,
   SettingOutlined,
@@ -23,10 +23,10 @@ const { Sider, Content } = Layout;
 const AdminHome: React.FC = () => {
   const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  if (!paneKeys.includes(activePane)) {
-    return <Redirect to={`/admin/${paneKeys[0]}`} />;
+  if (!paneKeys.includes(activePane ?? "")) {
+    return <Navigate to={`/admin/${paneKeys[0]}`} />;
   }
 
   let content = null;
@@ -151,7 +151,7 @@ const AdminHome: React.FC = () => {
   }
 
   const handleMenuClick = (event: any) => {
-    history.push(`/admin/${event.key}`);
+    navigate(`/admin/${event.key}`);
   };
 
   return (
@@ -168,7 +168,7 @@ const AdminHome: React.FC = () => {
           <Menu
             mode="inline"
             defaultSelectedKeys={["config"]}
-            selectedKeys={[activePane]}
+            selectedKeys={[activePane ?? ""]}
             style={{ height: "100%", borderRight: 0 }}
             onClick={handleMenuClick}
           >

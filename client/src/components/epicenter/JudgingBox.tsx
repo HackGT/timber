@@ -11,6 +11,7 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -28,7 +29,7 @@ interface Props {
 const JudgingBox: React.FC<Props> = props => {
   const updateRound = async (difference: number) => {
     axios
-      .patch(`/projects/${props.project.id}`, {
+      .patch(apiUrl(Service.EXPO, `/projects/${props.project.id}`), {
         round: props.project.round + difference,
       })
       .then(response => {
@@ -42,7 +43,7 @@ const JudgingBox: React.FC<Props> = props => {
 
   const updateExpo = async (difference: number) => {
     axios
-      .patch(`/projects/${props.project.id}`, {
+      .patch(apiUrl(Service.EXPO, `/projects/${props.project.id}`), {
         expo: props.project.expo + difference,
       })
       .then(response => {
@@ -65,8 +66,8 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
-  console.log(props.project)
-  console.log(props.tableGroup)
+  console.log(props.project);
+  console.log(props.tableGroup);
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       <Title level={5}>{props.project.name}</Title>

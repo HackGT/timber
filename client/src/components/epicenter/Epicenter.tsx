@@ -12,18 +12,22 @@ import { handleAxiosError } from "../../util/util";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 import { TableGroup } from "../../types/TableGroup";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
 const Epicenter: React.FC = () => {
-  const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] =
-    useAxios("/user");
+  const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] = useAxios(
+    apiUrl(Service.EXPO, "/user")
+  );
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
-    useAxios("/categorygroups");
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError}] =
-    useAxios("/tablegroups")
-  
-  const [{ loading: configLoading, data: configData, error: configError }] = useAxios("/config");
+    useAxios(apiUrl(Service.EXPO, "/categorygroups"));
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios(apiUrl(Service.EXPO, "/tablegroups"));
+
+  const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
   const [judgingModalOpen, setJudgingModalOpen] = useState(false);
 
   const handleJudgingModalOpen = () => {
@@ -42,7 +46,9 @@ const Epicenter: React.FC = () => {
     }
     const hide = message.loading("Loading...", 0);
     try {
-      const response = await axios.post("/assignments/autoAssign", { judge: parseInt(judgeId) });
+      const response = await axios.post(apiUrl(Service.EXPO, "/assignments/autoAssign"), {
+        judge: parseInt(judgeId),
+      });
       console.log("New Assignment: ", response.data);
       hide();
       refetchUsers();
@@ -71,7 +77,7 @@ const Epicenter: React.FC = () => {
 
   tableGroupsData.forEach((tableGroupItem: TableGroup) => {
     tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  })
+  });
   return (
     <>
       {configData.isJudgingOn ? (
@@ -110,7 +116,7 @@ const Epicenter: React.FC = () => {
             dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
             renderItem={(user: User) => (
               <List.Item>
-                <JudgeCard key={user.id} user={user} tableGroupMap={tableGroupMap}/>
+                <JudgeCard key={user.id} user={user} tableGroupMap={tableGroupMap} />
               </List.Item>
             )}
           />

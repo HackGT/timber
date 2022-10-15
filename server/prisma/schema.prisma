@@ -176,15 +176,6 @@ model Rubric {
   @@map("rubric")
 }
 
-model Session {
-  id        String   @id
-  sid       String   @unique
-  data      String
-  expiresAt DateTime
-
-  @@map("session")
-}
-
 model TableGroup {
   id            Int       @id @default(autoincrement())
   name          String
@@ -202,8 +193,7 @@ model User {
   id            Int            @id @default(autoincrement())
   name          String
   email         String         @unique
-  uuid          String?        @unique
-  token         String?
+  userId        String         @unique
   role          UserRole       @default(GENERAL)
   isJudging     Boolean        @default(false)
   categoryGroup CategoryGroup? @relation(fields: [categoryGroupId], references: [id])

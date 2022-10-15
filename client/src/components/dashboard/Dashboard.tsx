@@ -2,11 +2,11 @@ import React from "react";
 import { ConfigProvider, List, Empty, Card, Typography } from "antd";
 import useAxios from "axios-hooks";
 import { Link } from "react-router-dom";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
-import { groupEnd } from "console";
 import { TableGroup } from "../../types/TableGroup";
 
 const { Meta } = Card;
@@ -17,10 +17,14 @@ interface Props {
 }
 
 const Dashboard: React.FC<Props> = props => {
-  const [{ data, loading, error }] = useAxios("/projects/special/dashboard", { useCache: false });
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects/special/dashboard"), {
+    useCache: false,
+  });
   const [{ data: tablegroupsData, loading: tablegroupsLoading, error: tablegroupsError }] =
-    useAxios("/tablegroups", { useCache: false });
-  const [{ data: configData, loading: configLoading, error: configError }] = useAxios("/config");
+    useAxios(apiUrl(Service.EXPO, "/tablegroups"), { useCache: false });
+  const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
 
   if (loading || configLoading || tablegroupsLoading) {
     return <LoadingDisplay />;
@@ -29,6 +33,8 @@ const Dashboard: React.FC<Props> = props => {
   if (error || configError || tablegroupsError) {
     return <ErrorDisplay error={error} />;
   }
+
+  console.log(data);
 
   const getInfoText = (user: any) => {
     const adminBlurb = (
@@ -123,11 +129,7 @@ const Dashboard: React.FC<Props> = props => {
               renderItem={(project: any) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>
-                    <Card
-                      title={project.hackathon.name}
-                      cover={<img alt="" src={project.hackathon.imageUrl} />}
-                      hoverable
-                    >
+                    <Card title={project.hexathon.name} hoverable>
                       <Meta
                         title={project.name}
                         description={project.members.map((item: any) => item.name).join(", ")}
@@ -136,14 +138,16 @@ const Dashboard: React.FC<Props> = props => {
                       {configData.revealTableGroups && (
                         <>
                           <p>
-                            Table Group:{" "}
+                            <b>Table Group: </b>
                             {
                               tablegroupsData.find(
                                 (group: TableGroup) => group.id === project.tableGroupId
                               ).name
                             }
                           </p>
-                          <p>Table Number: {project.table}</p>
+                          <p>
+                            <b>Table Number:</b> {project.table}
+                          </p>
                         </>
                       )}
                     </Card>

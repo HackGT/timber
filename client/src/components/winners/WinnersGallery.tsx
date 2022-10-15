@@ -7,28 +7,33 @@ import DownloadOutlined from "@ant-design/icons/lib/icons/DownloadOutlined";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import WinnerCard from "./WinnerCard";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
 const handleDownload = async () => {
-  await axios.get("/winner/export", { responseType: "blob" }).then(response => {
-    const href = URL.createObjectURL(response.data);
+  await axios
+    .get(apiUrl(Service.EXPO, "/winner/export"), { responseType: "blob" })
+    .then(response => {
+      const href = URL.createObjectURL(response.data);
 
-    // create "a" HTML element with href to file & click
-    const link = document.createElement("a");
-    link.href = href;
-    link.setAttribute("download", "Winners.csv");
-    document.body.appendChild(link);
-    link.click();
+      // create "a" HTML element with href to file & click
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "Winners.csv");
+      document.body.appendChild(link);
+      link.click();
 
-    // clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
-    URL.revokeObjectURL(href);
-  });
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
 };
 
 const Winners: React.FC = () => {
-  const [{ loading: winnersLoading, data: winnersData, error: winnersError }] = useAxios("/winner");
+  const [{ loading: winnersLoading, data: winnersData, error: winnersError }] = useAxios(
+    apiUrl(Service.EXPO, "/winner")
+  );
 
   if (winnersLoading) {
     return <LoadingDisplay />;
@@ -57,7 +62,6 @@ const Winners: React.FC = () => {
                 project={winner.project}
                 category={winner.category}
                 members={winner.project.members}
-                hackathon={winner.hackathon}
                 rank={winner.rank}
               />
             </List.Item>

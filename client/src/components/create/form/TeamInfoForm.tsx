@@ -8,6 +8,7 @@ import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
 import LoadingDisplay from "../../../displays/LoadingDisplay";
 import ErrorDisplay from "../../../displays/ErrorDisplay";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -20,7 +21,7 @@ interface Props {
 
 const TeamInfoForm: React.FC<Props> = props => {
   const [{ data: prizesData, loading: prizesLoading, error: prizesError }] = useAxios(
-    "/projects/special/get-eligible-prizes"
+    apiUrl(Service.EXPO, "/projects/special/get-eligible-prizes")
   );
   if (prizesLoading) {
     return <LoadingDisplay />;
@@ -37,10 +38,14 @@ const TeamInfoForm: React.FC<Props> = props => {
     };
 
     axios
-      .post("/projects/special/team-validation", newValues)
+      .post(apiUrl(Service.EXPO, "/projects/special/team-validation"), newValues)
       .then(res => {
         hide();
-        props.updateData({ ...newValues, eligiblePrizes: res.data.eligiblePrizes });
+        props.updateData({
+          ...newValues,
+          eligiblePrizes: res.data.eligiblePrizes,
+          registrationUsers: res.data.registrationUsers,
+        });
         props.nextStep();
       })
       .catch(err => {

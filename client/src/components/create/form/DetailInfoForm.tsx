@@ -3,6 +3,7 @@ import axios from "axios";
 import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
 
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -19,7 +20,7 @@ const DetailInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post("/projects/special/detail-validation", values)
+      .post(apiUrl(Service.EXPO, "/projects/special/detail-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);
