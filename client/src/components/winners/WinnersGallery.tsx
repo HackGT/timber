@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { List, Button, Typography, Divider } from "antd";
+import { List, Button, Typography, Divider, Input, Row, Col, Select } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
 import DownloadOutlined from "@ant-design/icons/lib/icons/DownloadOutlined";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import WinnerCard from "./WinnerCard";
-import { apiUrl, Service } from "@hex-labs/core";
 import { ModalState } from "../../util/FormModalProps";
 import WinnerEditFormModal from "./WinnerEditFormModal";
+import { Category } from "../../types/Category";
 
 const { Title } = Typography;
+const { Search } = Input;
 
 const handleDownload = async () => {
   await axios
@@ -37,9 +39,10 @@ const Winners: React.FC = () => {
     visible: false,
     initialValues: null,
   } as ModalState);
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
   const openModal = (values: any) => {
-    console.log(values);
     setModalState({
       visible: true,
       initialValues: { ...values },
@@ -49,13 +52,33 @@ const Winners: React.FC = () => {
   const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetch] = useAxios(
     apiUrl(Service.EXPO, "/winner")
   );
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
+    apiUrl(Service.EXPO, "/categories")
+  );
 
-  if (winnersLoading) {
+  if (winnersLoading || categoriesLoading) {
     return <LoadingDisplay />;
   }
-  if (winnersError) {
+  if (winnersError || categoriesError) {
     return <ErrorDisplay error={winnersError} />;
   }
+
+  let updatedData = winnersData
+    ? winnersData.filter((winner: any) =>
+        winner.project.name.toLowerCase().includes(searchText.toLowerCase())
+      )
+    : [];
+
+  updatedData = selectedCategory
+    ? updatedData.filter((winner: any) => winner.category.id === selectedCategory)
+    : updatedData;
+
+  const categoryOptions = categoriesData
+    ? categoriesData.map((category: Category) => ({
+        label: category.name,
+        value: category.id,
+      }))
+    : [];
 
   return (
     <>
@@ -65,11 +88,31 @@ const Winners: React.FC = () => {
       </Button>
       <Divider />
 
+      <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
+        <Col xs={24} sm={8} md={5}>
+          <Search
+            placeholder="Search"
+            value={searchText}
+            onChange={event => setSearchText(event.target.value)}
+          />
+        </Col>
+        <Col xs={24} sm={16} md={5}>
+          <Select
+            placeholder="Filter by Category"
+            style={{ width: "100%" }}
+            options={categoryOptions}
+            optionFilterProp="label"
+            onChange={value => setSelectedCategory(value)}
+            allowClear
+          />
+        </Col>
+      </Row>
+
       <div>
         <List
           grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
           loading={winnersLoading}
-          dataSource={winnersData}
+          dataSource={updatedData}
           renderItem={(winner: any) => (
             <List.Item>
               <WinnerCard
