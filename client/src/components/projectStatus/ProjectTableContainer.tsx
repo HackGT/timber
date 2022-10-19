@@ -155,16 +155,14 @@ const ProjectTableContainer: React.FC<Props> = props => {
                 ? `Project Name: ${project.name}`
                 : `${project.id} - ${project.name}`}
             </Title>
-            <>
-              {project.categories.map((category: any) => (
-                <>
-                  <Title level={5} key={category.id}>
-                    {category.name}
-                  </Title>
-                  <ProjectTable data={generateData(category.id)} />
-                </>
-              ))}
-            </>
+            {project.categories.map((category: any) => (
+              <>
+                <Title level={5} key={category.id}>
+                  {category.name}
+                </Title>
+                <ProjectTable data={generateData(category.id)} />
+              </>
+            ))}
             <br />
           </div>
         );
