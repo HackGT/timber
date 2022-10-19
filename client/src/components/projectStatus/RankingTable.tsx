@@ -1,4 +1,5 @@
-import { Typography, Table } from "antd/lib";
+/* eslint-disable react/jsx-no-useless-fragment */
+import { Typography, Table, Button, Modal, message } from "antd/lib";
 import useAxios from "axios-hooks";
 import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
@@ -12,6 +13,8 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
 import { apiUrl, Service } from "@hex-labs/core";
+import axios from "axios";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -41,6 +44,11 @@ const columns = [
     key: "numJudged",
     sorter: (a: any, b: any) => a.numJudged - b.numJudged,
   },
+  {
+    title: "Make Winner",
+    dataIndex: "makeWinner",
+    key: "makeWinner",
+  },
 ];
 
 const RankingTable = () => {
@@ -54,6 +62,50 @@ const RankingTable = () => {
 
   if (categoryError) {
     return <ErrorDisplay error={categoryError} />;
+  }
+
+  const createWinner = async (
+    project: { id: number },
+    category: { id: number; hexathon: string }
+  ) => {
+    const newWinner = {
+      id: project.id,
+      categoryId: category.id,
+      projectId: project.id,
+      rank: "FIRST",
+      hexathon: category.hexathon,
+    };
+
+    try {
+      axios
+        .post(apiUrl(Service.EXPO, `/winner`), { data: newWinner })
+        .then(res => {
+          if (res.data.error) {
+            message.error(res.data.message, 2);
+          } else {
+            message.success("Success!", 2);
+          }
+        })
+        .catch(err => {
+          message.error("Error: Please ask for help", 2);
+          console.log(err);
+        });
+    } catch (info) {
+      console.log("Validate Failed:", info);
+    }
+  };
+
+  const { confirm } = Modal;
+
+  function showConfirm(project: Project, category: Category) {
+    confirm({
+      title: "Do you want to make this project a winner?",
+      icon: <ExclamationCircleOutlined />,
+      content: "Edit the rank in the Winners tab",
+      onOk() {
+        createWinner(project, category);
+      },
+    });
   }
 
   return (
@@ -81,6 +133,17 @@ const RankingTable = () => {
                 });
               });
 
+              const winnerButton = (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    showConfirm(project, category);
+                  }}
+                >
+                  Make Winner
+                </Button>
+              );
+
               data.push({
                 id: project.id,
                 name: project.name,
@@ -88,6 +151,7 @@ const RankingTable = () => {
                 average: numJudged > 0 ? score / numJudged : 0,
                 numJudged,
                 editScore: editButton,
+                makeWinner: winnerButton,
               });
             })}
 
