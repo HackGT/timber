@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { List, Button, Typography, Divider } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -8,6 +8,8 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import WinnerCard from "./WinnerCard";
 import { apiUrl, Service } from "@hex-labs/core";
+import { ModalState } from "../../util/FormModalProps";
+import WinnerEditFormModal from "./WinnerEditFormModal";
 
 const { Title } = Typography;
 
@@ -31,7 +33,20 @@ const handleDownload = async () => {
 };
 
 const Winners: React.FC = () => {
-  const [{ loading: winnersLoading, data: winnersData, error: winnersError }] = useAxios(
+  const [modalState, setModalState] = useState({
+    visible: false,
+    initialValues: null,
+  } as ModalState);
+
+  const openModal = (values: any) => {
+    console.log(values);
+    setModalState({
+      visible: true,
+      initialValues: { ...values },
+    });
+  };
+
+  const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetch] = useAxios(
     apiUrl(Service.EXPO, "/winner")
   );
 
@@ -63,11 +78,17 @@ const Winners: React.FC = () => {
                 category={winner.category}
                 members={winner.project.members}
                 rank={winner.rank}
+                onClick={() => openModal(winner)}
               />
             </List.Item>
           )}
         />
       </div>
+      <WinnerEditFormModal
+        modalState={modalState}
+        setModalState={setModalState}
+        refetch={refetch}
+      />
     </>
   );
 };

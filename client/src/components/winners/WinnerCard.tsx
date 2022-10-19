@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Tag } from "antd";
+import { Button, Card, Tag } from "antd";
 
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
@@ -11,6 +11,7 @@ interface Props {
   category: Category;
   members: User[];
   rank: string;
+  onClick?: (data: any) => any;
 }
 
 const WinnerCard: React.FC<Props> = props => {
@@ -29,6 +30,7 @@ const WinnerCard: React.FC<Props> = props => {
       title={
         <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
       }
+      extra={<Button onClick={props.onClick}>Edit</Button>}
     >
       <p>
         <b>Rank:</b> <Tag color={rankColor}>{props.rank}</Tag>
