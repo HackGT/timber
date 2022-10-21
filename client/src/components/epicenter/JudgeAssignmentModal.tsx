@@ -110,7 +110,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
           showSearch
           placeholder="Select a Project"
           optionFilterProp="children"
-          filterOption={(input, option) =>
+          filterOption={(input: any, option: any) =>
             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           onChange={handleChange}
@@ -128,7 +128,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
           onChange={handleUserChange}
           disabled={users.length === 0}
           optionFilterProp="children"
-          filterOption={(input, option) =>
+          filterOption={(input: any, option: any) =>
             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >

@@ -101,7 +101,7 @@ const TeamInfoForm: React.FC<Props> = props => {
         <Form.List name="members">
           {(fields, { add, remove }) => (
             <div>
-              {fields.map((field, index) => (
+              {fields.map((field: any, index: any) => (
                 <Row justify="center" key={field.key}>
                   <Col {...FORM_LAYOUT.full}>
                     <Form.Item

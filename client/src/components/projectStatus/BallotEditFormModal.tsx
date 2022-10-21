@@ -44,48 +44,46 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   };
 
   return (
-    <>
-      <Modal
-        visible={props.modalState.visible}
-        title="Edit Score Modal"
-        okText="Update"
-        cancelText="Cancel"
-        onCancel={() => props.setModalState({ visible: false, initialValues: null })}
-        onOk={onSubmit}
-        bodyStyle={{ paddingBottom: 0 }}
+    <Modal
+      visible={props.modalState.visible}
+      title="Edit Score Modal"
+      okText="Update"
+      cancelText="Cancel"
+      onCancel={() => props.setModalState({ visible: false, initialValues: null })}
+      onOk={onSubmit}
+      bodyStyle={{ paddingBottom: 0 }}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        autoComplete="off"
+        initialValues={props.modalState.initialValues}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          autoComplete="off"
-          initialValues={props.modalState.initialValues}
-        >
-          <Form.List name="scores">
-            {fields => {
-              const { scores } = props.modalState.initialValues;
-              return (
-                <div>
-                  {fields.map((field, index) => (
-                    <Row gutter={[8, 0]}>
-                      <Col span={24}>
-                        <Form.Item
-                          name={[field.name, "score"]}
-                          fieldKey={[field.fieldKey, "score"]}
-                          rules={[FORM_RULES.requiredRule]}
-                          label={scores[field.fieldKey].criteria.name}
-                        >
-                          <InputNumber style={{ width: "100%" }} precision={0} />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  ))}
-                </div>
-              );
-            }}
-          </Form.List>
-        </Form>
-      </Modal>
-    </>
+        <Form.List name="scores">
+          {fields => {
+            const { scores } = props.modalState.initialValues;
+            return (
+              <div>
+                {fields.map((field: any, index: any) => (
+                  <Row gutter={[8, 0]}>
+                    <Col span={24}>
+                      <Form.Item
+                        name={[field.name, "score"]}
+                        fieldKey={[field.fieldKey, "score"]}
+                        rules={[FORM_RULES.requiredRule]}
+                        label={scores[field.fieldKey].criteria.name}
+                      >
+                        <InputNumber style={{ width: "100%" }} precision={0} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                ))}
+              </div>
+            );
+          }}
+        </Form.List>
+      </Form>
+    </Modal>
   );
 };
 

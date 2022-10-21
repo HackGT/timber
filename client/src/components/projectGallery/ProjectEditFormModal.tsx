@@ -89,161 +89,159 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   };
 
   return (
-    <>
-      <Modal
-        visible={props.modalState.visible}
-        title="Edit Modal"
-        okText="Update"
-        cancelText="Cancel"
-        onCancel={() => props.setModalState({ visible: false, initialValues: null })}
-        onOk={onSubmit}
-        bodyStyle={{ paddingBottom: 0 }}
+    <Modal
+      visible={props.modalState.visible}
+      title="Edit Modal"
+      okText="Update"
+      cancelText="Cancel"
+      onCancel={() => props.setModalState({ visible: false, initialValues: null })}
+      onOk={onSubmit}
+      bodyStyle={{ paddingBottom: 0 }}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        autoComplete="off"
+        initialValues={props.modalState.initialValues}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          autoComplete="off"
-          initialValues={props.modalState.initialValues}
-        >
-          <Form.List name="members">
-            {(fields, { add, remove }) => (
-              <div>
-                {fields.map((field, index) => (
-                  <Row gutter={[8, 0]} key={field.key}>
-                    <Col span={24}>
-                      <Form.Item
-                        name={[field.name, "email"]}
-                        fieldKey={[field.fieldKey, "email"]}
-                        rules={[FORM_RULES.requiredRule, FORM_RULES.emailRule]}
-                        label={`Member ${index + 1}`}
-                      >
-                        <Input
-                          placeholder="hello@gmail.com"
-                          suffix={
-                            fields.length > 1 && index !== 0 ? (
-                              <Button
-                                type="text"
-                                size="small"
-                                style={{ margin: 0 }}
-                                icon={<DeleteOutlined />}
-                                onClick={() => remove(field.name)}
-                              />
-                            ) : undefined
-                          }
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                ))}
-                {/* Max team size is 4 */}
-                {fields.length < 4 ? (
-                  <Row gutter={[8, 0]}>
-                    <Col span={24}>
-                      <Form.Item>
-                        <Button type="dashed" onClick={add} block>
-                          <PlusOutlined />
-                          {" Add Member"}
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                ) : null}
-              </div>
-            )}
-          </Form.List>
+        <Form.List name="members">
+          {(fields, { add, remove }) => (
+            <div>
+              {fields.map((field: any, index: any) => (
+                <Row gutter={[8, 0]} key={field.key}>
+                  <Col span={24}>
+                    <Form.Item
+                      name={[field.name, "email"]}
+                      fieldKey={[field.fieldKey, "email"]}
+                      rules={[FORM_RULES.requiredRule, FORM_RULES.emailRule]}
+                      label={`Member ${index + 1}`}
+                    >
+                      <Input
+                        placeholder="hello@gmail.com"
+                        suffix={
+                          fields.length > 1 && index !== 0 ? (
+                            <Button
+                              type="text"
+                              size="small"
+                              style={{ margin: 0 }}
+                              icon={<DeleteOutlined />}
+                              onClick={() => remove(field.name)}
+                            />
+                          ) : undefined
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ))}
+              {/* Max team size is 4 */}
+              {fields.length < 4 ? (
+                <Row gutter={[8, 0]}>
+                  <Col span={24}>
+                    <Form.Item>
+                      <Button type="dashed" onClick={add} block>
+                        <PlusOutlined />
+                        {" Add Member"}
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ) : null}
+            </div>
+          )}
+        </Form.List>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
-                <Input placeholder="Alexa Assistant" />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Project Name">
+              <Input placeholder="Alexa Assistant" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item name="categories" label="Categories">
-                <Select
-                  placeholder="Select categories"
-                  mode="multiple"
-                  options={categoryOptions}
-                  loading={categoryLoading}
-                  showSearch
-                  optionFilterProp="label"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item name="categories" label="Categories">
+              <Select
+                placeholder="Select categories"
+                mode="multiple"
+                options={categoryOptions}
+                loading={categoryLoading}
+                showSearch
+                optionFilterProp="label"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item
-                name="devpostUrl"
-                rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
-                label="Devpost URL"
-              >
-                <Input placeholder="https://devpost.com/software/dyne-cnild7" />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item
+              name="devpostUrl"
+              rules={[FORM_RULES.requiredRule, FORM_RULES.urlRule]}
+              label="Devpost URL"
+            >
+              <Input placeholder="https://devpost.com/software/dyne-cnild7" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item name="roomUrl" rules={[FORM_RULES.urlRule]} label="Room URL">
-                <Input placeholder="https://hexlabs.daily.co/sdj38cjk129f" />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item name="roomUrl" rules={[FORM_RULES.urlRule]} label="Room URL">
+              <Input placeholder="https://hexlabs.daily.co/sdj38cjk129f" />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="round" label="Round">
-                <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
-              </Form.Item>
-            </Col>
+        <Row gutter={[8, 0]}>
+          <Col xs={24} sm={12}>
+            <Form.Item name="round" label="Round">
+              <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
+            </Form.Item>
+          </Col>
 
-            <Col xs={24} sm={12}>
-              <Form.Item name="expo" label="Expo">
-                <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Col xs={24} sm={12}>
+            <Form.Item name="expo" label="Expo">
+              <InputNumber defaultValue={1} style={{ width: "100%" }} precision={0} />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item name="tableGroupId" label="Table Group">
-                <Select
-                  placeholder="Select table group"
-                  options={tableGroupsOptions}
-                  loading={tableGroupsLoading}
-                  showSearch
-                  optionFilterProp="label"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item name="tableGroupId" label="Table Group">
+              <Select
+                placeholder="Select table group"
+                options={tableGroupsOptions}
+                loading={tableGroupsLoading}
+                showSearch
+                optionFilterProp="label"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={[8, 0]}>
-            <Col span={24}>
-              <Form.Item name="table" label="Table Number">
-                <InputNumber
-                  min={1}
-                  // max={
-                  //   tableGroupsData && props.modalState.initialValues
-                  //     ? tableGroupsData.find(
-                  //         (group: any) => group.id === props.modalState.initialValues.tableGroupId
-                  //       ).tableCapacity
-                  //     : 16
-                  // }
-                  style={{ width: "100%" }}
-                  precision={0}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-      </Modal>
-    </>
+        <Row gutter={[8, 0]}>
+          <Col span={24}>
+            <Form.Item name="table" label="Table Number">
+              <InputNumber
+                min={1}
+                // max={
+                //   tableGroupsData && props.modalState.initialValues
+                //     ? tableGroupsData.find(
+                //         (group: any) => group.id === props.modalState.initialValues.tableGroupId
+                //       ).tableCapacity
+                //     : 16
+                // }
+                style={{ width: "100%" }}
+                precision={0}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
   );
 };
 

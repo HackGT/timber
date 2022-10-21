@@ -131,7 +131,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
         <Form.List name="criterias">
           {(fields, { add, remove }) => (
             <div>
-              {fields.map(field => (
+              {fields.map((field: any) => (
                 <CriteriaModalCard field={field} remove={remove} />
               ))}
 
