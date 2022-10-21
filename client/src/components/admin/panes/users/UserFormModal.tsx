@@ -36,8 +36,6 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       const values = await form.validateFields();
       const hide = message.loading("Loading...", 0);
 
-      console.log("Submission values:", values);
-
       axios
         .patch(apiUrl(Service.EXPO, `/user/${props.modalState.initialValues.id}`), values)
         .then(res => {

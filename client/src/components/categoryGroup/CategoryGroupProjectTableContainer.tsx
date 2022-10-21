@@ -34,24 +34,21 @@ const CategoryGroupProjectTableContainer: React.FC<Props> = props => (
         return newData;
       };
 
-      console.log(props);
       return (
         <div key={project.id}>
           <Title key={project.id} level={4}>
             {props.isSponsor ? `Project Name: ${project.name}` : `${project.id} - ${project.name}`}
           </Title>
-          <>
-            {project.categories
-              .filter((category: any) => props.categoryIds.includes(category.id))
-              .map((category: any) => (
-                <>
-                  <Title level={5} key={category.id}>
-                    {category.name}
-                  </Title>
-                  <CategoryGroupProjectTable data={generateData(category.id)} />
-                </>
-              ))}
-          </>
+          {project.categories
+            .filter((category: any) => props.categoryIds.includes(category.id))
+            .map((category: any) => (
+              <>
+                <Title level={5} key={category.id}>
+                  {category.name}
+                </Title>
+                <CategoryGroupProjectTable data={generateData(category.id)} />
+              </>
+            ))}
           <br />
         </div>
       );

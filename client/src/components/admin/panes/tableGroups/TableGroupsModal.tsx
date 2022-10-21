@@ -37,7 +37,6 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
       )
     ) {
       /* vendors contains the element we're looking for */
-      console.log(projectsData);
       message.error(
         "Table group could not be deleted. Change all projects assigned to this table group first."
       );
@@ -67,8 +66,6 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
     try {
       const values = await form.validateFields();
       const hide = message.loading("Loading...", 0);
-
-      console.log("Submission values:", values);
 
       if (props.modalState.initialValues) {
         axios

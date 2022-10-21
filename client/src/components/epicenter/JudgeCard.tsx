@@ -19,22 +19,36 @@ const JudgeCard: React.FC<Props> = props => {
   const completedProjects: any[] = [];
 
   props.user.assignments.forEach((assignment: Assignment) => {
-    console.log(assignment);
     switch (assignment.status) {
       case AssignmentStatus.QUEUED:
         queuedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
+          <JudgingBox
+            key={assignment.id}
+            project={assignment.project}
+            assignment={assignment}
+            tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}
+          />
         );
         break;
       case AssignmentStatus.STARTED:
         startedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
+          <JudgingBox
+            key={assignment.id}
+            project={assignment.project}
+            assignment={assignment}
+            tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}
+          />
         );
         break;
       case AssignmentStatus.COMPLETED:
       case AssignmentStatus.SKIPPED:
         completedProjects.push(
-          <JudgingBox key={assignment.id} project={assignment.project} assignment={assignment} tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}/>
+          <JudgingBox
+            key={assignment.id}
+            project={assignment.project}
+            assignment={assignment}
+            tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}
+          />
         );
         break;
     }

@@ -37,48 +37,6 @@ const ProjectDetails: React.FC = props => {
   if (projectError || tablegroupError || configError) {
     return <ErrorDisplay error={projectError} />;
   }
-  console.log(projectData);
-
-  // const createMessage = () => {
-  //   switch (data.submission.round) {
-  //     case "FLAGGED":
-  //     case "SUBMITTED":
-  //       return (
-  //         <Alert
-  //           message="Thank you for your submission to HackGT 7! Please check back later to see your submission status."
-  //           type="info"
-  //           showIcon
-  //         />
-  //       );
-  //     case "ACCEPTED":
-  //       return (
-  //         <Alert
-  //           message={
-  //             <Text>
-  //               Congrats on moving to the next round! If the conference below isn&apos;t working,
-  //               the link to join the judging call can be found{" "}
-  //               <a href={data.submission.meetingUrl} target="_blank" rel="noopener noreferrer">
-  //                 <b>here</b>
-  //               </a>
-  //               . You are in expo number {data.submission.expo || 1}.
-  //             </Text>
-  //           }
-  //           type="success"
-  //           showIcon
-  //         />
-  //       );
-  //     case "REJECTED":
-  //       return (
-  //         <Alert
-  //           message="Thank you for your submission to HackGT 7! After reviewing your submission, we will not be moving it forward to round two of judging as it does not meet our live judging criteria. We hope you enjoyed the event and join us for future HackGT events! We invite you to stay for live judging and closing ceremonies."
-  //           type="info"
-  //           showIcon
-  //         />
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>

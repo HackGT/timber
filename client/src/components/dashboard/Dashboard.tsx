@@ -34,8 +34,6 @@ const Dashboard: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  console.log(data);
-
   const getInfoText = (user: any) => {
     const adminBlurb = (
       <Text>

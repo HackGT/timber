@@ -108,8 +108,6 @@ const SubmissionFormContainer: React.FC<Props> = props => {
     return null;
   };
 
-  console.log(formData);
-
   return (
     <div
       style={{

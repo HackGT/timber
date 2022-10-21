@@ -52,8 +52,6 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       const values = await form.validateFields();
       const hide = message.loading("Loading...", 0);
 
-      console.log("Submission values:", values);
-
       if (props.modalState.initialValues) {
         axios
           .patch(

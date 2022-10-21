@@ -18,7 +18,6 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     if (!props.data[0] || props.data[0].length === 0) {
       return;
     }
-    console.log(props.data[0]);
 
     const newCriteriaArray: any[] = [];
     const newCategoryToCriteriaMapping: any = {};

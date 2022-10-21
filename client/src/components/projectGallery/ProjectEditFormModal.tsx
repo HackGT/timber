@@ -34,7 +34,6 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     return <LoadingDisplay />;
   }
 
-  console.log(tableGroupsData);
   const categoryOptions = categoryLoading
     ? []
     : categoryData.map((category: Category) => ({
@@ -58,10 +57,8 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     const hide = message.loading("Loading...", 0);
     const values = await form.validateFields();
 
-    console.log(values);
     const formattedMembers = values.members.map((member: any) => ({ email: member.email }));
     values.members = formattedMembers;
-    console.log(props.modalState.initialValues.id);
     try {
       axios
         .patch(apiUrl(Service.EXPO, `/projects/${props.modalState.initialValues.id}`), {

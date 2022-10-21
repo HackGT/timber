@@ -13,9 +13,6 @@ async function main() {
     },
   });
 
-  console.log("HACKATHON");
-  console.log(hackathon);
-
   const config = await prisma.config.upsert({
     where: {
       id: 1,
@@ -25,9 +22,6 @@ async function main() {
       currentHackathonId: hackathon.id,
     },
   });
-
-  console.log("CONFIG");
-  console.log(config);
 }
 
 main()

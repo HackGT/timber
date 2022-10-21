@@ -183,11 +183,6 @@ async function runSetup() {
 
 runSetup()
   .then(() => {
-    //     io.on("connection", socket => {
-    //       console.log("a user connected");
-    //       console.log(socket.id);
-    //     });
-
     http.listen(process.env.PORT, () => {
       console.log(`Timber system started on port ${process.env.PORT}`);
     });

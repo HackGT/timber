@@ -33,7 +33,6 @@ const JudgingBox: React.FC<Props> = props => {
         round: props.project.round + difference,
       })
       .then(response => {
-        console.log(response);
         props.refetch && props.refetch();
       })
       .catch(err => {
@@ -47,7 +46,6 @@ const JudgingBox: React.FC<Props> = props => {
         expo: props.project.expo + difference,
       })
       .then(response => {
-        console.log(response);
         props.refetch && props.refetch();
       })
       .catch(err => {
@@ -66,8 +64,6 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
-  console.log(props.project);
-  console.log(props.tableGroup);
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       <Title level={5}>{props.project.name}</Title>

@@ -50,7 +50,6 @@ const JudgingHome: React.FC<Props> = props => {
   const assignments = assignmentsData
     .filter((assignment: Assignment) => +props.user.id === assignment.userId)
     .sort((a: Assignment, b: Assignment) => (a.priority > b.priority ? 1 : -1));
-  console.log(assignments);
 
   let nextProjectID = 0;
 

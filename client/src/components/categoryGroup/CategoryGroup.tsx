@@ -27,7 +27,6 @@ const CategoryGroup: React.FC = () => {
   if (error || categoryGroupError) {
     return <ErrorDisplay error={error} />;
   }
-  console.log(categoryGroup);
 
   const categoryIds = categoryGroup.categories.map((category: any) => category.id);
 

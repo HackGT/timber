@@ -25,12 +25,10 @@ const ConfigEditPane: React.FC = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  // console.log(hexathonsData);
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     values.currentHexathon = values.hexathon;
     delete values.hexathon;
-    console.log("Submission values:", values);
 
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
@@ -79,7 +77,7 @@ const ConfigEditPane: React.FC = props => {
           </Col>
           <Col span={4}>
             <Form.Item name="hexathon" rules={[FORM_RULES.requiredRule]} label="Current Hexathon">
-              <Select>{hexs}</Select>
+              <Select defaultValue={data.currentHexathon.name}>{hexs}</Select>
             </Form.Item>
           </Col>
         </Row>

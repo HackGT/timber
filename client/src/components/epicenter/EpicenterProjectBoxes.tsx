@@ -47,12 +47,6 @@ const EpicenterProjectBoxes: React.FC = () => {
         .filter((project: Project) => tableGroup === 0 || project.tableGroupId === tableGroup)
         .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
     : [];
-  console.log(projectsData);
-  console.log(tableGroupsData);
-
-  // let updatedTableGroupsData = tableGroupsData
-  //   ? tableGroupsData
-  //     .filter((tablegroup: any) => tablegroup.id === updatedData.tableGroupId)
 
   updatedData = selectedCategory
     ? updatedData.filter((project: Project) =>
@@ -64,7 +58,6 @@ const EpicenterProjectBoxes: React.FC = () => {
     const scoreData: any = {};
 
     updatedData.forEach((project: Project) => {
-      console.log(updatedData);
       project.ballots.forEach((ballot: Ballot) => {
         if (ballot.criteria.categoryId === selectedCategory) {
           scoreData[project.id] = (scoreData[project.id] || 0) + ballot.score;
