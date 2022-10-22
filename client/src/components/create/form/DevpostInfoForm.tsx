@@ -55,7 +55,7 @@ const DevpostInfoForm: React.FC<Props> = props => {
       <Title level={2}>Devpost Info</Title>
       <Text>
         Please create a submission on our{" "}
-        <a href="https://hackgt2020.devpost.com" rel="noreferrer" target="_blank">
+        <a href="https://hackgt-9.devpost.com/" rel="noreferrer" target="_blank">
           Devpost
         </a>{" "}
         and list the URL for your submission and project name below. Make sure to include a 2-minute
