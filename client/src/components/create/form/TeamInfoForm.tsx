@@ -2,13 +2,10 @@ import React from "react";
 import { Form, Row, Col, message, Input, Button, Typography, Alert } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { User } from "../../../types/User";
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
-import LoadingDisplay from "../../../displays/LoadingDisplay";
-import ErrorDisplay from "../../../displays/ErrorDisplay";
-import useAxios from "axios-hooks";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -20,17 +17,6 @@ interface Props {
 }
 
 const TeamInfoForm: React.FC<Props> = props => {
-  const [{ data: prizesData, loading: prizesLoading, error: prizesError }] = useAxios(
-    apiUrl(Service.EXPO, "/projects/special/get-eligible-prizes")
-  );
-  if (prizesLoading) {
-    return <LoadingDisplay />;
-  }
-
-  if (prizesError) {
-    return <ErrorDisplay error={prizesError} />;
-  }
-
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     const newValues = {
