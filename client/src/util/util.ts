@@ -28,6 +28,8 @@ export const FORM_LAYOUT = {
 };
 
 export const handleAxiosError = (error: Error | AxiosError<any>) => {
+  console.log("Axios");
+  console.error(error);
   if (axios.isAxiosError(error) && error.response) {
     if (error.response?.data.error || error.response?.data.message) {
       message.error(error.response?.data.message, 2);
@@ -36,6 +38,7 @@ export const handleAxiosError = (error: Error | AxiosError<any>) => {
       message.error("Error: Please ask for help. There was a networking error.", 2);
     }
   } else {
+    console.log("Inside else");
     console.error(error);
     message.error("Error: Please ask for help. There was an unknown error.", 2);
   }
