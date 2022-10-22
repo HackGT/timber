@@ -19,8 +19,6 @@ const DevpostInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     hide();
-    props.updateData(values);
-    props.nextStep();
     axios
       .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
       .then(res => {
