@@ -30,7 +30,6 @@ const TeamInfoForm: React.FC<Props> = props => {
         props.updateData({
           ...newValues,
           eligiblePrizes: res.data.eligiblePrizes,
-          registrationUsers: res.data.registrationUsers,
         });
         props.nextStep();
       })
