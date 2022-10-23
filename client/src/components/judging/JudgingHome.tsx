@@ -105,7 +105,7 @@ const JudgingHome: React.FC<Props> = props => {
       {/* <DailyWindow videoUrl={data.roomUrl} /> */}
       <JudgingCardsContainer data={[data, next]} />
 
-      <div style={{ marginTop: "5px" }}>{next}</div>
+      {/* <div style={{ marginTop: "5px" }}>{next}</div> */}
     </>
   );
 };
