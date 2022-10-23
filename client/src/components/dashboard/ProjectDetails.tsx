@@ -58,6 +58,7 @@ const ProjectDetails: React.FC = props => {
         </Descriptions.Item>
         {configData.revealTableGroups && (
           <>
+            <Descriptions.Item label={<Label name="Expo" />}>{projectData?.expo}</Descriptions.Item>
             <Descriptions.Item label={<Label name="Table Group" />}>
               {tablegroupData.name}
             </Descriptions.Item>
