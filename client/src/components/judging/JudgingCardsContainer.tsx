@@ -42,16 +42,18 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     setCategoryToCriteriaMapping(newCategoryToCriteriaMapping);
   }, [props.data[0], setProjectScores, setCategoryToCriteriaMapping]);
 
+  console.log(props.data);
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
     const ballots: any = {
       criterium: projectScores,
       round: props.data[0].round,
       projectId: props.data[0].id,
+      userId: props.data[0].assignment.userId,
     };
     try {
       await axios.post(apiUrl(Service.EXPO, "/ballots"), ballots);
-      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignmentId}`), {
+      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignment.id}`), {
         data: { status: "COMPLETED" },
       });
       hide();
@@ -75,7 +77,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
   const onSkip = async () => {
     const hide = message.loading("Loading...", 0);
     try {
-      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignmentId}`), {
+      await axios.patch(apiUrl(Service.EXPO, `/assignments/${props.data[0].assignment.id}`), {
         data: { status: "SKIPPED" },
       });
       hide();
