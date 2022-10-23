@@ -108,6 +108,7 @@ const WinnerEditFormModal: React.FC<FormModalProps> = props => {
                 <Option value="SECOND">SECOND</Option>
                 <Option value="THIRD">THIRD</Option>
                 <Option value="GENERAL">GENERAL</Option>
+                <Option value="EMERGING">EMERGING</Option>
               </Select>
             </Form.Item>
           </Col>
