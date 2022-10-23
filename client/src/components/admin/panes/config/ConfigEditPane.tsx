@@ -76,8 +76,13 @@ const ConfigEditPane: React.FC = props => {
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item name="hexathon" rules={[FORM_RULES.requiredRule]} label="Current Hexathon">
-              <Select defaultValue={data.currentHexathon.name}>{hexs}</Select>
+            <Form.Item
+              name="hexathon"
+              rules={[FORM_RULES.requiredRule]}
+              label="Current Hexathon"
+              initialValue={data.currentHexathon?.id}
+            >
+              <Select>{hexs}</Select>
             </Form.Item>
           </Col>
         </Row>
