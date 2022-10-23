@@ -55,13 +55,20 @@ const RankingTable = () => {
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios(
     apiUrl(Service.EXPO, "/categories")
   );
+  const [{ data: projects, loading: projectsLoading, error: projectsError }] = useAxios(
+    apiUrl(Service.EXPO, "/projects")
+  );
 
-  if (categoryLoading) {
+  if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
   }
 
   if (categoryError) {
     return <ErrorDisplay error={categoryError} />;
+  }
+
+  if (projectsError) {
+    return <ErrorDisplay error={projectsError} />;
   }
 
   const createWinner = async (
@@ -112,10 +119,11 @@ const RankingTable = () => {
     <>
       {categoryData?.map((category: Category) => {
         const data: any = [];
+        const categoryProjects = category.isDefault ? projects : category.projects;
         return (
           <>
             <Title level={4}>{category.name}</Title>
-            {category.projects.forEach((project: Project) => {
+            {categoryProjects.forEach((project: Project) => {
               let score = 0;
               let numJudged = 0;
               const judges = new Set();
@@ -125,10 +133,8 @@ const RankingTable = () => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
 
-                    if (!judges.has(ballot.userId)) {
-                      numJudged += 1;
-                      judges.add(ballot.userId);
-                    }
+                    // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
+                    numJudged += 1;
                   }
                 });
               });
@@ -154,7 +160,6 @@ const RankingTable = () => {
                 makeWinner: winnerButton,
               });
             })}
-
             <Table
               key={category.id}
               columns={columns}
