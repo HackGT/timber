@@ -56,15 +56,17 @@ const JudgingCardsContainer: React.FC<Props> = props => {
       });
       hide();
 
-      Modal.info({
-        title: "Notification",
-        okText: "I'm Here",
-        content: props.data[1],
+      // TODO: Fix modal showing next table to go to
+      // Modal.info({
+      //   title: "Notification",
+      //   okText: "I'm Here",
+      //   content: props.data[1],
 
-        onOk() {
-          window.location.reload();
-        },
-      });
+      //   onOk() {
+      //     window.location.reload();
+      //   },
+      // });
+      window.location.reload();
     } catch (err: any) {
       hide();
       handleAxiosError(err);
@@ -77,15 +79,18 @@ const JudgingCardsContainer: React.FC<Props> = props => {
         data: { status: "SKIPPED" },
       });
       hide();
-      Modal.info({
-        title: "Notification",
-        okText: "I'm Here",
-        content: props.data[1],
 
-        onOk() {
-          window.location.reload();
-        },
-      });
+      // TODO: Fix modal showing next table to go to
+      // Modal.info({
+      //   title: "Notification",
+      //   okText: "I'm Here",
+      //   content: props.data[1],
+
+      //   onOk() {
+      //     window.location.reload();
+      //   },
+      // });
+      window.location.reload();
     } catch (err: any) {
       hide();
       handleAxiosError(err);
