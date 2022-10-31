@@ -70,7 +70,13 @@ const ProjectGallery: React.FC<Props> = props => {
   }
 
   let updatedData = projectsData
-    ? projectsData.filter((item: any) => item.name.toLowerCase().includes(searchText.toLowerCase()))
+    ? projectsData.filter(
+        (item: any) =>
+          item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.members
+            .reduce((prev: string, curr: any) => `${prev}${curr.email} ${curr.name} `, "")
+            .includes(searchText.toLowerCase())
+      )
     : [];
 
   updatedData =
