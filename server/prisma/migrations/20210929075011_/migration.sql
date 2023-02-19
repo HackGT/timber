@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "project" ALTER COLUMN "expo" SET DEFAULT 1,
-ALTER COLUMN "round" SET DEFAULT 1;
