@@ -1,24 +1,30 @@
 # Timber
 
-Hexlab's mystical new project submission and judging system for hackathons and other events. Goes by many names such as Ballot, Expo, and Timber. Used most recently at HackGT 9.
+Hexlab's mystical new project submission and judging system for hackathons and other events. Goes by
+many names such as Ballot, Expo, and Timber. Used most recently at HackGT 9.
 
 ## Getting Started
 
 ### Client
 
-1. `cd client` then `yarn install`
+1. `yarn install` in the root directory
 2. `yarn start`
 
 ### Server
 
-Timber runs on Hexlab's new backend API. Check it out [at this link](https://github.com/HackGT/api) to set up the API repo. Follow the guide in the wiki to understand the architecture of the API and how Timber works behind the scenes. Timber is referred to as 'Expo' in the API repo for future naming reference.
+Timber runs on Hexlab's new backend API. Check it out [at this link](https://github.com/HackGT/api)
+to set up the API repo. Follow the guide in the wiki to understand the architecture of the API and
+how Timber works behind the scenes. Timber is referred to as 'Expo' in the API repo for future
+naming reference.
 
-After setting up the API repo and starting it up, the Timber backend is hosted under Expo. In production this is expo.api.hexlabs.org. For local development, this is http://localhost:8007/expo. 
-
+After setting up the API repo and starting it up, the Timber backend is hosted under Expo. In
+production this is expo.api.hexlabs.org. For local development, this is http://localhost:8007/expo.
 
 ## Features
 
-Timber has many features to facilitate project submission and judging for a smooth experience for judges, participants, and sponsors. More features are always being developed by Hexlab's tech team. Feel free to suggest a new feature or update by submitting an issue! 
+Timber has many features to facilitate project submission and judging for a smooth experience for
+judges, participants, and sponsors. More features are always being developed by Hexlab's tech team.
+Feel free to suggest a new feature or update by submitting an issue!
 
 Here are an overview of the core features:
 
@@ -43,4 +49,4 @@ Timber has been used at many of Hexlab's past events. These include but are not 
 - Prototypical 2022
 - HackGT 8
 - HealthTech 2021
-- and many mroe in the future!
+- and many more in the future!
