@@ -21,16 +21,22 @@ const { Title } = Typography;
 const columns = [
   {
     title: "Project Name",
-    render: (row: any) => `${row.id} - ${row.name}`,
+    render: (row: any) => 
+    <>
+      <div style={{display:"flex", justifyContent:"space-between"}}>
+        {row.id} - {row.name}
+        {row.devpostURL}
+      </div>
+    </>,
     key: "name",
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
-  {
-    title: "DevPost URL",
-    dataIndex: "devpostURL",
-    key: "devpostURL",
-    sorter: (a: any, b: any) => a.devpostURL.localeCompare(b.devpostURL),
-  },
+  // {
+  //   title: "DevPost URL",
+  //   dataIndex: "devpostURL",
+  //   key: "devpostURL",
+  //   sorter: (a: any, b: any) => a.devpostURL.localeCompare(b.devpostURL),
+  // },
   {
     title: "Average Score",
     dataIndex: "average",
@@ -153,7 +159,7 @@ const RankingTable = () => {
               data.push({
                 id: project.id,
                 name: project.name,
-                devpostURL: <a href={project.devpostUrl}>{project.name}</a>,
+                devpostURL: <a href={project.devpostUrl} style={{paddingRight:"10px"}}>View Devpost</a>,
                 average: numJudged > 0 ? score / numJudged : 0,
                 numJudged,
                 editScore: editButton,
