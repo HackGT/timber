@@ -8,14 +8,23 @@ import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios(
     apiUrl(Service.EXPO, "/user")
   );
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
-    apiUrl(Service.EXPO, "/categories")
-  );
+
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372

@@ -7,11 +7,15 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { FORM_RULES } from "../../../../util/util";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const ConfigEditPane: React.FC = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { setCurrentHexathon } = CurrentHexathonContext;
+
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
     apiUrl(Service.EXPO, "/config/hexathons")
@@ -34,6 +38,7 @@ const ConfigEditPane: React.FC = props => {
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
+        setCurrentHexathon(res.data.currentHexathon);
         message.success("Config successfully updated", 2);
       })
       .catch(err => {
