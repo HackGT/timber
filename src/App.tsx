@@ -59,6 +59,10 @@ export const App = () => {
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [currentHexathon, setCurrentHexathon] = useState<any>(null);
+  const hexathonValues = useMemo(
+    () => ({ currentHexathon, setCurrentHexathon }),
+    [currentHexathon, setCurrentHexathon]
+  );
 
   useEffect(() => {
     const getUserData = async () => {
@@ -92,11 +96,6 @@ export const App = () => {
   }
 
   setCurrentHexathon(configData.currentHexathon);
-
-  const hexathonValues = useMemo(
-    () => ({ currentHexathon, setCurrentHexathon }),
-    [currentHexathon, setCurrentHexathon]
-  );
 
   return (
     <AuthProvider app={app}>
