@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -7,11 +7,15 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { FORM_RULES } from "../../../../util/util";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
+import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const ConfigEditPane: React.FC = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon, setCurrentHexathon } = CurrentHexathonContext;
+
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
     apiUrl(Service.EXPO, "/config/hexathons")
@@ -29,7 +33,9 @@ const ConfigEditPane: React.FC = props => {
     const hide = message.loading("Loading...", 0);
     values.currentHexathon = values.hexathon;
     delete values.hexathon;
-
+    const currHexObject = hexathonsData.find((hexathon: any) => hexathon.id === values.currentHexathon);
+    console.log('currHexObject: ', currHexObject)
+    setCurrentHexathon(currHexObject);
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
@@ -80,7 +86,7 @@ const ConfigEditPane: React.FC = props => {
               name="hexathon"
               rules={[FORM_RULES.requiredRule]}
               label="Current Hexathon"
-              initialValue={data.currentHexathon?.id}
+              initialValue={currentHexathon?.id}
             >
               <Select>{hexs}</Select>
             </Form.Item>

@@ -8,13 +8,27 @@ import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const TableGroupsModal: React.FC<FormModalProps> = props => {
-  const [{ data: tableGroupsData, loading: tableGroupsLoading, error: tableGroupsError }] =
-    useAxios(apiUrl(Service.EXPO, "/categorygroups"));
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios(apiUrl(Service.EXPO, "/projects"));
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
+  const [{ loading: tableGroupsLoading, error: tableGroupsError }, refetchTableGroups] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/tablegroups"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372

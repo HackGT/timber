@@ -13,6 +13,7 @@ import { config } from "process";
 import { UserRole } from "../../types/UserRole";
 import { FORM_RULES } from "../../util/util";
 import { TableGroup } from "../../types/TableGroup";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
@@ -23,17 +24,36 @@ interface Props {
 }
 
 const ProjectGallery: React.FC<Props> = props => {
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
-    useAxios(apiUrl(Service.EXPO, "/projects"));
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
-    apiUrl(Service.EXPO, "/categories")
-  );
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
 
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
-    useAxios(apiUrl(Service.EXPO, "/tablegroups"));
+
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/tablegroups"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
@@ -37,6 +37,7 @@ import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
 import Winners from "./components/winners/WinnersGallery";
 import { UserRole } from "./types/UserRole";
 import ProtectedRoute from "./util/ProtectedRoute";
+import CurrentHexathonContext from "./contexts/CurrentHexathonContext";
 
 const { Content } = Layout;
 
@@ -57,6 +58,13 @@ export const App = () => {
   const [loading, loggedIn] = useLogin(app);
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [currentHexathon, setCurrentHexathon] = useState<any>(null);
+  const hexathonValues = useMemo(
+    () => ({ currentHexathon, setCurrentHexathon }),
+    [currentHexathon, setCurrentHexathon]
+  );
+
+  const [{ data: configData, loading: configLoading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
 
   useEffect(() => {
     const getUserData = async () => {
@@ -64,17 +72,21 @@ export const App = () => {
       setUser(response.data);
       setUserDataLoading(false);
     };
-
+    if (configData) {
+      setCurrentHexathon(configData.currentHexathon);
+    }
     if (loggedIn) {
       getUserData();
     } else {
       setUser(null);
     }
-  }, [loggedIn]);
+  }, [loggedIn, currentHexathon]);
 
-  if (loading) {
+
+  if (loading || configLoading) {
     return <LoadingScreen />;
   }
+
   // If the user is not logged in, redirect to the login frontend with a redirect
   // param so that the user can login and come back to the page they were on.
   if (!loggedIn) {
@@ -86,80 +98,83 @@ export const App = () => {
     return <LoadingScreen />;
   }
 
+
   return (
     <AuthProvider app={app}>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Navigation user={user} />
-        <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
-          <Routes>
-            <Route path="/" element={<Dashboard user={user} />} />
-            <Route path="/create" element={<SubmissionFormContainer user={user} />} />
+      <CurrentHexathonContext.Provider value={hexathonValues}>
+        <Layout style={{ minHeight: "100vh" }}>
+          <Navigation user={user} />
+          <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
+            <Routes>
+              <Route path="/" element={<Dashboard user={user} />} />
+              <Route path="/create" element={<SubmissionFormContainer user={user} />} />
 
-            <Route
-              path="/category-group/:categoryGroupId"
-              element={
-                <ProtectedRoute type="sponsor" user={user}>
-                  <CategoryGroup />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/category-group/:categoryGroupId"
+                element={
+                  <ProtectedRoute type="sponsor" user={user}>
+                    <CategoryGroup />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/projectgallery" element={<ProjectGallery user={user} />} />
-            <Route path="/projects/:projectId" element={<ProjectDetails />} />
+              <Route path="/projectgallery" element={<ProjectGallery user={user} />} />
+              <Route path="/projects/:projectId" element={<ProjectDetails />} />
 
-            <Route
-              path="/judging"
-              element={
-                <ProtectedRoute type="judge" user={user}>
-                  <JudgingHome user={user} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute type="admin" user={user}>
-                  <AdminHome />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/:activePane"
-              element={
-                <ProtectedRoute type="admin" user={user}>
-                  <AdminHome />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/epicenter"
-              element={
-                <ProtectedRoute type="admin" user={user}>
-                  <Epicenter />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/project-status"
-              element={
-                <ProtectedRoute type="admin" user={user}>
-                  <ProjectStatusHome />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/winners"
-              element={
-                <ProtectedRoute type="admin" user={user}>
-                  <Winners />
-                </ProtectedRoute>
-              }
-            />
-            <Route element={<NotFoundDisplay />} />
-          </Routes>
-        </Content>
-        <Footer />
-      </Layout>
+              <Route
+                path="/judging"
+                element={
+                  <ProtectedRoute type="judge" user={user}>
+                    <JudgingHome user={user} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute type="admin" user={user}>
+                    <AdminHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/:activePane"
+                element={
+                  <ProtectedRoute type="admin" user={user}>
+                    <AdminHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/epicenter"
+                element={
+                  <ProtectedRoute type="admin" user={user}>
+                    <Epicenter />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/project-status"
+                element={
+                  <ProtectedRoute type="admin" user={user}>
+                    <ProjectStatusHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/winners"
+                element={
+                  <ProtectedRoute type="admin" user={user}>
+                    <Winners />
+                  </ProtectedRoute>
+                }
+              />
+              <Route element={<NotFoundDisplay />} />
+            </Routes>
+          </Content>
+          <Footer />
+        </Layout>
+      </CurrentHexathonContext.Provider>
     </AuthProvider>
   );
 };

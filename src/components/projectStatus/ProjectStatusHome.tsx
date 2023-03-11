@@ -7,13 +7,23 @@ import ProjectTableContainer from "./ProjectTableContainer";
 import RankingTable from "./RankingTable";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const ProjectStatusHome: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios(apiUrl(Service.EXPO, "/projects"));
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
 
   if (projectsLoading) {
     return <LoadingDisplay />;

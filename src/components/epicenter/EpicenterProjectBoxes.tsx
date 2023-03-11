@@ -2,6 +2,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { Row, Col, Select, Input } from "antd";
 import useAxios from "axios-hooks";
 import React, { useState } from "react";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -15,13 +16,32 @@ const { Option } = Select;
 const { Search } = Input;
 
 const EpicenterProjectBoxes: React.FC = () => {
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios(apiUrl(Service.EXPO, "/projects"));
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
-    apiUrl(Service.EXPO, "/categories")
-  );
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
-    useAxios(apiUrl(Service.EXPO, "/tablegroups"));
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
+  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/tablegroups"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);

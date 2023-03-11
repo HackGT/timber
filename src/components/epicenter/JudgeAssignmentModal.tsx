@@ -13,6 +13,7 @@ import { handleAxiosError } from "../../util/util";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -26,8 +27,16 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
   const [form] = Form.useForm();
   const [selectedProject, setSelectedProject] = useState<Project>();
   const [selectedUser, setSelectedUser] = useState("");
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects"));
+  const [{ loading, data, error }, refetchProjects] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
   const [{ data: userData, loading: userLoading, error: userError }] = useAxios(
     apiUrl(Service.EXPO, "/user")
   );

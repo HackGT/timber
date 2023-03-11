@@ -15,13 +15,14 @@ import { Link } from "react-router-dom";
 import { apiUrl, Service } from "@hex-labs/core";
 import axios from "axios";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 
 const columns = [
   {
     title: "Project Name",
-    render: (row: any) => 
+    render: (row: any) =>
     <>
       <div style={{display:"flex", justifyContent:"space-between"}}>
         {row.id} - {row.name}
@@ -58,12 +59,24 @@ const columns = [
 ];
 
 const RankingTable = () => {
-  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios(
-    apiUrl(Service.EXPO, "/categories")
-  );
-  const [{ data: projects, loading: projectsLoading, error: projectsError }] = useAxios(
-    apiUrl(Service.EXPO, "/projects")
-  );
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
+  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
+
+  const [{ loading: projectsLoading, data: projects, error: projectsError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;

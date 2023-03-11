@@ -11,16 +11,27 @@ import { TableGroup } from "../../types/TableGroup";
 import TableGroupsModal from "../admin/panes/tableGroups/TableGroupsModal";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]);
-  const [{ data: categoryData, loading: categoryLoading }] = useAxios(
-    apiUrl(Service.EXPO, "/categories"),
-    {
-      useCache: false,
-    }
-  );
+
+  const [{ loading: categoryLoading, data: categoryData }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  },
+  {
+    useCache: false,
+  });
+
+
 
   const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(
     apiUrl(Service.EXPO, `/tablegroups`),

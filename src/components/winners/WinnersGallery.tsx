@@ -11,6 +11,7 @@ import WinnerCard from "./WinnerCard";
 import { ModalState } from "../../util/FormModalProps";
 import WinnerEditFormModal from "./WinnerEditFormModal";
 import { Category } from "../../types/Category";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -42,6 +43,9 @@ const Winners: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
   const openModal = (values: any) => {
     setModalState({
       visible: true,
@@ -52,9 +56,14 @@ const Winners: React.FC = () => {
   const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetch] = useAxios(
     apiUrl(Service.EXPO, "/winner")
   );
-  const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios(
-    apiUrl(Service.EXPO, "/categories")
-  );
+
+  const [{ data: categoriesData, loading: categoriesLoading, error: categoriesError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   if (winnersLoading || categoriesLoading) {
     return <LoadingDisplay />;

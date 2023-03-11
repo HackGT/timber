@@ -8,6 +8,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
 import { TableGroup } from "../../types/TableGroup";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -17,11 +18,25 @@ interface Props {
 }
 
 const Dashboard: React.FC<Props> = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects/special/dashboard"), {
     useCache: false,
   });
-  const [{ data: tablegroupsData, loading: tablegroupsLoading, error: tablegroupsError }] =
-    useAxios(apiUrl(Service.EXPO, "/tablegroups"), { useCache: false });
+
+  const [{ loading: tablegroupsLoading, data: tablegroupsData, error: tablegroupsError }] =
+    useAxios(
+      {
+        method: "GET",
+        url: apiUrl(Service.EXPO, "/tablegroups"),
+        params: {
+          hexathon: currentHexathon.id,
+        },
+      },
+      { useCache: false }
+    );
+
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
