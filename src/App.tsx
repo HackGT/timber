@@ -64,21 +64,24 @@ export const App = () => {
     [currentHexathon, setCurrentHexathon]
   );
 
+  const [{ data: configData, loading: configLoading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
+
   useEffect(() => {
     const getUserData = async () => {
       const response = await axios.get(apiUrl(Service.EXPO, "/user/check"));
       setUser(response.data);
       setUserDataLoading(false);
     };
-
+    if (configData) {
+      setCurrentHexathon(configData.currentHexathon);
+    }
     if (loggedIn) {
       getUserData();
     } else {
       setUser(null);
     }
-  }, [loggedIn]);
+  }, [loggedIn, currentHexathon]);
 
-  const [{ data: configData, loading: configLoading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
 
   if (loading || configLoading) {
     return <LoadingScreen />;
@@ -95,7 +98,6 @@ export const App = () => {
     return <LoadingScreen />;
   }
 
-  setCurrentHexathon(configData.currentHexathon);
 
   return (
     <AuthProvider app={app}>
