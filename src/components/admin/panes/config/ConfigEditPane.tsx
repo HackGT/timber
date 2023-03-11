@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -14,7 +14,7 @@ const { Option } = Select;
 
 const ConfigEditPane: React.FC = props => {
   const CurrentHexathonContext = useCurrentHexathon();
-  const { setCurrentHexathon } = CurrentHexathonContext;
+  const { currentHexathon, setCurrentHexathon } = CurrentHexathonContext;
 
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
@@ -32,14 +32,14 @@ const ConfigEditPane: React.FC = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     values.currentHexathon = values.hexathon;
-    setCurrentHexathon(values.hexathon);
     delete values.hexathon;
-
+    const currHexObject = hexathonsData.find((hexathon: any) => hexathon.id === values.currentHexathon);
+    console.log('currHexObject: ', currHexObject)
+    setCurrentHexathon(currHexObject);
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
-        setCurrentHexathon(res.data.currentHexathon);
         message.success("Config successfully updated", 2);
       })
       .catch(err => {
@@ -86,7 +86,7 @@ const ConfigEditPane: React.FC = props => {
               name="hexathon"
               rules={[FORM_RULES.requiredRule]}
               label="Current Hexathon"
-              initialValue={data.currentHexathon?.id}
+              initialValue={currentHexathon?.id}
             >
               <Select>{hexs}</Select>
             </Form.Item>
