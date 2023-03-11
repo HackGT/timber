@@ -20,6 +20,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -40,6 +41,8 @@ interface Props {
 }
 
 const AdminContentList: React.FC<Props> = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -48,7 +51,13 @@ const AdminContentList: React.FC<Props> = props => {
   const [userRole, setUserRole] = useState<any>(undefined);
   const [isJudging, setIsJudging] = useState<any>(undefined);
 
-  const [{ loading, data, error }, refetch] = useAxios(apiUrl(Service.EXPO, props.queryUrl));
+  const [{ loading, data, error }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, props.queryUrl),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const openModal = (values: any) => {
     setModalState({
