@@ -31,7 +31,7 @@ const EpicenterProjectBoxes: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/tablegroups"),
     params: {
-      hackathon: currentHexathon.id
+      hexathon: currentHexathon.id
     },
   });
 
