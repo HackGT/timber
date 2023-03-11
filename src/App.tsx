@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
@@ -58,6 +58,7 @@ export const App = () => {
   const [loading, loggedIn] = useLogin(app);
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [currentHexathon, setCurrentHexathon] = useState<any>(null);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -90,12 +91,12 @@ export const App = () => {
     return <LoadingScreen />;
   }
 
-  const [currentHexathon, setCurrentHexathon] = useState<any>(configData.currentHexathon);
+  setCurrentHexathon(configData.currentHexathon);
 
-  const hexathonValues = {
-    currentHexathon,
-    setCurrentHexathon,
-  }
+  const hexathonValues = useMemo(
+    () => ({ currentHexathon, setCurrentHexathon }),
+    [currentHexathon, setCurrentHexathon]
+  );
 
   return (
     <AuthProvider app={app}>
