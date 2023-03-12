@@ -53,9 +53,13 @@ const Winners: React.FC = () => {
     });
   };
 
-  const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetch] = useAxios(
-    apiUrl(Service.EXPO, "/winner?hexathon=" + currentHexathon.id)
-  );
+  const [{ data: winnersData, loading: winnersLoading, error: winnersError }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/winner"),
+    params: {
+      hexathon: currentHexathon.id
+    },
+  });
 
   const [{ data: categoriesData, loading: categoriesLoading, error: categoriesError }] = useAxios({
     method: "GET",
