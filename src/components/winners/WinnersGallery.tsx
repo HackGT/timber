@@ -54,7 +54,7 @@ const Winners: React.FC = () => {
   };
 
   const [{ loading: winnersLoading, data: winnersData, error: winnersError }, refetch] = useAxios(
-    apiUrl(Service.EXPO, "/winner")
+    apiUrl(Service.EXPO, "/winner?hexathon=" + currentHexathon.id)
   );
 
   const [{ data: categoriesData, loading: categoriesLoading, error: categoriesError }] = useAxios({
