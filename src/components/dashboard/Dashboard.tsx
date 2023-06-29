@@ -9,7 +9,6 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { table } from "console";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -50,7 +49,6 @@ const Dashboard: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  console.log(data);
 
   const getInfoText = (user: any) => {
     const adminBlurb = (
