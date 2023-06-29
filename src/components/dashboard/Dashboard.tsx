@@ -9,6 +9,7 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import { UserRole } from "../../types/UserRole";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { table } from "console";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -48,6 +49,8 @@ const Dashboard: React.FC<Props> = props => {
   if (error || configError || tablegroupsError) {
     return <ErrorDisplay error={error} />;
   }
+
+  console.log(data);
 
   const getInfoText = (user: any) => {
     const adminBlurb = (
@@ -148,7 +151,7 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {configData.revealTableGroups && (
+                      {project.hexathon.id == currentHexathon.id && configData.revealTableGroups && (
                         <>
                           <p>
                             <b>Table Group: </b>
