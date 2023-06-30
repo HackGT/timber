@@ -31,7 +31,6 @@ const ConfigEditPane: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-    console.log(values);
     values.currentHexathon = values.hexathon;
     delete values.hexathon;
     const currHexObject = hexathonsData.find(
