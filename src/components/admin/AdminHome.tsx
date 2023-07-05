@@ -8,6 +8,7 @@ import {
   FolderOutlined,
   TableOutlined,
 } from "@ant-design/icons";
+import { Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
 
 import AdminContentList from "./AdminContentList";
 import UserFormModal from "./panes/users/UserFormModal";
@@ -24,6 +25,23 @@ const AdminHome: React.FC = () => {
   const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
   const navigate = useNavigate();
+
+  // const [isOpen, setIsOpen] = React.useState(false);
+  // const openAlert = () => {
+  //   setIsOpen(true);
+  // };
+  // const closeAlert = () => {
+  //   setIsOpen(false);
+  // };
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleComponentClick = (index: number) => {
+    setSelectedIndex(index);
+    setIsOpen(true);
+  };
+  const closeAlert = () => {
+    setIsOpen(false);
+  };
 
   if (!paneKeys.includes(activePane ?? "")) {
     return <Navigate to={`/admin/${paneKeys[0]}`} />;
@@ -52,9 +70,34 @@ const AdminHome: React.FC = () => {
                 title={`${item.name} (${item.email})`}
                 description={
                   <div>
-                    <Text style={{ display: "block" }}>
-                      Category Group: {item.categoryGroup?.name || "N/A"}
-                    </Text>
+                    <Flex>
+                      <Text style={{ display: "block", paddingRight: "10px", }}>
+                        Category Group: {item.categoryGroup?.name || "N/A"}
+                      </Text>
+                      <Text style={
+                        { display: "block", 
+                          fontSize: 12, 
+                          color:"blue",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                        }} 
+                        onClick={() => handleComponentClick(index)}>
+                        What is this?
+                      </Text>
+                    </Flex>
+                    {(selectedIndex==index) && (isOpen) && (
+                      <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
+                        <AlertIcon />
+                        <AlertDescription mr={8}>
+                          {item.categoryGroup?.name || "This"} is a category group. Category Groups are internal identifiers 
+                          for judging purposes where each judge is assigned a category group to review. For example, 
+                          say we need a T-Mobile judge that should be designated to judge all projects that have been 
+                          submitted for a T-Mobile project. A category group would be created to handle this grouping 
+                          and would be assigned to the respective judge.
+                        </AlertDescription>
+                        <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
+                      </Alert>
+                    )}
                     <div>
                       <Tag>{item.role}</Tag>
                       {item.isJudging && <Tag>Judging</Tag>}

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Typography, Table, Button, Modal, message } from "antd/lib";
+import { Text, Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
@@ -78,6 +79,16 @@ const RankingTable = () => {
     },
   });
 
+  const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleComponentClick = (categoryId: number) => {
+    setSelectedId(categoryId);
+    setIsOpen(true);
+  };
+  const closeAlert = () => {
+    setIsOpen(false);
+  };
+
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
   }
@@ -141,7 +152,24 @@ const RankingTable = () => {
         const categoryProjects = category.isDefault ? projects : category.projects;
         return (
           <>
-            <Title level={4}>{category.name}</Title>
+            <Flex>
+              <Title level={4}>{category.name}</Title>
+              <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(category.id)}>
+                What is this?
+              </Text>
+            </Flex>
+            {(selectedId==category.id) && (isOpen) && (
+              <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
+                <AlertIcon />
+                <AlertDescription mr={8}>
+                  {category.name} is a category. Categories are prizes or awards that hackathon submissions can win.
+                  For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong to category 
+                  groups for judging organization purposes.
+                </AlertDescription>
+                <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
+              </Alert>
+            )}
+
             {categoryProjects.forEach((project: Project) => {
               let score = 0;
               let numJudged = 0;
