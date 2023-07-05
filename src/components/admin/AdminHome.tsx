@@ -26,13 +26,6 @@ const AdminHome: React.FC = () => {
   const { activePane } = useParams<any>();
   const navigate = useNavigate();
 
-  // const [isOpen, setIsOpen] = React.useState(false);
-  // const openAlert = () => {
-  //   setIsOpen(true);
-  // };
-  // const closeAlert = () => {
-  //   setIsOpen(false);
-  // };
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const handleComponentClick = (index: number) => {
