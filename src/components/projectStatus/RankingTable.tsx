@@ -85,15 +85,6 @@ const RankingTable = () => {
     },
   });
 
-  const [selectedId, setSelectedId] = React.useState<number | null>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const handleComponentClick = (categoryId: number) => {
-    setSelectedId(categoryId);
-    setIsOpen(true);
-  };
-  const closeAlert = () => {
-    setIsOpen(false);
-  };
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
@@ -158,23 +149,7 @@ const RankingTable = () => {
         const categoryProjects = category.isDefault ? projects : category.projects;
         return (
           <>
-            <Flex>
-              <Title level={4}>{category.name}</Title>
-              <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(category.id)}>
-                What is this?
-              </Text>
-            </Flex>
-            {(selectedId==category.id) && (isOpen) && (
-              <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
-                <AlertIcon />
-                <AlertDescription mr={8}>
-                  {category.name} is a category. Categories are prizes or awards that hackathon submissions can win.
-                  For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong to category 
-                  groups for judging organization purposes.
-                </AlertDescription>
-                <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
-              </Alert>
-            )}
+            <Title level={4}>{category.name}</Title>
 
             {categoryProjects.forEach((project: Project) => {
               let score = 0;
@@ -211,11 +186,17 @@ const RankingTable = () => {
                 if (sortedList.length % 2 === 0) {
                   median = (sortedList[mid - 1] + sortedList[mid]) / 2;
                 } else {
+                  median = sortedList[mid];
+                }
+                return median;
+              }
+
               data.push({
                 id: project.id,
                 name: project.name,
                 devpostURL: <a href={project.devpostUrl} style={{paddingRight:"10px"}}>View Devpost</a>,
                 average: numJudged > 0 ? score / numJudged : 0,
+                median: calculateMedian(allScores),
                 numJudged,
                 editScore: editButton,
                 makeWinner: winnerButton,
