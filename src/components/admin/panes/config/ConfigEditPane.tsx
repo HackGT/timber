@@ -42,10 +42,7 @@ const ConfigEditPane: React.FC = props => {
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
-        message.success("Config successfully updated", 2);
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
+        message.success("Config successfully updated", 2, () => window.location.reload());
       })
       .catch(err => {
         hide();
