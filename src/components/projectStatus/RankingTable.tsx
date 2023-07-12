@@ -46,6 +46,13 @@ const columns = [
     sorter: (a: any, b: any) => a.average - b.average,
   },
   {
+    title: "Median Score",
+    dataIndex: "median",
+    key: "median",
+    defaultSortOrder: "descend" as SortOrder,
+    sorter: (a: any, b: any) => a.median - b.median,
+  },
+  {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
@@ -77,6 +84,16 @@ const RankingTable = () => {
       hexathon: currentHexathon.id
     },
   });
+
+  const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleComponentClick = (categoryId: number) => {
+    setSelectedId(categoryId);
+    setIsOpen(true);
+  };
+  const closeAlert = () => {
+    setIsOpen(false);
+  };
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
@@ -141,9 +158,27 @@ const RankingTable = () => {
         const categoryProjects = category.isDefault ? projects : category.projects;
         return (
           <>
-            <Title level={4}>{category.name}</Title>
+            <Flex>
+              <Title level={4}>{category.name}</Title>
+              <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(category.id)}>
+                What is this?
+              </Text>
+            </Flex>
+            {(selectedId==category.id) && (isOpen) && (
+              <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
+                <AlertIcon />
+                <AlertDescription mr={8}>
+                  {category.name} is a category. Categories are prizes or awards that hackathon submissions can win.
+                  For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong to category 
+                  groups for judging organization purposes.
+                </AlertDescription>
+                <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
+              </Alert>
+            )}
+
             {categoryProjects.forEach((project: Project) => {
               let score = 0;
+              const allScores: number[] = [];
               let numJudged = 0;
               const judges = new Set();
               let editButton;
@@ -151,7 +186,7 @@ const RankingTable = () => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
-
+                    allScores.push(score);
                     // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
                     numJudged += 1;
                   }
@@ -169,6 +204,13 @@ const RankingTable = () => {
                 </Button>
               );
 
+              function calculateMedian(allScores: number[]): number {
+                const sortedList = [...allScores].sort((a, b) => a - b);
+                let median = 0;
+                const mid = Math.floor(sortedList.length / 2);
+                if (sortedList.length % 2 === 0) {
+                  median = (sortedList[mid - 1] + sortedList[mid]) / 2;
+                } else {
               data.push({
                 id: project.id,
                 name: project.name,
