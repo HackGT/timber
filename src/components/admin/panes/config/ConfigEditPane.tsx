@@ -33,14 +33,16 @@ const ConfigEditPane: React.FC = props => {
     const hide = message.loading("Loading...", 0);
     values.currentHexathon = values.hexathon;
     delete values.hexathon;
-    const currHexObject = hexathonsData.find((hexathon: any) => hexathon.id === values.currentHexathon);
-    console.log('currHexObject: ', currHexObject)
-    setCurrentHexathon(currHexObject);
+    const currHexObject = hexathonsData.find(
+      (hexathon: any) => hexathon.id === values.currentHexathon
+    );
+    console.log("currHexObject: ", currHexObject);
+    setCurrentHexathon(() => ({ ...currHexObject }));
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
         hide();
-        message.success("Config successfully updated", 2);
+        message.success("Config successfully updated", 2, () => window.location.reload());
       })
       .catch(err => {
         hide();
