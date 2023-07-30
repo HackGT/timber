@@ -46,6 +46,13 @@ const columns = [
     sorter: (a: any, b: any) => a.average - b.average,
   },
   {
+    title: "Median Score",
+    dataIndex: "median",
+    key: "median",
+    defaultSortOrder: "descend" as SortOrder,
+    sorter: (a: any, b: any) => a.median - b.median,
+  },
+  {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
@@ -77,6 +84,7 @@ const RankingTable = () => {
       hexathon: currentHexathon.id
     },
   });
+
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
@@ -142,8 +150,10 @@ const RankingTable = () => {
         return (
           <>
             <Title level={4}>{category.name}</Title>
+
             {categoryProjects.forEach((project: Project) => {
               let score = 0;
+              const allScores: number[] = [];
               let numJudged = 0;
               const judges = new Set();
               let editButton;
@@ -151,7 +161,7 @@ const RankingTable = () => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
-
+                    allScores.push(score);
                     // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
                     numJudged += 1;
                   }
@@ -169,11 +179,24 @@ const RankingTable = () => {
                 </Button>
               );
 
+              function calculateMedian(allScores: number[]): number {
+                const sortedList = [...allScores].sort((a, b) => a - b);
+                let median = 0;
+                const mid = Math.floor(sortedList.length / 2);
+                if (sortedList.length % 2 === 0) {
+                  median = (sortedList[mid - 1] + sortedList[mid]) / 2;
+                } else {
+                  median = sortedList[mid];
+                }
+                return median;
+              }
+
               data.push({
                 id: project.id,
                 name: project.name,
                 devpostURL: <a href={project.devpostUrl} style={{paddingRight:"10px"}}>View Devpost</a>,
                 average: numJudged > 0 ? score / numJudged : 0,
+                median: calculateMedian(allScores),
                 numJudged,
                 editScore: editButton,
                 makeWinner: winnerButton,
