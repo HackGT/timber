@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
-
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
@@ -35,7 +34,6 @@ import JudgeRoute from "./util/JudgeRoute";
 import SponsorRoute from "./util/SponsorRoute";
 import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
 import Winners from "./components/winners/WinnersGallery";
-import { UserRole } from "./types/UserRole";
 import ProtectedRoute from "./util/ProtectedRoute";
 import CurrentHexathonContext from "./contexts/CurrentHexathonContext";
 
@@ -64,7 +62,9 @@ export const App = () => {
     [currentHexathon, setCurrentHexathon]
   );
 
-  const [{ data: configData, loading: configLoading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
+  const [{ data: configData, loading: configLoading, error }] = useAxios(
+    apiUrl(Service.EXPO, "/config")
+  );
 
   useEffect(() => {
     const getUserData = async () => {
@@ -82,7 +82,6 @@ export const App = () => {
     }
   }, [loggedIn, currentHexathon]);
 
-
   if (loading || configLoading) {
     return <LoadingScreen />;
   }
@@ -97,7 +96,6 @@ export const App = () => {
   if (userDataLoading) {
     return <LoadingScreen />;
   }
-
 
   return (
     <AuthProvider app={app}>

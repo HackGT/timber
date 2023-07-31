@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Popover, Tag, Typography } from "antd";
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
 import useAxios, { RefetchOptions } from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
@@ -11,7 +12,6 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -77,20 +77,18 @@ const JudgingBox: React.FC<Props> = props => {
           <Tag>{category.name}</Tag>
         ))}
       </div>
-      <>
-        <Text strong>Scores</Text>
-        {Object.entries(scoreData).map((category: any) => {
-          let scoreString = "";
-          Object.entries(category[1]).map(score => {
-            if (scoreString !== "") {
-              scoreString = `${scoreString}, ${score[1]}`;
-            } else {
-              scoreString = `${score[1]}`;
-            }
-          });
-          return <Text>{`${category[0]}: ${scoreString}`}</Text>;
-        })}
-      </>
+      <Text strong>Scores</Text>
+      {Object.entries(scoreData).map((category: any) => {
+        let scoreString = "";
+        Object.entries(category[1]).map(score => {
+          if (scoreString !== "") {
+            scoreString = `${scoreString}, ${score[1]}`;
+          } else {
+            scoreString = `${score[1]}`;
+          }
+        });
+        return <Text>{`${category[0]}: ${scoreString}`}</Text>;
+      })}
       {props.project.roomUrl && (
         <a href={props.project.roomUrl} target="_blank" rel="noreferrer">
           Join Video Call

@@ -57,7 +57,7 @@ const Winners: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/winner"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -65,7 +65,7 @@ const Winners: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 

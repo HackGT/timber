@@ -18,7 +18,7 @@ const ConfigEditPane: React.FC = props => {
 
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
-    apiUrl(Service.EXPO, "/config/hexathons")
+    apiUrl(Service.HEXATHONS, "/hexathons")
   );
 
   if (loading || hexathonsLoading) {

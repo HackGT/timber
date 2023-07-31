@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-
 import DailyIframe from "@daily-co/daily-js";
 import "./DailyWindow.css";
 

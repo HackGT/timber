@@ -3,15 +3,14 @@ import { Select, Form, Input, message, Modal, Radio, Switch, Tooltip, Typography
 import { QuestionCircleOutlined } from "@ant-design/icons/lib";
 import axios from "axios";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
-import { UserRole } from "../../../../types/UserRole";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import { CategoryGroup } from "../../../../types/CategoryGroup";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const { Text } = Typography;
@@ -21,13 +20,14 @@ const UserFormModal: React.FC<FormModalProps> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/categorygroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/categorygroups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [form] = Form.useForm();
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -63,25 +63,6 @@ const UserFormModal: React.FC<FormModalProps> = props => {
     }
   };
 
-  const accessLevelOptions = [
-    {
-      value: UserRole.GENERAL,
-      label: "General",
-      helpText: "This is the general user role. It encompasses participants and judges.",
-    },
-    {
-      value: UserRole.SPONSOR,
-      label: "Sponsor",
-      helpText: "This allows users to view the sponsor page for their assigned company.",
-    },
-    {
-      value: UserRole.ADMIN,
-      label: "Admin",
-      helpText:
-        "This provides the user with superuser privileges. Allows them to monitor judging process and make updates as needed.",
-    },
-  ];
-
   const categoryGroupsOptions = categoryGroupsLoading
     ? []
     : categoryGroupsData.map((categoryGroup: any) => ({
@@ -116,29 +97,24 @@ const UserFormModal: React.FC<FormModalProps> = props => {
             allowClear
           />
         </Form.Item>
-        <Form.Item name="role" rules={[FORM_RULES.requiredRule]} label="User Role">
-          <Radio.Group>
-            {accessLevelOptions.map((item: any) => (
-              <Radio
-                key={item.label}
-                style={{ display: "block", height: "30px", lineHeight: "30px" }}
-                value={item.value}
-                // disabled={initialValues && initialValues.id === currentUser.id} // You can't change your own access level
-              >
-                {`${item.label} `}
-                <Tooltip title={item.helpText}>
-                  <QuestionCircleOutlined />
-                </Tooltip>
-              </Radio>
-            ))}
-          </Radio.Group>
-        </Form.Item>
         <Form.Item
           name="isJudging"
           label={
             <QuestionIconLabel
               label="Is Judging"
               helpText="Set switch to yes if this user is judging projects. Any user role can be a judge."
+            />
+          }
+          valuePropName="checked"
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          name="isSponsor"
+          label={
+            <QuestionIconLabel
+              label="Is Sponsor"
+              helpText="This allows users to view the sponsor page for their assigned company."
             />
           }
           valuePropName="checked"

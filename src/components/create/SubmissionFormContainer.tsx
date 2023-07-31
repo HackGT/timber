@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Steps, Typography } from "antd";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import TeamInfoForm from "./form/TeamInfoForm";
 import PrizeInfoForm from "./form/PrizeInfoForm";
@@ -11,7 +12,6 @@ import ReviewForm from "./form/ReviewForm";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import DetailInfoForm from "./form/DetailInfoForm";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Step } = Steps;

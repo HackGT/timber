@@ -2,13 +2,13 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 import { List, Typography } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import ProjectCard from "../projectGallery/ProjectCard";
 import { Project } from "../../types/Project";
 import CategoryGroupProjectTableContainer from "./CategoryGroupProjectTableContainer";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 

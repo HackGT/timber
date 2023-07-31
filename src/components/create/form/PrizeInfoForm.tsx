@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios";
 import { Alert, Button, Col, Form, message, Row, Select, Typography } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_LAYOUT, handleAxiosError } from "../../../util/util";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 

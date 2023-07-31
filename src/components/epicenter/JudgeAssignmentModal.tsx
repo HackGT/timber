@@ -3,6 +3,7 @@ import { Form, Modal, Select, Menu, Dropdown, Typography, message } from "antd";
 import useAxios from "axios-hooks";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Project } from "../../types/Project";
 import { ModalState } from "../../util/FormModalProps";
@@ -12,7 +13,6 @@ import { User } from "../../types/User";
 import { handleAxiosError } from "../../util/util";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Option } = Select;
@@ -34,7 +34,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
   const [{ data: userData, loading: userLoading, error: userError }] = useAxios(

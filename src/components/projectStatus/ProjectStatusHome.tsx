@@ -16,14 +16,14 @@ const ProjectStatusHome: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
-
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   if (projectsLoading) {
     return <LoadingDisplay />;

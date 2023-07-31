@@ -3,6 +3,7 @@ import { Typography, Button, Modal, message } from "antd";
 import useAxios from "axios-hooks";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ProjectTable from "./ProjectTable";
 import { Project } from "../../types/Project";
@@ -11,7 +12,6 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 
@@ -155,16 +155,14 @@ const ProjectTableContainer: React.FC<Props> = props => {
                 ? `Project Name: ${project.name}`
                 : `${project.id} - ${project.name}`}
             </Title>
-            <>
-              {project.categories.map((category: any) => (
-                <>
-                  <Title level={5} key={category.id}>
-                    {category.name}
-                  </Title>
-                  <ProjectTable data={generateData(category.id)} />
-                </>
-              ))}
-            </>
+            {project.categories.map((category: any) => (
+              <>
+                <Title level={5} key={category.id}>
+                  {category.name}
+                </Title>
+                <ProjectTable data={generateData(category.id)} />
+              </>
+            ))}
             <br />
           </div>
         );
