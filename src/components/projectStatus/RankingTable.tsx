@@ -161,7 +161,7 @@ const RankingTable = () => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
-                    allScores.push(score);
+                    allScores.push(ballot.score);
                     // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
                     numJudged += 1;
                   }
