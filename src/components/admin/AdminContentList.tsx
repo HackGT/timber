@@ -12,7 +12,7 @@ import {
   Pagination,
   PaginationProps,
 } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
+import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 
@@ -52,7 +52,7 @@ const AdminContentList: React.FC<Props> = props => {
   const [userRole, setUserRole] = useState<any>(undefined);
   const [isJudging, setIsJudging] = useState<any>(undefined);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const openAlert = () => {
     setIsOpen(true);
   };
@@ -114,39 +114,24 @@ const AdminContentList: React.FC<Props> = props => {
     <>
       <Flex>
         <Title level={3}>{props.title}</Title>
-
-        {(props.title=="Categories" || props.title=="Category Groups") && 
-        (<Text pl={2} pt={2} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={openAlert}>
-          What is this?
-        </Text>
-        )}
       </Flex>
-        {isOpen && (props.title=="Categories") && (
-          <Alert status='info' variant='subtle' size='xs' mt={0} mb={2}>
-            <AlertIcon />
-            {/* <AlertTitle>Information</AlertTitle> */}
-            <AlertDescription mr={8}>
-              Categories are prizes or awards that hackathon submissions can win. 
-              For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
-              to category groups for judging organization purposes.
-            </AlertDescription>
-            <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert} />
-          </Alert>
-        )}
 
-        {isOpen && (props.title=="Category Groups") && (
-          <Alert status='info' variant='subtle' size='xs' mt={0} mb={2}>
-            <AlertIcon />
-            {/* <AlertTitle>Information</AlertTitle> */}
-            <AlertDescription mr={8}>
-            Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
-            group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
-            all projects that have been submitted for a T-Mobile project. A category group would be created to 
-            handle this grouping and would be assigned to the respective judge.
-            </AlertDescription>
-            <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert} />
-          </Alert>
-        )}
+      {(props.title=="Categories") && (
+        <Text pb={2}>
+          Categories are prizes or awards that hackathon submissions can win. 
+          For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
+          to category groups for judging organization purposes.
+        </Text>
+      )}
+
+      {(props.title=="Category Groups") && (
+        <Text pb={2}>
+          Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
+          group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
+          all projects that have been submitted for a T-Mobile project. A category group would be created to 
+          handle this grouping and would be assigned to the respective judge.
+        </Text>
+      )}
       <Search
         placeholder="Search"
         style={{ width: "300px" }}

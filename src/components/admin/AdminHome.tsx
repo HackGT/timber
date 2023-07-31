@@ -8,7 +8,7 @@ import {
   FolderOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import { Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 
 import AdminContentList from "./AdminContentList";
 import UserFormModal from "./panes/users/UserFormModal";

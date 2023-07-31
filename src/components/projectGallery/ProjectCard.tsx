@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, Tag, Button } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
-// import { InfoIcon } from "@chakra-ui/icons";
+import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 
 import { Project } from "../../types/Project";
 import { Category } from "../../types/Category";
@@ -23,8 +22,10 @@ interface Props {
 const ProjectCard: React.FC<Props> = props => {
   const tags = props.project.categories.map((category: Category) => category.name);
   
+  const [selectedId, setSelectedId] = React.useState<string>('');
   const [isOpen, setIsOpen] = React.useState(false);
-  const openAlert = () => {
+  const handleComponentClick = (tagId: string) => {
+    setSelectedId(tagId);
     setIsOpen(true);
   };
   const closeAlert = () => {
@@ -57,18 +58,16 @@ const ProjectCard: React.FC<Props> = props => {
       {tags.map((tag: string) => (
         <>
           <Flex>
-            <Tag>{tag || "This"}</Tag>
-            {/* <IconButton aria-label='Search database' icon={<InfoIcon />} size='xs' isRound onClick={openAlert}/> */}
-            <Text fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={openAlert}>
+            <Tag>{tag}</Tag>
+            <Text fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(tag)}>
               What is this?
             </Text>
           </Flex>
-          {isOpen && (
+          {(selectedId === tag) && (isOpen) && (
             <Alert status='info' variant='subtle' size='xs' mt={4}>
               <AlertIcon />
-              {/* <AlertTitle>Information</AlertTitle> */}
               <AlertDescription mr={8}>
-                {tag} is a category. Categories are prizes or awards that hackathon submissions can win. 
+                {tag || "This"} is a category. Categories are prizes or awards that hackathon submissions can win. 
                 For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
                 to category groups for judging organization purposes.
               </AlertDescription>

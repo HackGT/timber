@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Button, Modal, message } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, IconButton, Flex } from "@chakra-ui/react";
+import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -29,9 +29,11 @@ const ProjectTableContainer: React.FC<Props> = props => {
   } as ModalState);
 
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const [selectedCategoryName, setSelectedCategoryName] = React.useState<string>('');
   const [isOpen, setIsOpen] = React.useState(false);
-  const handleComponentClick = (projectId: number) => {
+  const handleComponentClick = (projectId: number, categoryName: string) => {
     setSelectedId(projectId);
+    setSelectedCategoryName(categoryName);
     setIsOpen(true);
   };
   const closeAlert = () => {
@@ -95,7 +97,6 @@ const ProjectTableContainer: React.FC<Props> = props => {
       },
     });
   }
-
 
   return (
     <div>
@@ -174,14 +175,13 @@ const ProjectTableContainer: React.FC<Props> = props => {
                     <Title level={5} key={category.id}>
                       {category.name} 
                     </Title>
-                    <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(project.id)}>
+                    <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(project.id, category.name)}>
                       What is this?
                     </Text>
                   </Flex>
-                  {(selectedId==project.id) && (isOpen) && (
+                  {(selectedId==project.id) && (selectedCategoryName === category.name) && (isOpen) && (
                     <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
                       <AlertIcon />
-                      {/* <AlertTitle>Information</AlertTitle> */}
                       <AlertDescription mr={8}>
                         {category.name} is a category. Categories are prizes or awards that hackathon submissions can win. 
                         For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
