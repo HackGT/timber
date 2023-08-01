@@ -20,7 +20,7 @@ const DevpostInfoForm: React.FC<Props> = props => {
 
     hide();
     axios
-      .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
+      .post(apiUrl(Service.EXPO, "/projects/submission/devpost-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);

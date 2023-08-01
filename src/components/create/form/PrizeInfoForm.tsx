@@ -20,7 +20,7 @@ const PrizeInfoForm: React.FC<Props> = props => {
     hide();
 
     axios
-      .post(apiUrl(Service.EXPO, "/projects/special/prize-validation"), values)
+      .post(apiUrl(Service.EXPO, "/projects/submission/prize-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);
