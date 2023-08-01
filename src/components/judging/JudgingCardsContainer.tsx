@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Popconfirm, message, Modal } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Criteria } from "../../types/Criteria";
 import { handleAxiosError } from "../../util/util";
 import CriteriaCardContainer from "./CriteriaCardContainer";
-import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   data: any;

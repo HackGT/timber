@@ -1,9 +1,8 @@
 import React from "react";
 import { Route, Navigate } from "react-router-dom";
-import { UserRole } from "../types/UserRole";
 
 function SponsorRoute({ component: Component, user, ...rest }: any): any {
-  if (user && [UserRole.ADMIN, UserRole.SPONSOR].includes(user.role)) {
+  if (user && (user.isSponsor || user.roles.admin)) {
     return <Route {...rest} render={<Component />} />;
   }
 

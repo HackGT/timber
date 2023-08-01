@@ -2,31 +2,32 @@ import React, { useEffect } from "react";
 import { Button, Form, Input, InputNumber, message, Modal, Popconfirm } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const TableGroupsModal: React.FC<FormModalProps> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [{ loading: tableGroupsLoading, error: tableGroupsError }, refetchTableGroups] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/tablegroups"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 

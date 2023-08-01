@@ -2,12 +2,12 @@ import React from "react";
 import { Descriptions, Typography, Alert } from "antd";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
+import { config } from "process";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import DailyWindow from "../video/DailyWindow";
-import { config } from "process";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 

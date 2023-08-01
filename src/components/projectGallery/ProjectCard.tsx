@@ -4,11 +4,7 @@ import { Card, Tag, Button } from "antd";
 import { Project } from "../../types/Project";
 import { Category } from "../../types/Category";
 import { User } from "../../types/User";
-import { UserRole } from "../../types/UserRole";
 import { TableGroup } from "../../types/TableGroup";
-import useAxios from "axios-hooks";
-import LoadingDisplay from "../../displays/LoadingDisplay";
-import ErrorDisplay from "../../displays/ErrorDisplay";
 
 interface Props {
   key: number;
@@ -27,10 +23,7 @@ const ProjectCard: React.FC<Props> = props => {
       title={
         <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
       }
-      extra={
-        props.user &&
-        [UserRole.ADMIN].includes(props.user.role) && <Button onClick={props.onClick}>Edit</Button>
-      }
+      extra={props.user && props.user.roles.admin && <Button onClick={props.onClick}>Edit</Button>}
     >
       <p>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : 1}</p>
       <p>Table Number: {props.project.table}</p>

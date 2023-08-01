@@ -6,7 +6,6 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { UserRole } from "../../types/UserRole";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
@@ -31,7 +30,7 @@ const Dashboard: React.FC<Props> = props => {
         method: "GET",
         url: apiUrl(Service.EXPO, "/tablegroups"),
         params: {
-          hexathon: currentHexathon.id,
+          hexathon: currentHexathon?.id,
         },
       },
       { useCache: false }
@@ -48,7 +47,6 @@ const Dashboard: React.FC<Props> = props => {
   if (error || configError || tablegroupsError) {
     return <ErrorDisplay error={error} />;
   }
-
 
   const getInfoText = (user: any) => {
     const adminBlurb = (
@@ -108,13 +106,13 @@ const Dashboard: React.FC<Props> = props => {
 
     let dashboardBody;
 
-    if (user.role === UserRole.ADMIN) {
+    if (user.roles.admin) {
       dashboardBody = adminBody;
-    } else if (user.role === UserRole.SPONSOR && user.isJudging) {
+    } else if (user.isSponsor && user.isJudging) {
       dashboardBody = sponsorJudgeBody;
-    } else if (user.role === UserRole.SPONSOR && !user.isJudging) {
+    } else if (user.isSponsor && !user.isJudging) {
       dashboardBody = sponsorBody;
-    } else if (user.role === UserRole.GENERAL && user.isJudging) {
+    } else if (user.isJudging) {
       dashboardBody = generalJudgeBody;
     } else {
       dashboardBody = participantBody;
@@ -132,8 +130,7 @@ const Dashboard: React.FC<Props> = props => {
   return (
     <div>
       {getInfoText(props.user)}
-      {((!props.user.isJudging && [UserRole.GENERAL].includes(props.user.role)) ||
-        [UserRole.ADMIN].includes(props.user.role)) && (
+      {(!props.user.isJudging || props.user.roles.admin) && (
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
           <Title level={2}>Your Submissions</Title>
           <ConfigProvider renderEmpty={() => <Empty description="You have no past Submissions" />}>
@@ -149,7 +146,7 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {project.hexathon.id == currentHexathon.id && configData.revealTableGroups && (
+                      {project.hexathon.id === currentHexathon.id && configData.revealTableGroups && (
                         <>
                           <p>
                             <b>Table Group: </b>

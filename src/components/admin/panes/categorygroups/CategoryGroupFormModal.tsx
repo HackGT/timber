@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
@@ -22,7 +22,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 

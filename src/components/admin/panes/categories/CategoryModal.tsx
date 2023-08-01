@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { Button, Form, Input, message, Modal, Popconfirm, Switch } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import CriteriaModalCard from "./CriteriaModalCard";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { TextArea } = Input;
 

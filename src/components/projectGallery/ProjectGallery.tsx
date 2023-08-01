@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { List, Typography, Input, Select, Col, Form, Row } from "antd";
+import { List, Typography, Input, Select, Col, Row } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Project } from "../../types/Project";
 import ProjectCard from "./ProjectCard";
@@ -9,12 +10,8 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
-import { config } from "process";
-import { UserRole } from "../../types/UserRole";
-import { FORM_RULES } from "../../util/util";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -26,19 +23,20 @@ interface Props {
 const ProjectGallery: React.FC<Props> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -46,14 +44,14 @@ const ProjectGallery: React.FC<Props> = props => {
     apiUrl(Service.EXPO, "/config")
   );
 
-
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/tablegroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/tablegroups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
@@ -80,7 +78,7 @@ const ProjectGallery: React.FC<Props> = props => {
     return <ErrorDisplay error={projectsError} />;
   }
 
-  if (props.user.role !== UserRole.ADMIN && !configData.isProjectsPublished) {
+  if (!props.user.roles.admin && !configData.isProjectsPublished) {
     return (
       <>
         <Title level={2}>Project Gallery</Title>
