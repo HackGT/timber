@@ -46,7 +46,6 @@ const Dashboard: React.FC<Props> = props => {
       { useCache: false }
     );
 
-  // console.log(data);
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
