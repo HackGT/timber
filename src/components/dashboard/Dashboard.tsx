@@ -21,9 +21,18 @@ const Dashboard: React.FC<Props> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/projects/special/dashboard"), {
-    useCache: false,
-  });
+  const [{ data, loading, error }] = useAxios(
+    {
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects/special/dashboard"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    },
+    {
+      useCache: false,
+    }
+  );
 
   const [{ loading: tablegroupsLoading, data: tablegroupsData, error: tablegroupsError }] =
     useAxios(
@@ -37,6 +46,7 @@ const Dashboard: React.FC<Props> = props => {
       { useCache: false }
     );
 
+  // console.log(data);
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
@@ -48,7 +58,6 @@ const Dashboard: React.FC<Props> = props => {
   if (error || configError || tablegroupsError) {
     return <ErrorDisplay error={error} />;
   }
-
 
   const getInfoText = (user: any) => {
     const adminBlurb = (
