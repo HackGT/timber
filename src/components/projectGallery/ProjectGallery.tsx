@@ -23,12 +23,19 @@ interface Props {
 const ProjectGallery: React.FC<Props> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+
+  const [searchText, setSearchText] = useState("");
+  const [categoriesSelected, setCategoriesSelected] = useState([] as any);
+  const [sortCondition, setSortCondition] = useState("");
+
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
     useAxios({
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects"),
       params: {
         hexathon: currentHexathon.id,
+        search: searchText,
+        categories: categoriesSelected,
       },
     });
 
@@ -53,10 +60,6 @@ const ProjectGallery: React.FC<Props> = props => {
       },
     });
 
-  const [searchText, setSearchText] = useState("");
-  const [categoriesSelected, setCategoriesSelected] = useState([] as any);
-  const [sortCondition, setSortCondition] = useState("");
-
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -70,7 +73,7 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (projectsLoading || categoriesLoading || configLoading || tableGroupsLoading) {
+  if (categoriesLoading || configLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
 
@@ -87,33 +90,9 @@ const ProjectGallery: React.FC<Props> = props => {
     );
   }
 
-  let updatedData = projectsData
-    ? projectsData.filter(
-        (item: any) =>
-          item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.members
-            .reduce((prev: string, curr: any) => `${prev}${curr.email} ${curr.name} `, "")
-            .includes(searchText.toLowerCase())
-      )
-    : [];
-
-  updatedData =
-    categoriesSelected.length !== 0
-      ? updatedData.filter((item: any) =>
-          item.categories.some((category: any) => categoriesSelected.includes(category.name))
-        )
-      : updatedData;
-
-  const categoryChoices = categoriesData
-    ? categoriesData.map((item: any) => (
-        <Option key={item.name} value={item.name}>
-          {item.name}
-        </Option>
-      ))
-    : [];
+  let updatedData = projectsData || [];
 
   const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
-
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
@@ -142,7 +121,12 @@ const ProjectGallery: React.FC<Props> = props => {
             style={{ width: "100%" }}
             onChange={value => setCategoriesSelected(value)}
           >
-            {categoryChoices}
+            {categoriesData &&
+              categoriesData.map((item: any) => (
+                <Option key={item.name} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Col>
         <Col xs={24} sm={4} md={4}>

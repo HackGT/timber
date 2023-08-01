@@ -20,7 +20,7 @@ const DetailInfoForm: React.FC<Props> = props => {
     const hide = message.loading("Loading...", 0);
 
     axios
-      .post(apiUrl(Service.EXPO, "/projects/special/detail-validation"), values)
+      .post(apiUrl(Service.EXPO, "/projects/submission/detail-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);
