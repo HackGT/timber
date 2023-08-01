@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -14,9 +14,9 @@ const { Option } = Select;
 
 const ConfigEditPane: React.FC = props => {
   const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon, setCurrentHexathon } = CurrentHexathonContext;
+  const { setCurrentHexathon } = CurrentHexathonContext;
 
-  const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
+  const [{ data, loading, error }, refetch] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
     apiUrl(Service.HEXATHONS, "/hexathons")
   );
@@ -31,18 +31,17 @@ const ConfigEditPane: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-    values.currentHexathon = values.hexathon;
-    delete values.hexathon;
-    const currHexObject = hexathonsData.find(
-      (hexathon: any) => hexathon.id === values.currentHexathon
-    );
-    console.log("currHexObject: ", currHexObject);
-    setCurrentHexathon(() => ({ ...currHexObject }));
+
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
+        const newCurrentHexathonData = hexathonsData.find(
+          (hexathon: any) => hexathon.id === values.currentHexathon
+        );
+        setCurrentHexathon(() => ({ ...newCurrentHexathonData }));
         hide();
-        message.success("Config successfully updated", 2, () => window.location.reload());
+        message.success("Config successfully updated", 2);
+        refetch();
       })
       .catch(err => {
         hide();
@@ -51,32 +50,35 @@ const ConfigEditPane: React.FC = props => {
       });
   };
 
-  const hexs = hexathonsData
-    ? hexathonsData.map((hexathon: any) => (
-        <Option key={hexathon.name} value={hexathon.id}>
-          {hexathon.name}
-        </Option>
-      ))
-    : [];
-
   return (
     <>
       <Title level={3}>Config</Title>
-      <Form initialValues={data} onFinish={onFinish} layout="vertical" autoComplete="off">
+      <Form onFinish={onFinish} layout="vertical" autoComplete="off">
         <Row gutter={8}>
           <Col span={4}>
-            <Form.Item name="currentRound" rules={[FORM_RULES.requiredRule]} label="Current Round">
+            <Form.Item
+              name="currentRound"
+              initialValue={data.currentRound}
+              rules={[FORM_RULES.requiredRule]}
+              label="Current Round"
+            >
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item name="currentExpo" rules={[FORM_RULES.requiredRule]} label="Current Expo">
+            <Form.Item
+              name="currentExpo"
+              initialValue={data.currentExpo}
+              rules={[FORM_RULES.requiredRule]}
+              label="Current Expo"
+            >
               <InputNumber type="number" min={1} precision={0} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={4}>
             <Form.Item
               name="numberOfExpo"
+              initialValue={data.numberOfExpo}
               rules={[FORM_RULES.requiredRule]}
               label="Number of Expos"
             >
@@ -85,24 +87,37 @@ const ConfigEditPane: React.FC = props => {
           </Col>
           <Col span={4}>
             <Form.Item
-              name="hexathon"
+              name="currentHexathon"
+              initialValue={data.currentHexathon?.id}
               rules={[FORM_RULES.requiredRule]}
               label="Current Hexathon"
-              initialValue={currentHexathon?.id}
             >
-              <Select>{hexs}</Select>
+              <Select>
+                {hexathonsData &&
+                  hexathonsData.map((hexathon: any) => (
+                    <Option key={hexathon.name} value={hexathon.id}>
+                      {hexathon.name}
+                    </Option>
+                  ))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={6}>
-            <Form.Item name="isJudgingOn" label="Is Judging On" valuePropName="checked">
+            <Form.Item
+              name="isJudgingOn"
+              initialValue={data.isJudgingOn}
+              label="Is Judging On"
+              valuePropName="checked"
+            >
               <Switch />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item
               name="isProjectsPublished"
+              initialValue={data.isProjectsPublished}
               label="Is Projects Published"
               valuePropName="checked"
             >
@@ -112,6 +127,7 @@ const ConfigEditPane: React.FC = props => {
           <Col span={6}>
             <Form.Item
               name="isProjectSubmissionOpen"
+              initialValue={data.isProjectSubmissionOpen}
               label="Is Project Submission Open"
               valuePropName="checked"
             >
@@ -121,6 +137,7 @@ const ConfigEditPane: React.FC = props => {
           <Col span={6}>
             <Form.Item
               name="isDevpostCheckingOn"
+              initialValue={data.isDevpostCheckingOn}
               label="Is Devpost Checking Open"
               valuePropName="checked"
             >
@@ -130,6 +147,7 @@ const ConfigEditPane: React.FC = props => {
           <Col span={6}>
             <Form.Item
               name="revealTableGroups"
+              initialValue={data.revealTableGroups}
               label="Are Table Groups Revealed"
               valuePropName="checked"
             >
