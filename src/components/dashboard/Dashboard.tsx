@@ -155,7 +155,7 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {project.hexathon.id === currentHexathon.id && configData.revealTableGroups && (
+                      {project.hexathon === currentHexathon.id && configData.revealTableGroups && (
                         <>
                           <p>
                             <b>Table Group: </b>
