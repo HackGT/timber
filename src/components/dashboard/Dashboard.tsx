@@ -139,7 +139,9 @@ const Dashboard: React.FC<Props> = props => {
       {(!props.user.isJudging || props.user.roles.admin) && (
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
           <Title level={2}>Current Submission</Title>
-          <ConfigProvider renderEmpty={() => <Empty description="You have no past Submissions" />}>
+          <ConfigProvider
+            renderEmpty={() => <Empty description="You have no current submission" />}
+          >
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
               dataSource={data.filter((project: any) => project.hexathon.id === currentHexathon.id)}
@@ -174,7 +176,9 @@ const Dashboard: React.FC<Props> = props => {
                 </List.Item>
               )}
             />
-            <Title level={2}>Past Submissions</Title>
+          </ConfigProvider>
+          <Title level={2}>Past Submissions</Title>
+          <ConfigProvider renderEmpty={() => <Empty description="You have no past submissions" />}>
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
               dataSource={data.filter((project: any) => project.hexathon.id !== currentHexathon.id)}
