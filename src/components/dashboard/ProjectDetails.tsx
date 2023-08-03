@@ -1,13 +1,11 @@
 import React from "react";
-import { Descriptions, Typography, Alert } from "antd";
+import { Descriptions, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
-import { config } from "process";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import DailyWindow from "../video/DailyWindow";
 
 const { Title, Text } = Typography;
 
@@ -26,15 +24,12 @@ const ProjectDetails: React.FC = props => {
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
-  const [{ data: tablegroupData, loading: tablegroupLoading, error: tablegroupError }] = useAxios(
-    apiUrl(Service.EXPO, `/tablegroups/project/${projectId}`)
-  );
 
-  if (projectLoading || tablegroupLoading || configLoading) {
+  if (projectLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectError || tablegroupError || configError) {
+  if (projectError || configError) {
     return <ErrorDisplay error={projectError} />;
   }
 
@@ -60,7 +55,7 @@ const ProjectDetails: React.FC = props => {
           <>
             <Descriptions.Item label={<Label name="Expo" />}>{projectData?.expo}</Descriptions.Item>
             <Descriptions.Item label={<Label name="Table Group" />}>
-              {tablegroupData.name}
+              {projectData.tableGroup.name}
             </Descriptions.Item>
             <Descriptions.Item label={<Label name="Table Number" />}>
               {projectData.table}

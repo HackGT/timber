@@ -6,7 +6,6 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Meta } = Card;
@@ -30,27 +29,15 @@ const Dashboard: React.FC<Props> = props => {
     }
   );
 
-  const [{ loading: tablegroupsLoading, data: tablegroupsData, error: tablegroupsError }] =
-    useAxios(
-      {
-        method: "GET",
-        url: apiUrl(Service.EXPO, "/tablegroups"),
-        params: {
-          hexathon: currentHexathon?.id,
-        },
-      },
-      { useCache: false }
-    );
-
   const [{ data: configData, loading: configLoading, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
 
-  if (loading || configLoading || tablegroupsLoading) {
+  if (loading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (error || configError || tablegroupsError) {
+  if (error || configError) {
     return <ErrorDisplay error={error} />;
   }
 
@@ -154,23 +141,17 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {project.hexathon.id === currentHexathon.id &&
-                        configData.revealTableGroups &&
-                        tablegroupsData && (
-                          <>
-                            <p>
-                              <b>Table Group: </b>
-                              {
-                                tablegroupsData.find(
-                                  (group: TableGroup) => group.id === project.tableGroupId
-                                )?.name
-                              }
-                            </p>
-                            <p>
-                              <b>Table Number:</b> {project.table}
-                            </p>
-                          </>
-                        )}
+                      {project.hexathon.id === currentHexathon.id && configData.revealTableGroups && (
+                        <>
+                          <p>
+                            <b>Table Group: </b>
+                            {project.tableGroup.name}
+                          </p>
+                          <p>
+                            <b>Table Number:</b> {project.table}
+                          </p>
+                        </>
+                      )}
                     </Card>
                   </Link>
                 </List.Item>
