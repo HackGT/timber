@@ -13,27 +13,27 @@ const { TextArea } = Input;
 
 const CategoryFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
-  useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
-  const onDelete = async () => {
-    try {
-      if (props.modalState.initialValues) {
-        axios
-          .delete(apiUrl(Service.EXPO, `/categories/${props.modalState.initialValues.id}`))
-          .then(res => {
-            message.success("Category successfully deleted", 2);
-            props.setModalState({ visible: false, initialValues: null });
-            props.refetch();
-          })
-          .catch(err => {
-            handleAxiosError(err);
-          });
-      } else {
-        message.error("Category group could not be deleted");
-      }
-    } catch (error) {
-      console.log("Validate Failed:", error);
+  useEffect(() => {
+    if (props.modalState.initialValues) {
+      form.setFieldsValue(props.modalState.initialValues);
+    } else {
+      form.resetFields();
     }
+  }, [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+
+  const onDelete = async () => {
+    axios
+      .delete(apiUrl(Service.EXPO, `/categories/${props.modalState.initialValues.id}`))
+      .then(res => {
+        message.success("Category successfully deleted", 2);
+        props.setModalState({ visible: false, initialValues: null });
+        props.refetch();
+      })
+      .catch(err => {
+        handleAxiosError(err);
+      });
   };
+
   const onSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -81,16 +81,18 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
       onOk={onSubmit}
       bodyStyle={{ paddingBottom: 0 }}
       footer={[
-        <Popconfirm
-          title="Are you sure you want to delete this category?"
-          onConfirm={onDelete}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button danger style={{ float: "left" }}>
-            Delete
-          </Button>
-        </Popconfirm>,
+        props.modalState.initialValues && (
+          <Popconfirm
+            title="Are you sure you want to delete this category?"
+            onConfirm={onDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger style={{ float: "left" }}>
+              Delete
+            </Button>
+          </Popconfirm>
+        ),
         <Button
           key="2"
           onClick={() => props.setModalState({ visible: false, initialValues: null })}
@@ -102,12 +104,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
         </Button>,
       ]}
     >
-      <Form
-        form={form}
-        initialValues={props.modalState.initialValues}
-        layout="vertical"
-        autoComplete="off"
-      >
+      <Form form={form} layout="vertical" autoComplete="off">
         <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Name">
           <Input />
         </Form.Item>
