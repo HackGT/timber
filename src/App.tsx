@@ -1,18 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
-import {
-  useLogin,
-  LoadingScreen,
-  AuthProvider,
-  ErrorScreen,
-  apiUrl,
-  Service,
-} from "@hex-labs/core";
+import { useLogin, LoadingScreen, AuthProvider, apiUrl, Service } from "@hex-labs/core";
 
 import "./App.less";
 
@@ -24,14 +17,9 @@ import AdminHome from "./components/admin/AdminHome";
 import Footer from "./components/navigation/Footer";
 import SubmissionFormContainer from "./components/create/SubmissionFormContainer";
 import NotFoundDisplay from "./displays/NotFoundDisplay";
-import ErrorDisplay from "./displays/ErrorDisplay";
-import LoadingDisplay from "./displays/LoadingDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
 import Epicenter from "./components/epicenter/Epicenter";
 import CategoryGroup from "./components/categoryGroup/CategoryGroup";
-import AdminRoute from "./util/AdminRoute";
-import JudgeRoute from "./util/JudgeRoute";
-import SponsorRoute from "./util/SponsorRoute";
 import ProjectStatusHome from "./components/projectStatus/ProjectStatusHome";
 import Winners from "./components/winners/WinnersGallery";
 import ProtectedRoute from "./util/ProtectedRoute";
