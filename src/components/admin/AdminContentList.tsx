@@ -1,17 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  List,
-  Typography,
-  Input,
-  Col,
-  Select,
-  Tag,
-  Dropdown,
-  Checkbox,
-  Pagination,
-  PaginationProps,
-} from "antd";
+import { Button, List, Typography, Input, Select } from "antd";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -48,7 +36,6 @@ const AdminContentList: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
   const [searchText, setSearchText] = useState("");
-  const [userRole, setUserRole] = useState<any>(undefined);
   const [isJudging, setIsJudging] = useState<any>(undefined);
 
   const [{ loading, data, error }, refetch] = useAxios({
@@ -88,7 +75,7 @@ const AdminContentList: React.FC<Props> = props => {
   ];
 
   updatedData = isJudging
-    ? updatedData.filter((user: User) => user.isJudging.toString() == isJudging)
+    ? updatedData.filter((user: User) => user.isJudging.toString() === isJudging)
     : updatedData;
 
   const Modal = props.modal;
