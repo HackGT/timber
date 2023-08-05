@@ -8,6 +8,7 @@ import RankingTable from "./RankingTable";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -25,13 +26,28 @@ const ProjectStatusHome: React.FC = () => {
       },
     });
 
-  if (projectsLoading) {
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/tablegroups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
+
+  if (projectsLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError) {
+  if (projectsError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
+
+  const tableGroupMap = new Map<number, TableGroup>();
+
+  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
+    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
+  });
 
   return (
     <>
@@ -40,6 +56,7 @@ const ProjectStatusHome: React.FC = () => {
         <TabPane tab="Overview" key="1">
           <ProjectTableContainer
             projects={projectsData}
+            tableGroupMap={tableGroupMap}
             isSponsor={false}
             refetch={refetchProjects}
           />

@@ -12,11 +12,13 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 
 interface Props {
   projects: Project[];
+  tableGroupMap: Map<number, TableGroup>;
   isSponsor: boolean;
   refetch?: any;
 }
@@ -148,13 +150,21 @@ const ProjectTableContainer: React.FC<Props> = props => {
           return newData;
         };
 
+        const tableGroup = props.tableGroupMap.get(project.tableGroupId);
+
         return (
           <div key={project.id}>
             <Title key={project.id} level={4}>
-              {props.isSponsor
-                ? `Project Name: ${project.name}`
-                : `${project.id} - ${project.name}`}
+              <a href={project.devpostUrl}>
+                {props.isSponsor
+                  ? `Project Name: ${project.name}`
+                  : `${project.id} - ${project.name}`}
+              </a>
             </Title>
+            <p>
+              {tableGroup !== undefined ? tableGroup.name : 1}, Table #{project.table}, Expo #
+              {project.expo}
+            </p>
             {project.categories.map((category: any) => (
               <>
                 <Title level={5} key={category.id}>
