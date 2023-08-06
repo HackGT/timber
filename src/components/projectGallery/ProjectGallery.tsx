@@ -54,7 +54,7 @@ const ProjectGallery: React.FC<Props> = props => {
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/tablegroups"),
+      url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
         hexathon: currentHexathon.id,
       },

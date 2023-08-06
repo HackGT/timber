@@ -16,7 +16,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
 
   const [{ loading: tableGroupsLoading, error: tableGroupsError }] = useAxios({
     method: "GET",
-    url: apiUrl(Service.EXPO, "/tablegroups"),
+    url: apiUrl(Service.EXPO, "/table-groups"),
     params: {
       hexathon: currentHexathon.id,
     },
@@ -41,7 +41,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
 
   const onDelete = async () => {
     axios
-      .delete(apiUrl(Service.EXPO, `/tablegroups/${props.modalState.initialValues.id}`))
+      .delete(apiUrl(Service.EXPO, `/table-groups/${props.modalState.initialValues.id}`))
       .then(res => {
         message.success("Category group successfully deleted", 2);
         props.setModalState({ visible: false, initialValues: null });
@@ -59,7 +59,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
 
       if (props.modalState.initialValues) {
         axios
-          .patch(apiUrl(Service.EXPO, `/tablegroups/${props.modalState.initialValues.id}`), values)
+          .patch(apiUrl(Service.EXPO, `/table-groups/${props.modalState.initialValues.id}`), values)
           .then(res => {
             hide();
             message.success("Table group successfully updated", 2);
@@ -72,7 +72,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(apiUrl(Service.EXPO, `/tablegroups`), values)
+          .post(apiUrl(Service.EXPO, `/table-groups`), values)
           .then(res => {
             hide();
             message.success("Table group successfully created", 2);

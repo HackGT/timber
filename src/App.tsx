@@ -56,7 +56,7 @@ export const App = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      const response = await axios.get(apiUrl(Service.EXPO, "/user/check"));
+      const response = await axios.get(apiUrl(Service.EXPO, "/users/check"));
       setUser(response.data);
       setUserDataLoading(false);
     };

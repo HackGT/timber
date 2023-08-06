@@ -15,7 +15,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   const { currentHexathon } = CurrentHexathonContext;
 
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios(
-    apiUrl(Service.EXPO, "/user")
+    apiUrl(Service.EXPO, "/users")
   );
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
@@ -49,7 +49,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
 
   const onDelete = async () => {
     axios
-      .delete(apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`))
+      .delete(apiUrl(Service.EXPO, `/category-groups/${props.modalState.initialValues.id}`))
       .then(res => {
         message.success("Category group successfully deleted", 2);
         props.setModalState({ visible: false, initialValues: null });
@@ -68,7 +68,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       if (props.modalState.initialValues) {
         axios
           .patch(
-            apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`),
+            apiUrl(Service.EXPO, `/category-groups/${props.modalState.initialValues.id}`),
             values
           )
           .then(res => {
@@ -83,7 +83,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(apiUrl(Service.EXPO, `/categorygroups`), values)
+          .post(apiUrl(Service.EXPO, `/category-groups`), values)
           .then(res => {
             hide();
             message.success("Category group successfully created", 2);

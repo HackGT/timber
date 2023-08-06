@@ -22,13 +22,13 @@ const Epicenter: React.FC = () => {
   const { currentHexathon } = CurrentHexathonContext;
 
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] = useAxios(
-    apiUrl(Service.EXPO, "/user")
+    apiUrl(Service.EXPO, "/users")
   );
 
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/categorygroups"),
+      url: apiUrl(Service.EXPO, "/category-groups"),
       params: {
         hexathon: currentHexathon.id,
       },
@@ -37,7 +37,7 @@ const Epicenter: React.FC = () => {
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/tablegroups"),
+      url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
         hexathon: currentHexathon.id,
       },

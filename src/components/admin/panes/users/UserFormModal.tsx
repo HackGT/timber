@@ -20,7 +20,7 @@ const UserFormModal: React.FC<FormModalProps> = props => {
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/categorygroups"),
+      url: apiUrl(Service.EXPO, "/category-groups"),
       params: {
         hexathon: currentHexathon.id,
       },
@@ -43,7 +43,7 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       const hide = message.loading("Loading...", 0);
 
       axios
-        .patch(apiUrl(Service.EXPO, `/user/${props.modalState.initialValues.id}`), values)
+        .patch(apiUrl(Service.EXPO, `/users/${props.modalState.initialValues.id}`), values)
         .then(res => {
           hide();
           message.success("User successfully updated", 2);

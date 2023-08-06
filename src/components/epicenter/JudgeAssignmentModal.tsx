@@ -38,7 +38,7 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
     },
   });
   const [{ data: userData, loading: userLoading, error: userError }] = useAxios(
-    apiUrl(Service.EXPO, "/user")
+    apiUrl(Service.EXPO, "/users")
   );
   const [users, setUsers] = useState<any[]>([]);
 

@@ -18,7 +18,7 @@ const CategoryGroup: React.FC = () => {
     apiUrl(Service.EXPO, `/projects/special/category-group/${categoryGroupId}`)
   );
   const [{ data: categoryGroup, loading: categoryGroupLoading, error: categoryGroupError }] =
-    useAxios(apiUrl(Service.EXPO, `/categorygroups/${categoryGroupId}`));
+    useAxios(apiUrl(Service.EXPO, `/category-groups/${categoryGroupId}`));
 
   if (loading || categoryGroupLoading) {
     return <LoadingDisplay />;
