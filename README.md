@@ -18,15 +18,23 @@ how Timber works behind the scenes. Timber is referred to as 'Expo' in the API r
 naming reference. However, follow the steps below to set up the server within the expo folder in the API repo
 
 ## Server
-1. `cd server then yarn install`
-2. `yarn migrate:dev to setup database`
-3. `yarn prisma-generate to generate prisma types`
-4. `yarn seed to seed database`
-5. `yarn dev`
+1. `yarn install`
+2. `cd services/expo`
+3. `yarn migrate:dev to setup database`
+5. `yarn seed to seed database`
 
+Now, the job isn't finished yet, because if you try to visit the client, it will have an endless loop
+between [login.hexlabs.org](https://login.hexlabs.org) and the dev site. This is because we haven't
+set the value of `currentHexathon` in the expo config database. Follow these steps next:
+
+1. Use the [create hexathon route](https://docs.hexlabs.org/#/hexathons/post_hexathons) to create a hexathon if you don't have one
+2. Use the [update currentHexathon config route](https://github.com/HackGT/api/blob/main/services/expo/src/routes/config.ts#L106)
+to set the value as the `id` of the hexathon object
+
+Finally, you should be able to load the frontend now.
 
 After setting up the API repo and starting it up, the Timber backend is hosted under Expo. In
-production this is expo.api.hexlabs.org. For local development, this is http://localhost:8007/expo.
+production this is expo.api.hexlabs.org. For local development, this is http://localhost:8007.
 
 ## Features
 

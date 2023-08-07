@@ -4,6 +4,11 @@ import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@ch
 import useAxios from "axios-hooks";
 import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
+import { AnyRecord } from "dns";
+import { Link } from "react-router-dom";
+import { apiUrl, Service } from "@hex-labs/core";
+import axios from "axios";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
@@ -11,11 +16,6 @@ import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { AnyRecord } from "dns";
-import { Link } from "react-router-dom";
-import { apiUrl, Service } from "@hex-labs/core";
-import axios from "axios";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -23,13 +23,14 @@ const { Title } = Typography;
 const columns = [
   {
     title: "Project Name",
-    render: (row: any) =>
-    <>
-      <div style={{display:"flex", justifyContent:"space-between"}}>
-        {row.id} - {row.name}
-        {row.devpostURL}
-      </div>
-    </>,
+    render: (row: any) => (
+      <>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          {row.id} - {row.name}
+          {row.devpostURL}
+        </div>
+      </>
+    ),
     key: "name",
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
@@ -45,6 +46,13 @@ const columns = [
     key: "average",
     defaultSortOrder: "descend" as SortOrder,
     sorter: (a: any, b: any) => a.average - b.average,
+  },
+  {
+    title: "Median Score",
+    dataIndex: "median",
+    key: "median",
+    defaultSortOrder: "descend" as SortOrder,
+    sorter: (a: any, b: any) => a.median - b.median,
   },
   {
     title: "Number of Times Judged",
@@ -67,7 +75,7 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -75,7 +83,7 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -115,7 +123,7 @@ const RankingTable = () => {
 
     try {
       axios
-        .post(apiUrl(Service.EXPO, `/winner`), { data: newWinner })
+        .post(apiUrl(Service.EXPO, `/winners`), { data: newWinner })
         .then(res => {
           if (res.data.error) {
             message.error(res.data.message, 2);
@@ -152,26 +160,11 @@ const RankingTable = () => {
         const categoryProjects = category.isDefault ? projects : category.projects;
         return (
           <>
-            <Flex>
-              <Title level={4}>{category.name}</Title>
-              <Text pl={2} pt={1} pb={0} fontSize="xs" color="blue.500" _hover={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => handleComponentClick(category.id)}>
-                What is this?
-              </Text>
-            </Flex>
-            {(selectedId==category.id) && (isOpen) && (
-              <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
-                <AlertIcon />
-                <AlertDescription mr={8}>
-                  {category.name} is a category. Categories are prizes or awards that hackathon submissions can win.
-                  For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong to category 
-                  groups for judging organization purposes.
-                </AlertDescription>
-                <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
-              </Alert>
-            )}
+            <Title level={4}>{category.name}</Title>
 
             {categoryProjects.forEach((project: Project) => {
               let score = 0;
+              const allScores: number[] = [];
               let numJudged = 0;
               const judges = new Set();
               let editButton;
@@ -179,7 +172,7 @@ const RankingTable = () => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
-
+                    allScores.push(score);
                     // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
                     numJudged += 1;
                   }
@@ -197,11 +190,28 @@ const RankingTable = () => {
                 </Button>
               );
 
+              function calculateMedian(allScores: number[]): number {
+                const sortedList = [...allScores].sort((a, b) => a - b);
+                let median = 0;
+                const mid = Math.floor(sortedList.length / 2);
+                if (sortedList.length % 2 === 0) {
+                  median = (sortedList[mid - 1] + sortedList[mid]) / 2;
+                } else {
+                  median = sortedList[mid];
+                }
+                return median;
+              }
+
               data.push({
                 id: project.id,
                 name: project.name,
-                devpostURL: <a href={project.devpostUrl} style={{paddingRight:"10px"}}>View Devpost</a>,
+                devpostURL: (
+                  <a href={project.devpostUrl} style={{ paddingRight: "10px" }}>
+                    View Devpost
+                  </a>
+                ),
                 average: numJudged > 0 ? score / numJudged : 0,
+                median: calculateMedian(allScores),
                 numJudged,
                 editScore: editButton,
                 makeWinner: winnerButton,

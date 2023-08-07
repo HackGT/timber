@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Col, Form, message, Modal, Row, InputNumber } from "antd";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FormModalProps } from "../../util/FormModalProps";
 import { FORM_RULES, handleAxiosError } from "../../util/util";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();

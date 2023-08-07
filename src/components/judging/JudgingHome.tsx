@@ -1,6 +1,7 @@
 import { TableColumnGroupType } from "antd";
 import useAxios from "axios-hooks";
 import React from "react";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -9,7 +10,6 @@ import JudgingCardsContainer from "./JudgingCardsContainer";
 import { TableGroup } from "../../types/TableGroup";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 interface Props {
@@ -26,25 +26,27 @@ const JudgingHome: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/assignments"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/tablegroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/table-groups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   if (!props.user.categoryGroupId) {
     return (

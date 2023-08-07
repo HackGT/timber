@@ -24,7 +24,7 @@ const TeamInfoForm: React.FC<Props> = props => {
     };
 
     axios
-      .post(apiUrl(Service.EXPO, "/projects/special/team-validation"), newValues)
+      .post(apiUrl(Service.EXPO, "/projects/submission/team-validation"), newValues)
       .then(res => {
         hide();
         props.updateData({

@@ -16,7 +16,7 @@ const WinnerEditFormModal: React.FC<FormModalProps> = props => {
     try {
       if (props.modalState.initialValues) {
         axios
-          .delete(apiUrl(Service.EXPO, `/winner/${props.modalState.initialValues.id}`))
+          .delete(apiUrl(Service.EXPO, `/winners/${props.modalState.initialValues.id}`))
           .then(res => {
             message.success("Winner successfully deleted", 2);
             props.setModalState({ visible: false, initialValues: null });
@@ -39,7 +39,7 @@ const WinnerEditFormModal: React.FC<FormModalProps> = props => {
 
     try {
       axios
-        .patch(apiUrl(Service.EXPO, `/winner/${props.modalState.initialValues.id}`), {
+        .patch(apiUrl(Service.EXPO, `/winners/${props.modalState.initialValues.id}`), {
           ...values,
         })
         .then(res => {

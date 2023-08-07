@@ -25,7 +25,7 @@ const CriteriaCard: React.FC<Props> = props => {
           onChange={(value: any) => props.changeScore(value, props.criteria.id)}
         />
       </Card>
-      <br/>
+      <br />
     </div>
   );
 };

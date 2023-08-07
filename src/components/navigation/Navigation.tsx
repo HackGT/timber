@@ -1,11 +1,9 @@
 import { MenuOutlined } from "@ant-design/icons";
-import { Button, Drawer, Menu, Typography } from "antd";
+import { Button, Drawer, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { User } from "../../types/User";
-import { UserRole } from "../../types/UserRole";
-import Header from "./Header";
 import Logo from "./Logo";
 
 export class Page {
@@ -26,24 +24,18 @@ export class Page {
 
 export const routes = [
   new Page("Home", "/", user => true),
-  new Page(
-    "Create Submission",
-    "/create",
-    user =>
-      (!user.isJudging && [UserRole.GENERAL].includes(user.role)) ||
-      [UserRole.ADMIN].includes(user.role)
-  ),
+  new Page("Create Submission", "/create", user => true),
   new Page("Project Gallery", "/projectgallery", user => true),
-  new Page(
-    "Sponsor Page",
-    `/category-group`,
-    user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined
-  ),
+  // new Page(
+  //   "Sponsor Page",
+  //   `/category-group`,
+  //   user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined
+  // ), // TODO: Update sponsor page
   new Page("Judging", "/judging", user => user.isJudging),
-  new Page("Admin", "/admin", user => [UserRole.ADMIN].includes(user.role)),
-  new Page("Epicenter", "/epicenter", user => [UserRole.ADMIN].includes(user.role)),
-  new Page("Project Status", "/project-status", user => [UserRole.ADMIN].includes(user.role)),
-  new Page("Winners", "/winners", user => [UserRole.ADMIN].includes(user.role))
+  new Page("Admin", "/admin", user => user.roles.admin),
+  new Page("Epicenter", "/epicenter", user => user.roles.admin),
+  new Page("Project Status", "/project-status", user => user.roles.admin),
+  new Page("Winners", "/winners", user => user.roles.admin),
 ];
 
 interface Props {
@@ -75,11 +67,10 @@ const Navigation: React.FC<Props> = props => {
     }
     return page.isAllowed(props.user);
   });
-  
 
-// return <Header routes={filteredRoutes} />;
-  return(
-    <div style={{ direction: "rtl", backgroundColor:"white", height:50}}>
+  // return <Header routes={filteredRoutes} />;
+  return (
+    <div style={{ direction: "rtl", backgroundColor: "white", height: 50 }}>
       <Drawer
         title="Menu"
         placement="right"
@@ -87,7 +78,7 @@ const Navigation: React.FC<Props> = props => {
         onClose={() => setSidebarVisible(false)}
         visible={sidebarVisible}
       >
-        <Menu mode="vertical" style={{ borderRight: "none", height:50}} selectable={false} >
+        <Menu mode="vertical" style={{ borderRight: "none", height: 50 }} selectable={false}>
           {filteredRoutes.map((route: Page) => (
             <Menu.Item key={route.name}>
               <Link onClick={() => setSidebarVisible(false)} to={route.link}>
@@ -97,9 +88,9 @@ const Navigation: React.FC<Props> = props => {
           ))}
         </Menu>
       </Drawer>
-      
-      <div id="logo" style={{ float: "left" , backgroundColor: "white"}}>
-      <Logo />
+
+      <div id="logo" style={{ float: "left", backgroundColor: "white" }}>
+        <Logo />
       </div>
 
       {width < 768 ? (
@@ -125,5 +116,3 @@ const Navigation: React.FC<Props> = props => {
   );
 };
 export default Navigation;
-
-
