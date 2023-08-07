@@ -62,34 +62,9 @@ const AdminHome: React.FC = () => {
                 title={`${item.name} (${item.email})`}
                 description={
                   <div>
-                    <Flex>
-                      <Text style={{ display: "block", paddingRight: "10px", }}>
-                        Category Group: {item.categoryGroup?.name || "N/A"}
-                      </Text>
-                      <Text style={
-                        { display: "block", 
-                          fontSize: 12, 
-                          color:"blue",
-                          cursor: "pointer",
-                          textDecoration: "underline",
-                        }} 
-                        onClick={() => handleComponentClick(index)}>
-                        What is this?
-                      </Text>
-                    </Flex>
-                    {(selectedIndex==index) && (isOpen) && (
-                      <Alert status='info' variant='subtle' size='xs' mt={2} mb={2}>
-                        <AlertIcon />
-                        <AlertDescription mr={8}>
-                          {item.categoryGroup?.name || "This"} is a category group. Category Groups are internal identifiers 
-                          for judging purposes where each judge is assigned a category group to review. For example, 
-                          say we need a T-Mobile judge that should be designated to judge all projects that have been 
-                          submitted for a T-Mobile project. A category group would be created to handle this grouping 
-                          and would be assigned to the respective judge.
-                        </AlertDescription>
-                        <CloseButton position="absolute" right="8px" top="8px" onClick={closeAlert}/>
-                      </Alert>
-                    )}
+                    <Text style={{ display: "block", paddingRight: "10px", }}>
+                      Category Group: {item.categoryGroup?.name || "N/A"}
+                    </Text>
                     <div>
                       <Tag>{item.role}</Tag>
                       {item.isJudging && <Tag>Judging</Tag>}

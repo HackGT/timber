@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, List, Typography, Input, Select } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
+import { Text, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
