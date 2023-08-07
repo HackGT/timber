@@ -18,7 +18,7 @@ const { Search } = Input;
 
 const handleDownload = async () => {
   await axios
-    .get(apiUrl(Service.EXPO, "/winner/export"), { responseType: "blob" })
+    .get(apiUrl(Service.EXPO, "/winners/export"), { responseType: "blob" })
     .then(response => {
       const href = URL.createObjectURL(response.data);
 
@@ -55,7 +55,7 @@ const Winners: React.FC = () => {
 
   const [{ data: winnersData, loading: winnersLoading, error: winnersError }, refetch] = useAxios({
     method: "GET",
-    url: apiUrl(Service.EXPO, "/winner"),
+    url: apiUrl(Service.EXPO, "/winners"),
     params: {
       hexathon: currentHexathon.id,
     },

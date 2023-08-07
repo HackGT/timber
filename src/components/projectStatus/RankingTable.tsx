@@ -112,7 +112,7 @@ const RankingTable = () => {
 
     try {
       axios
-        .post(apiUrl(Service.EXPO, `/winner`), { data: newWinner })
+        .post(apiUrl(Service.EXPO, `/winners`), { data: newWinner })
         .then(res => {
           if (res.data.error) {
             message.error(res.data.message, 2);

@@ -15,7 +15,6 @@ import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
 import TableGroupsModal from "./panes/tableGroups/TableGroupsModal";
-import CategoryCard from "./panes/categories/CategoryCard";
 
 const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
@@ -38,7 +37,7 @@ const AdminHome: React.FC = () => {
     case "users":
       content = (
         <AdminContentList
-          queryUrl="/user"
+          queryUrl="/users"
           title="Users"
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={UserFormModal}
@@ -103,7 +102,7 @@ const AdminHome: React.FC = () => {
     case "categorygroups":
       content = (
         <AdminContentList
-          queryUrl="/categorygroups"
+          queryUrl="/category-groups"
           title="Category Groups"
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={CategoryGroupFormModal}
@@ -127,7 +126,7 @@ const AdminHome: React.FC = () => {
     case "tablegroups":
       content = (
         <AdminContentList
-          queryUrl="/tablegroups"
+          queryUrl="/table-groups"
           title="Table Groups"
           sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
           modal={TableGroupsModal}

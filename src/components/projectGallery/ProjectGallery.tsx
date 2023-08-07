@@ -54,7 +54,7 @@ const ProjectGallery: React.FC<Props> = props => {
   const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/tablegroups"),
+      url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
         hexathon: currentHexathon.id,
       },
@@ -141,7 +141,7 @@ const ProjectGallery: React.FC<Props> = props => {
         </Col>
       </Row>
       <List
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
         loading={projectsLoading}
         dataSource={updatedData}
         renderItem={(project: Project) => (

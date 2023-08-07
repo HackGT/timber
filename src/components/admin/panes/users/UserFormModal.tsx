@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Select, Form, Input, message, Modal, Radio, Switch, Tooltip, Typography } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons/lib";
+import { Select, Form, Input, message, Modal, Switch, Typography } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -8,13 +7,11 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { FORM_RULES } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
-import { CategoryGroup } from "../../../../types/CategoryGroup";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const { Text } = Typography;
-const { Option } = Select;
 
 const UserFormModal: React.FC<FormModalProps> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
@@ -23,7 +20,7 @@ const UserFormModal: React.FC<FormModalProps> = props => {
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios({
       method: "GET",
-      url: apiUrl(Service.EXPO, "/categorygroups"),
+      url: apiUrl(Service.EXPO, "/category-groups"),
       params: {
         hexathon: currentHexathon.id,
       },
@@ -46,7 +43,7 @@ const UserFormModal: React.FC<FormModalProps> = props => {
       const hide = message.loading("Loading...", 0);
 
       axios
-        .patch(apiUrl(Service.EXPO, `/user/${props.modalState.initialValues.id}`), values)
+        .patch(apiUrl(Service.EXPO, `/users/${props.modalState.initialValues.id}`), values)
         .then(res => {
           hide();
           message.success("User successfully updated", 2);
@@ -95,6 +92,12 @@ const UserFormModal: React.FC<FormModalProps> = props => {
             options={categoryGroupsOptions}
             loading={categoryGroupsLoading}
             allowClear
+            onChange={(value: any) => {
+              // Will remove categoryGroup from user
+              if (value === undefined) {
+                form.setFieldsValue({ categoryGroupId: null });
+              }
+            }}
           />
         </Form.Item>
         <Form.Item
@@ -124,11 +127,6 @@ const UserFormModal: React.FC<FormModalProps> = props => {
         <Text strong>Email</Text>
         <br />
         <Text>{props.modalState.initialValues?.email || "Not Set"}</Text>
-        <br />
-        <br />
-        <Text strong>Ground Truth Id</Text>
-        <br />
-        <Text>{props.modalState.initialValues?.uuid || "Not Set"}</Text>
         <br />
         <br />
       </Form>

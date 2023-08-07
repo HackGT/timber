@@ -30,7 +30,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
   } as ModalState);
 
   const [{ data: criteriaData, loading, error }, refetch] = useAxios(
-    apiUrl(Service.EXPO, "/criteria")
+    apiUrl(Service.EXPO, "/criterias")
   );
 
   if (loading) {
