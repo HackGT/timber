@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { Typography, List, Button, Alert, message } from "antd";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -12,7 +13,6 @@ import { handleAxiosError } from "../../util/util";
 import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 import { TableGroup } from "../../types/TableGroup";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -22,25 +22,26 @@ const Epicenter: React.FC = () => {
   const { currentHexathon } = CurrentHexathonContext;
 
   const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] = useAxios(
-    apiUrl(Service.EXPO, "/user")
+    apiUrl(Service.EXPO, "/users")
   );
 
-  const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/categorygroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+  const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/category-groups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/tablegroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
-
+  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/table-groups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")

@@ -55,13 +55,11 @@ const JudgeCard: React.FC<Props> = props => {
   });
 
   return (
-    <>
-      <Card key={props.key} title={`${props.user.id} - ${props.user.name}`} size="small">
-        <div id="judging">Queued: {queuedProjects}</div>
-        <div id="judging">Started: {startedProjects}</div>
-        <div id="judging">Completed/Skipped: {completedProjects}</div>
-      </Card>
-    </>
+    <Card key={props.key} title={`${props.user.id} - ${props.user.name}`} size="small">
+      <div id="judging">Queued: {queuedProjects}</div>
+      <div id="judging">Started: {startedProjects}</div>
+      <div id="judging">Completed/Skipped: {completedProjects}</div>
+    </Card>
   );
 };
 

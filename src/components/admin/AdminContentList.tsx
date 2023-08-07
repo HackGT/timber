@@ -1,25 +1,13 @@
 import React, { useState } from "react";
-import {
-  Button,
-  List,
-  Typography,
-  Input,
-  Col,
-  Select,
-  Tag,
-  Dropdown,
-  Checkbox,
-  Pagination,
-  PaginationProps,
-} from "antd";
+import { Button, List, Typography, Input, Select } from "antd";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FormModalProps, ModalState } from "../../util/FormModalProps";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -48,14 +36,13 @@ const AdminContentList: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
   const [searchText, setSearchText] = useState("");
-  const [userRole, setUserRole] = useState<any>(undefined);
   const [isJudging, setIsJudging] = useState<any>(undefined);
 
   const [{ loading, data, error }, refetch] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, props.queryUrl),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -82,21 +69,13 @@ const AdminContentList: React.FC<Props> = props => {
         )
     : [];
 
-  const userRoleOptions = [
-    { value: "GENERAL", label: "General" },
-    { value: "SPONSOR", label: "Sponsor" },
-    { value: "ADMIN", label: "Admin" },
-  ];
-
-  updatedData = userRole ? updatedData.filter((user: User) => user.role == userRole) : updatedData;
-
   const judgingOptions = [
     { value: "true", label: "Is Judging" },
     { value: "false", label: "Is Not Judging" },
   ];
 
   updatedData = isJudging
-    ? updatedData.filter((user: User) => user.isJudging.toString() == isJudging)
+    ? updatedData.filter((user: User) => user.isJudging.toString() === isJudging)
     : updatedData;
 
   const Modal = props.modal;
@@ -110,16 +89,6 @@ const AdminContentList: React.FC<Props> = props => {
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
       />
-      {props.showSortUsersByRoleButton && (
-        <Select
-          placeholder="Filter by User Role"
-          style={{ width: "300px" }}
-          optionFilterProp="label1"
-          onChange={(value: any) => setUserRole(value)}
-          options={userRoleOptions}
-          allowClear
-        />
-      )}
       {props.showSortUsersByRoleButton && (
         <Select
           placeholder="Filter by Judging"

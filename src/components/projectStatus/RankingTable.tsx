@@ -3,6 +3,11 @@ import { Typography, Table, Button, Modal, message } from "antd/lib";
 import useAxios from "axios-hooks";
 import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
+import { AnyRecord } from "dns";
+import { Link } from "react-router-dom";
+import { apiUrl, Service } from "@hex-labs/core";
+import axios from "axios";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { Category } from "../../types/Category";
@@ -10,11 +15,6 @@ import { Project } from "../../types/Project";
 import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { AnyRecord } from "dns";
-import { Link } from "react-router-dom";
-import { apiUrl, Service } from "@hex-labs/core";
-import axios from "axios";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -22,13 +22,14 @@ const { Title } = Typography;
 const columns = [
   {
     title: "Project Name",
-    render: (row: any) =>
-    <>
-      <div style={{display:"flex", justifyContent:"space-between"}}>
-        {row.id} - {row.name}
-        {row.devpostURL}
-      </div>
-    </>,
+    render: (row: any) => (
+      <>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          {row.id} - {row.name}
+          {row.devpostURL}
+        </div>
+      </>
+    ),
     key: "name",
     sorter: (a: any, b: any) => a.name.localeCompare(b.name),
   },
@@ -73,7 +74,7 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
@@ -81,10 +82,9 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
-
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
@@ -112,7 +112,7 @@ const RankingTable = () => {
 
     try {
       axios
-        .post(apiUrl(Service.EXPO, `/winner`), { data: newWinner })
+        .post(apiUrl(Service.EXPO, `/winners`), { data: newWinner })
         .then(res => {
           if (res.data.error) {
             message.error(res.data.message, 2);
@@ -194,7 +194,11 @@ const RankingTable = () => {
               data.push({
                 id: project.id,
                 name: project.name,
-                devpostURL: <a href={project.devpostUrl} style={{paddingRight:"10px"}}>View Devpost</a>,
+                devpostURL: (
+                  <a href={project.devpostUrl} style={{ paddingRight: "10px" }}>
+                    View Devpost
+                  </a>
+                ),
                 average: numJudged > 0 ? score / numJudged : 0,
                 median: calculateMedian(allScores),
                 numJudged,

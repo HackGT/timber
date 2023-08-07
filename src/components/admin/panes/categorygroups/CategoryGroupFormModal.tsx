@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
 import LoadingDisplay from "../../../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
 
 const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
@@ -15,19 +15,29 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   const { currentHexathon } = CurrentHexathonContext;
 
   const [{ loading: userLoading, data: userData, error: userError }] = useAxios(
-    apiUrl(Service.EXPO, "/user")
+    apiUrl(Service.EXPO, "/users")
   );
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
   const [form] = Form.useForm();
-  useEffect(() => form.resetFields(), [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
+  useEffect(() => {
+    if (props.modalState.initialValues) {
+      form.setFieldsValue({
+        ...props.modalState.initialValues,
+        categories: props.modalState.initialValues?.categories.map((category: any) => category.id),
+        users: props.modalState.initialValues?.users.map((user: any) => user.id),
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
 
   if (userLoading || categoriesLoading) {
     return <LoadingDisplay />;
@@ -36,26 +46,20 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   if (userError || categoriesError) {
     return <ErrorDisplay error={userError} />;
   }
+
   const onDelete = async () => {
-    try {
-      if (props.modalState.initialValues) {
-        axios
-          .delete(apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`))
-          .then(res => {
-            message.success("Category group successfully deleted", 2);
-            props.setModalState({ visible: false, initialValues: null });
-            props.refetch();
-          })
-          .catch(err => {
-            handleAxiosError(err);
-          });
-      } else {
-        message.error("Category group could not be deleted");
-      }
-    } catch (error) {
-      console.log("Validate Failed:", error);
-    }
+    axios
+      .delete(apiUrl(Service.EXPO, `/category-groups/${props.modalState.initialValues.id}`))
+      .then(res => {
+        message.success("Category group successfully deleted", 2);
+        props.setModalState({ visible: false, initialValues: null });
+        props.refetch();
+      })
+      .catch(err => {
+        handleAxiosError(err);
+      });
   };
+
   const onSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -64,7 +68,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       if (props.modalState.initialValues) {
         axios
           .patch(
-            apiUrl(Service.EXPO, `/categorygroups/${props.modalState.initialValues.id}`),
+            apiUrl(Service.EXPO, `/category-groups/${props.modalState.initialValues.id}`),
             values
           )
           .then(res => {
@@ -79,7 +83,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(apiUrl(Service.EXPO, `/categorygroups`), values)
+          .post(apiUrl(Service.EXPO, `/category-groups`), values)
           .then(res => {
             hide();
             message.success("Category group successfully created", 2);
@@ -118,17 +122,18 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       onCancel={() => props.setModalState({ visible: false, initialValues: null })}
       cancelText="Cancel"
       footer={[
-        <Popconfirm
-          title="Are you sure you want to delete this category group?"
-          onConfirm={onDelete}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button danger style={{ float: "left" }}>
-            Delete
-          </Button>
-        </Popconfirm>,
-
+        props.modalState.initialValues && (
+          <Popconfirm
+            title="Are you sure you want to delete this category group?"
+            onConfirm={onDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger style={{ float: "left" }}>
+              Delete
+            </Button>
+          </Popconfirm>
+        ),
         <Button
           key="2"
           onClick={() => props.setModalState({ visible: false, initialValues: null })}
@@ -142,21 +147,10 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       bodyStyle={{ paddingBottom: 0 }}
     >
       <Form form={form} layout="vertical" autoComplete="off">
-        <Form.Item
-          name="name"
-          rules={[FORM_RULES.requiredRule]}
-          label="Name"
-          initialValue={props.modalState.initialValues?.name}
-        >
+        <Form.Item name="name" rules={[FORM_RULES.requiredRule]} label="Name">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="categories"
-          label="Categories"
-          initialValue={props.modalState.initialValues?.categories.map(
-            (category: any) => category.id
-          )}
-        >
+        <Form.Item name="categories" label="Categories">
           <Select
             mode="multiple"
             options={categoryOptions}
@@ -165,11 +159,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
             allowClear
           />
         </Form.Item>
-        <Form.Item
-          name="users"
-          label="Users"
-          initialValue={props.modalState.initialValues?.users.map((user: any) => user.id)}
-        >
+        <Form.Item name="users" label="Users">
           <Select
             mode="multiple"
             options={userOptions}

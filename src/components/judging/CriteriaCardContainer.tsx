@@ -1,6 +1,7 @@
-import React from 'react';
-import CriteriaCard from './CriteriaCard';
-import { Typography} from "antd";
+import React from "react";
+import { Typography } from "antd";
+
+import CriteriaCard from "./CriteriaCard";
 
 const { Title } = Typography;
 
@@ -11,12 +12,12 @@ interface Props {
 }
 
 const CriteriaCardContainer: React.FC<Props> = props => (
-    <div>
-      <Title level={3}>{props.categoryName}</Title>
-      {props.criteriaArray.map((criteria: any) => (
+  <div>
+    <Title level={3}>{props.categoryName}</Title>
+    {props.criteriaArray.map((criteria: any) => (
       <CriteriaCard criteria={criteria} changeScore={props.changeScore} />
     ))}
-    </div>
-  )
+  </div>
+);
 
 export default CriteriaCardContainer;

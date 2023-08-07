@@ -3,6 +3,7 @@ import { Typography, Button, Modal, message } from "antd";
 import useAxios from "axios-hooks";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import ProjectTable from "./ProjectTable";
 import { Project } from "../../types/Project";
@@ -11,7 +12,7 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 
@@ -28,7 +29,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
   } as ModalState);
 
   const [{ data: criteriaData, loading, error }, refetch] = useAxios(
-    apiUrl(Service.EXPO, "/criteria")
+    apiUrl(Service.EXPO, "/criterias")
   );
 
   if (loading) {
@@ -87,7 +88,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
 
   return (
     <div>
-      {props.projects?.map((project: Project) => {
+      {props.projects?.map((project: any) => {
         const generateData = (categoryId: number) => {
           const data: any = [];
           const judgeBallots: any = [];
@@ -151,20 +152,24 @@ const ProjectTableContainer: React.FC<Props> = props => {
         return (
           <div key={project.id}>
             <Title key={project.id} level={4}>
-              {props.isSponsor
-                ? `Project Name: ${project.name}`
-                : `${project.id} - ${project.name}`}
+              <a href={project.devpostUrl} target="_blank">
+                {props.isSponsor
+                  ? `Project Name: ${project.name}`
+                  : `${project.id} - ${project.name}`}
+              </a>
             </Title>
-            <>
-              {project.categories.map((category: any) => (
-                <>
-                  <Title level={5} key={category.id}>
-                    {category.name}
-                  </Title>
-                  <ProjectTable data={generateData(category.id)} />
-                </>
-              ))}
-            </>
+            <p>
+              {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}, Table #
+              {project.table}, Expo #{project.expo}
+            </p>
+            {project.categories.map((category: any) => (
+              <>
+                <Title level={5} key={category.id}>
+                  {category.name}
+                </Title>
+                <ProjectTable data={generateData(category.id)} />
+              </>
+            ))}
             <br />
           </div>
         );

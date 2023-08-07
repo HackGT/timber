@@ -3,6 +3,7 @@ import { Button, Col, Form, Input, message, Modal, Row, Select, InputNumber, Tab
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons/lib";
 import useAxios from "axios-hooks";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_RULES } from "../../util/util";
 import { FormModalProps } from "../../util/FormModalProps";
@@ -10,7 +11,6 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup";
 import TableGroupsModal from "../admin/panes/tableGroups/TableGroupsModal";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { apiUrl, Service } from "@hex-labs/core";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const ProjectEditFormModal: React.FC<FormModalProps> = props => {
@@ -20,21 +20,21 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
 
   useEffect(() => form.resetFields(), [form, props.modalState.initialValues]);
 
-  const [{ loading: categoryLoading, data: categoryData }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/categories"),
-    params: {
-      hexathon: currentHexathon.id
+  const [{ loading: categoryLoading, data: categoryData }] = useAxios(
+    {
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/categories"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
     },
-  },
-  {
-    useCache: false,
-  });
-
-
+    {
+      useCache: false,
+    }
+  );
 
   const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(
-    apiUrl(Service.EXPO, `/tablegroups`),
+    apiUrl(Service.EXPO, `/table-groups`),
     {
       useCache: false,
     }

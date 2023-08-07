@@ -12,4 +12,3 @@ export function useCurrentHexathon() {
 }
 
 export default CurrentHexathonContext;
-

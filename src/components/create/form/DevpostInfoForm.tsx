@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios";
 import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title, Text } = Typography;
 
@@ -20,7 +20,7 @@ const DevpostInfoForm: React.FC<Props> = props => {
 
     hide();
     axios
-      .post(apiUrl(Service.EXPO, "/projects/special/devpost-validation"), values)
+      .post(apiUrl(Service.EXPO, "/projects/submission/devpost-validation"), values)
       .then(res => {
         hide();
         props.updateData(values);

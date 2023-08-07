@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { List, Typography, Input, Select, Col, Form, Row } from "antd";
+import { List, Typography, Input, Select, Col, Row } from "antd";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Project } from "../../types/Project";
 import ProjectCard from "./ProjectCard";
@@ -9,12 +10,8 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
-import { config } from "process";
-import { UserRole } from "../../types/UserRole";
-import { FORM_RULES } from "../../util/util";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { apiUrl, Service } from "@hex-labs/core";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -26,38 +23,33 @@ interface Props {
 const ProjectGallery: React.FC<Props> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
+
+  const [searchText, setSearchText] = useState("");
+  const [categoriesSelected, setCategoriesSelected] = useState([] as any);
+  const [sortCondition, setSortCondition] = useState("");
+
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+        search: searchText,
+        categories: categoriesSelected,
+      },
+    });
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id
+      hexathon: currentHexathon.id,
     },
   });
 
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
-
-
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/tablegroups"),
-    params: {
-      hexathon: currentHexathon.id
-    },
-  });
-
-  const [searchText, setSearchText] = useState("");
-  const [categoriesSelected, setCategoriesSelected] = useState([] as any);
-  const [sortCondition, setSortCondition] = useState("");
 
   const [modalState, setModalState] = useState({
     visible: false,
@@ -72,15 +64,15 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (projectsLoading || categoriesLoading || configLoading || tableGroupsLoading) {
+  if (categoriesLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError || tableGroupsError) {
+  if (projectsError || categoriesError || configError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
-  if (props.user.role !== UserRole.ADMIN && !configData.isProjectsPublished) {
+  if (!props.user.roles.admin && !configData.isProjectsPublished) {
     return (
       <>
         <Title level={2}>Project Gallery</Title>
@@ -89,42 +81,12 @@ const ProjectGallery: React.FC<Props> = props => {
     );
   }
 
-  let updatedData = projectsData
-    ? projectsData.filter(
-        (item: any) =>
-          item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.members
-            .reduce((prev: string, curr: any) => `${prev}${curr.email} ${curr.name} `, "")
-            .includes(searchText.toLowerCase())
-      )
-    : [];
-
-  updatedData =
-    categoriesSelected.length !== 0
-      ? updatedData.filter((item: any) =>
-          item.categories.some((category: any) => categoriesSelected.includes(category.name))
-        )
-      : updatedData;
-
-  const categoryChoices = categoriesData
-    ? categoriesData.map((item: any) => (
-        <Option key={item.name} value={item.name}>
-          {item.name}
-        </Option>
-      ))
-    : [];
+  let updatedData = projectsData || [];
 
   const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
-
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
-
-  const tableGroupMap = new Map<number, TableGroup>();
-
-  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
-    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  });
 
   return (
     <>
@@ -144,7 +106,12 @@ const ProjectGallery: React.FC<Props> = props => {
             style={{ width: "100%" }}
             onChange={value => setCategoriesSelected(value)}
           >
-            {categoryChoices}
+            {categoriesData &&
+              categoriesData.map((item: any) => (
+                <Option key={item.name} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Col>
         <Col xs={24} sm={4} md={4}>
@@ -159,7 +126,7 @@ const ProjectGallery: React.FC<Props> = props => {
         </Col>
       </Row>
       <List
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
         loading={projectsLoading}
         dataSource={updatedData}
         renderItem={(project: Project) => (
@@ -168,7 +135,6 @@ const ProjectGallery: React.FC<Props> = props => {
               key={project.id}
               project={project}
               user={props.user}
-              tableGroup={tableGroupMap.get(project.tableGroupId)}
               onClick={() => openModal(project)}
             />
           </List.Item>
