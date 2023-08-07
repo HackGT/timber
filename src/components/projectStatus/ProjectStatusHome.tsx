@@ -8,7 +8,6 @@ import RankingTable from "./RankingTable";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
