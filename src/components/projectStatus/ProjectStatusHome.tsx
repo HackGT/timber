@@ -26,28 +26,13 @@ const ProjectStatusHome: React.FC = () => {
       },
     });
 
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
-    useAxios({
-      method: "GET",
-      url: apiUrl(Service.EXPO, "/tablegroups"),
-      params: {
-        hexathon: currentHexathon.id,
-      },
-    });
-
-  if (projectsLoading || tableGroupsLoading) {
+  if (projectsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || tableGroupsError) {
+  if (projectsError) {
     return <ErrorDisplay error={projectsError} />;
   }
-
-  const tableGroupMap = new Map<number, TableGroup>();
-
-  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
-    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  });
 
   return (
     <>
@@ -56,7 +41,6 @@ const ProjectStatusHome: React.FC = () => {
         <TabPane tab="Overview" key="1">
           <ProjectTableContainer
             projects={projectsData}
-            tableGroupMap={tableGroupMap}
             isSponsor={false}
             refetch={refetchProjects}
           />

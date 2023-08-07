@@ -18,7 +18,6 @@ const { Title } = Typography;
 
 interface Props {
   projects: Project[];
-  tableGroupMap: Map<number, TableGroup>;
   isSponsor: boolean;
   refetch?: any;
 }
@@ -89,7 +88,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
 
   return (
     <div>
-      {props.projects?.map((project: Project) => {
+      {props.projects?.map((project: any) => {
         const generateData = (categoryId: number) => {
           const data: any = [];
           const judgeBallots: any = [];
@@ -150,20 +149,18 @@ const ProjectTableContainer: React.FC<Props> = props => {
           return newData;
         };
 
-        const tableGroup = props.tableGroupMap.get(project.tableGroupId);
-
         return (
           <div key={project.id}>
             <Title key={project.id} level={4}>
-              <a href={project.devpostUrl}>
+              <a href={project.devpostUrl} target="_blank">
                 {props.isSponsor
                   ? `Project Name: ${project.name}`
                   : `${project.id} - ${project.name}`}
               </a>
             </Title>
             <p>
-              {tableGroup !== undefined ? tableGroup.name : 1}, Table #{project.table}, Expo #
-              {project.expo}
+              {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}, Table #
+              {project.table}, Expo #{project.expo}
             </p>
             {project.categories.map((category: any) => (
               <>
