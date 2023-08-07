@@ -51,15 +51,6 @@ const ProjectGallery: React.FC<Props> = props => {
     apiUrl(Service.EXPO, "/config")
   );
 
-  const [{ loading: tableGroupsLoading, data: tableGroupsData, error: tableGroupsError }] =
-    useAxios({
-      method: "GET",
-      url: apiUrl(Service.EXPO, "/table-groups"),
-      params: {
-        hexathon: currentHexathon.id,
-      },
-    });
-
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -73,11 +64,11 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (categoriesLoading || configLoading || tableGroupsLoading) {
+  if (categoriesLoading || configLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError || tableGroupsError) {
+  if (projectsError || categoriesError || configError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -96,12 +87,6 @@ const ProjectGallery: React.FC<Props> = props => {
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
-
-  const tableGroupMap = new Map<number, TableGroup>();
-
-  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
-    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  });
 
   return (
     <>
@@ -150,7 +135,6 @@ const ProjectGallery: React.FC<Props> = props => {
               key={project.id}
               project={project}
               user={props.user}
-              tableGroup={tableGroupMap.get(project.tableGroupId)}
               onClick={() => openModal(project)}
             />
           </List.Item>

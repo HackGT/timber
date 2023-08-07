@@ -12,6 +12,7 @@ import { ModalState } from "../../util/FormModalProps";
 import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
+import { TableGroup } from "../../types/TableGroup";
 
 const { Title } = Typography;
 
@@ -87,7 +88,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
 
   return (
     <div>
-      {props.projects?.map((project: Project) => {
+      {props.projects?.map((project: any) => {
         const generateData = (categoryId: number) => {
           const data: any = [];
           const judgeBallots: any = [];
@@ -151,10 +152,16 @@ const ProjectTableContainer: React.FC<Props> = props => {
         return (
           <div key={project.id}>
             <Title key={project.id} level={4}>
-              {props.isSponsor
-                ? `Project Name: ${project.name}`
-                : `${project.id} - ${project.name}`}
+              <a href={project.devpostUrl} target="_blank">
+                {props.isSponsor
+                  ? `Project Name: ${project.name}`
+                  : `${project.id} - ${project.name}`}
+              </a>
             </Title>
+            <p>
+              {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}, Table #
+              {project.table}, Expo #{project.expo}
+            </p>
             {project.categories.map((category: any) => (
               <>
                 <Title level={5} key={category.id}>

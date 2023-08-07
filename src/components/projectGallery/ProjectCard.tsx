@@ -7,9 +7,8 @@ import { TableGroup } from "../../types/TableGroup";
 
 interface Props {
   key: number;
-  project: Project;
+  project: any;
   user?: User;
-  tableGroup: TableGroup | undefined;
   onClick?: (data: any) => any;
 }
 
@@ -26,7 +25,7 @@ const ProjectCard: React.FC<Props> = props => (
     <p>#{props.project.expo}</p>
     <strong>Location</strong>
     <p>
-      {props.tableGroup !== undefined ? props.tableGroup.name : "Unknown"}, Table #
+      {props.project.tableGroup !== undefined ? props.project.tableGroup.name : "Unknown"}, Table #
       {props.project.table}
     </p>
     {props.project.roomUrl && (
@@ -38,7 +37,7 @@ const ProjectCard: React.FC<Props> = props => (
     )}
     <strong>Categories</strong>
     <p>
-      {props.project.categories.map(category => (
+      {props.project.categories.map((category: any) => (
         <Tag style={{ marginBottom: "2px", marginRight: "4px" }}>{category.name}</Tag>
       ))}
     </p>
