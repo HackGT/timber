@@ -155,15 +155,18 @@ const RankingTable = () => {
               let score = 0;
               const allScores: number[] = [];
               let numJudged = 0;
-              const judges = new Set();
               let editButton;
+              const judgesSet = new Set<number>();
               category.criterias.forEach((criteria: Criteria) => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
                     score += ballot.score;
                     allScores.push(ballot.score);
                     // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
-                    numJudged += 1;
+                    if (!judgesSet.has(ballot.userId)) {
+                      judgesSet.add(ballot.userId);
+                      numJudged += 1;
+                    }
                   }
                 });
               });
@@ -190,7 +193,7 @@ const RankingTable = () => {
                 }
                 return median;
               }
-
+              
               data.push({
                 id: project.id,
                 name: project.name,
