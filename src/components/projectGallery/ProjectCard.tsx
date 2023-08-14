@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Tag, Button } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, List, Typography, Input, Select } from "antd";
-import { Text, Flex } from "@chakra-ui/react";
+import { Alert, AlertIcon, Box, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -38,14 +38,6 @@ const AdminContentList: React.FC<Props> = props => {
   } as ModalState);
   const [searchText, setSearchText] = useState("");
   const [isJudging, setIsJudging] = useState<any>(undefined);
-
-  const [isOpen, setIsOpen] = useState(true);
-  const openAlert = () => {
-    setIsOpen(true);
-  };
-  const closeAlert = () => {
-    setIsOpen(false);
-  };
 
   const [{ loading, data, error }, refetch] = useAxios({
     method: "GET",
@@ -96,20 +88,27 @@ const AdminContentList: React.FC<Props> = props => {
       </Flex>
 
       {(props.title=="Categories") && (
-        <Text pb={2}>
-          Categories are prizes or awards that hackathon submissions can win. 
-          For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
-          to category groups for judging organization purposes.
-        </Text>
+        <Box paddingBottom={2}>
+          <Alert status='info'>
+            <AlertIcon />
+            Categories are prizes or awards that hackathon submissions can win. 
+            For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
+            to category groups for judging organization purposes.
+          </Alert>
+        </Box>
       )}
 
+
       {(props.title=="Category Groups") && (
-        <Text pb={2}>
-          Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
-          group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
-          all projects that have been submitted for a T-Mobile project. A category group would be created to 
-          handle this grouping and would be assigned to the respective judge.
-        </Text>
+        <Box paddingBottom={2}>
+          <Alert status='info'>
+            <AlertIcon />
+            Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
+            group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
+            all projects that have been submitted for a T-Mobile project. A category group would be created to 
+            handle this grouping and would be assigned to the respective judge.
+          </Alert>
+        </Box>
       )}
       <Search
         placeholder="Search"

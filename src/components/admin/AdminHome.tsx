@@ -8,7 +8,6 @@ import {
   FolderOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import { Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 
 import AdminContentList from "./AdminContentList";
 import UserFormModal from "./panes/users/UserFormModal";
@@ -24,16 +23,6 @@ const AdminHome: React.FC = () => {
   const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
   const navigate = useNavigate();
-
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const handleComponentClick = (index: number) => {
-    setSelectedIndex(index);
-    setIsOpen(true);
-  };
-  const closeAlert = () => {
-    setIsOpen(false);
-  };
 
   if (!paneKeys.includes(activePane ?? "")) {
     return <Navigate to={`/admin/${paneKeys[0]}`} />;
@@ -62,7 +51,7 @@ const AdminHome: React.FC = () => {
                 title={`${item.name} (${item.email})`}
                 description={
                   <div>
-                    <Text style={{ display: "block", paddingRight: "10px", }}>
+                    <Text style={{ display: "block" }}>
                       Category Group: {item.categoryGroup?.name || "N/A"}
                     </Text>
                     <div>

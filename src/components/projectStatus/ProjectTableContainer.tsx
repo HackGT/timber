@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Typography, Button, Modal, message } from "antd";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -27,18 +26,6 @@ const ProjectTableContainer: React.FC<Props> = props => {
     visible: false,
     initialValues: null,
   } as ModalState);
-
-  const [selectedId, setSelectedId] = React.useState<number | null>(null);
-  const [selectedCategoryName, setSelectedCategoryName] = React.useState<string>('');
-  const [isOpen, setIsOpen] = React.useState(false);
-  const handleComponentClick = (projectId: number, categoryName: string) => {
-    setSelectedId(projectId);
-    setSelectedCategoryName(categoryName);
-    setIsOpen(true);
-  };
-  const closeAlert = () => {
-    setIsOpen(false);
-  };
 
   const [{ data: criteriaData, loading, error }, refetch] = useAxios(
     apiUrl(Service.EXPO, "/criterias")

@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Typography, Table, Button, Modal, message } from "antd/lib";
-import { Text, Alert, AlertIcon, AlertDescription, CloseButton, Flex } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
@@ -86,16 +85,6 @@ const RankingTable = () => {
       hexathon: currentHexathon.id,
     },
   });
-
-  const [selectedId, setSelectedId] = React.useState<number | null>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const handleComponentClick = (categoryId: number) => {
-    setSelectedId(categoryId);
-    setIsOpen(true);
-  };
-  const closeAlert = () => {
-    setIsOpen(false);
-  };
 
   if (categoryLoading || projectsLoading) {
     return <LoadingDisplay />;
