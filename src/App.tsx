@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
 import axios from "axios";
@@ -86,82 +87,84 @@ export const App = () => {
   }
 
   return (
-    <AuthProvider app={app}>
-      <CurrentHexathonContext.Provider value={hexathonValues}>
-        <Layout style={{ minHeight: "100vh" }}>
-          <Navigation user={user} />
-          <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
-            <Routes>
-              <Route path="/" element={<Dashboard user={user} />} />
-              <Route path="/create" element={<SubmissionFormContainer user={user} />} />
+    <ChakraProvider>
+      <AuthProvider app={app}>
+        <CurrentHexathonContext.Provider value={hexathonValues}>
+          <Layout style={{ minHeight: "100vh" }}>
+            <Navigation user={user} />
+            <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
+              <Routes>
+                <Route path="/" element={<Dashboard user={user} />} />
+                <Route path="/create" element={<SubmissionFormContainer user={user} />} />
 
-              <Route
-                path="/category-group/:categoryGroupId"
-                element={
-                  <ProtectedRoute type="sponsor" user={user}>
-                    <CategoryGroup />
-                  </ProtectedRoute>
-                }
-              />
+                <Route
+                  path="/category-group/:categoryGroupId"
+                  element={
+                    <ProtectedRoute type="sponsor" user={user}>
+                      <CategoryGroup />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route path="/projectgallery" element={<ProjectGallery user={user} />} />
-              <Route path="/projects/:projectId" element={<ProjectDetails />} />
+                <Route path="/projectgallery" element={<ProjectGallery user={user} />} />
+                <Route path="/projects/:projectId" element={<ProjectDetails />} />
 
-              <Route
-                path="/judging"
-                element={
-                  <ProtectedRoute type="judge" user={user}>
-                    <JudgingHome user={user} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute type="admin" user={user}>
-                    <AdminHome />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/:activePane"
-                element={
-                  <ProtectedRoute type="admin" user={user}>
-                    <AdminHome />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/epicenter"
-                element={
-                  <ProtectedRoute type="admin" user={user}>
-                    <Epicenter />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/project-status"
-                element={
-                  <ProtectedRoute type="admin" user={user}>
-                    <ProjectStatusHome />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/winners"
-                element={
-                  <ProtectedRoute type="admin" user={user}>
-                    <Winners />
-                  </ProtectedRoute>
-                }
-              />
-              <Route element={<NotFoundDisplay />} />
-            </Routes>
-          </Content>
-          <Footer />
-        </Layout>
-      </CurrentHexathonContext.Provider>
-    </AuthProvider>
+                <Route
+                  path="/judging"
+                  element={
+                    <ProtectedRoute type="judge" user={user}>
+                      <JudgingHome user={user} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute type="admin" user={user}>
+                      <AdminHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/:activePane"
+                  element={
+                    <ProtectedRoute type="admin" user={user}>
+                      <AdminHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/epicenter"
+                  element={
+                    <ProtectedRoute type="admin" user={user}>
+                      <Epicenter />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/project-status"
+                  element={
+                    <ProtectedRoute type="admin" user={user}>
+                      <ProjectStatusHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/winners"
+                  element={
+                    <ProtectedRoute type="admin" user={user}>
+                      <Winners />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route element={<NotFoundDisplay />} />
+              </Routes>
+            </Content>
+            <Footer />
+          </Layout>
+        </CurrentHexathonContext.Provider>
+      </AuthProvider>
+    </ChakraProvider>
   );
 };
 
