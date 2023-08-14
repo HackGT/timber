@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, List, Typography, Input, Select } from "antd";
+import { Alert, AlertIcon, Box, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -82,7 +83,33 @@ const AdminContentList: React.FC<Props> = props => {
 
   return (
     <>
-      <Title level={3}>{props.title}</Title>
+      <Flex>
+        <Title level={3}>{props.title}</Title>
+      </Flex>
+
+      {(props.title=="Categories") && (
+        <Box paddingBottom={2}>
+          <Alert status='info'>
+            <AlertIcon />
+            Categories are prizes or awards that hackathon submissions can win. 
+            For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
+            to category groups for judging organization purposes.
+          </Alert>
+        </Box>
+      )}
+
+
+      {(props.title=="Category Groups") && (
+        <Box paddingBottom={2}>
+          <Alert status='info'>
+            <AlertIcon />
+            Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
+            group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
+            all projects that have been submitted for a T-Mobile project. A category group would be created to 
+            handle this grouping and would be assigned to the respective judge.
+          </Alert>
+        </Box>
+      )}
       <Search
         placeholder="Search"
         style={{ width: "300px" }}
