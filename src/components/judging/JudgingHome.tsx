@@ -5,9 +5,7 @@ import { useDisclosure, Box, Button, Heading, Link } from "@chakra-ui/react";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-// import DailyWindow from "../video/DailyWindow";
 import JudgingCardsContainer from "./JudgingCardsContainer";
-// import { TableGroup } from "../../types/TableGroup";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
@@ -175,7 +173,6 @@ const JudgingHome: React.FC<Props> = props => {
             Devpost Submission
           </Link>
         </Box>
-        {/* <DailyWindow videoUrl={data.roomUrl} /> */}
         {skippedProjects.length > 0 && (
           <Box display="flex">
             <Button onClick={onOpen} padding="8px" colorScheme="purple">
@@ -186,7 +183,6 @@ const JudgingHome: React.FC<Props> = props => {
         )}
       </Box>
       <JudgingCardsContainer data={[data, next]} />
-      {/* <div style={{ marginTop: "5px" }}>{next}</div> */}
     </>
   );
 };
