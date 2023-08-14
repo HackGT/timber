@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Popconfirm, message, Modal } from "antd";
+import { Button, Popconfirm, message } from "antd";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import { Criteria } from "../../types/Criteria";
@@ -42,7 +42,6 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     setCategoryToCriteriaMapping(newCategoryToCriteriaMapping);
   }, [props.data[0], setProjectScores, setCategoryToCriteriaMapping]);
 
-  console.log(props.data);
   const onSubmit = async () => {
     const hide = message.loading("Loading...", 0);
     const ballots: any = {

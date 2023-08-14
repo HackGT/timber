@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "antd";
 import axios from "axios";

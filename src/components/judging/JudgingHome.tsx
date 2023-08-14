@@ -1,22 +1,23 @@
-import { TableColumnGroupType } from "antd";
 import useAxios from "axios-hooks";
 import React from "react";
 import { apiUrl, Service } from "@hex-labs/core";
+import { useDisclosure, Box, Button, Heading, Link } from "@chakra-ui/react";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import DailyWindow from "../video/DailyWindow";
 import JudgingCardsContainer from "./JudgingCardsContainer";
-import { TableGroup } from "../../types/TableGroup";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
+import { Project } from "../../types/Project";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { SkippedModal } from "./SkippedModal";
 
 interface Props {
   user: User;
 }
 
 const JudgingHome: React.FC<Props> = props => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
@@ -39,14 +40,13 @@ const JudgingHome: React.FC<Props> = props => {
       },
     });
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
-    useAxios({
-      method: "GET",
-      url: apiUrl(Service.EXPO, "/projects"),
-      params: {
-        hexathon: currentHexathon.id,
-      },
-    });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
 
   if (!props.user.categoryGroupId) {
     return (
@@ -64,8 +64,34 @@ const JudgingHome: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
+  const skippedAssignments = assignmentsData.filter(
+    (assignment: Assignment) =>
+      assignment.status === "SKIPPED" && assignment.userId === +props.user.id
+  );
+
+  let skippedProjects = projectsData.filter((project: any) =>
+    skippedAssignments.some((skippedProject: any) => skippedProject.projectId === project.id)
+  );
+
+  skippedProjects = skippedProjects.map((proj: Project) => ({
+    ...proj,
+    assignmentId: skippedAssignments.find(
+      (skippedProject: any) => skippedProject.projectId === proj.id
+    ).id,
+  }));
+
   if (data.length === 0) {
-    return <p>You have no projects queued!</p>;
+    return (
+      <Box>
+        {skippedProjects.length > 0 && (
+          <Button onClick={onOpen} colorScheme="purple" padding="8px" borderRadius="10px">
+            View Skipped
+          </Button>
+        )}
+        <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
+        <p>You have no projects queued!</p>
+      </Box>
+    );
   }
   let tableGroupName = "";
   let nextTableNumber = "";
@@ -77,7 +103,7 @@ const JudgingHome: React.FC<Props> = props => {
   let nextProjectID = 0;
 
   for (const assignment of assignments) {
-    if (assignment.status === "QUEUED" && assignment.projectId != data.id) {
+    if (assignment.status === "QUEUED" && assignment.projectId !== data.id) {
       nextProjectID = assignment.projectId;
       break;
     }
@@ -86,7 +112,7 @@ const JudgingHome: React.FC<Props> = props => {
   let nextProjectName = "";
   if (nextProjectID) {
     for (const project of projectsData) {
-      if (nextProjectID == project.id) {
+      if (nextProjectID === project.id) {
         nextTableNumber = project.table;
         nextTableGroupId = project.tableGroupId;
         nextProjectName = project.name;
@@ -118,17 +144,45 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
-      <h1>Project Name: {data.name}</h1>
-      <h3>Table Number: {data.table} </h3>
-      <h3>Table Group: {tableGroupName}</h3>
-
-      <a href={data.devpostUrl} target="_blank" rel="noreferrer">
-        Devpost Submission
-      </a>
-      {/* <DailyWindow videoUrl={data.roomUrl} /> */}
+      <Box display="flex" justifyContent="space-between">
+        <Box>
+          <Heading
+            as="h1"
+            style={{ paddingBottom: "15px", fontSize: "35px", fontWeight: "normal" }}
+          >
+            Project Name: {data.name}
+          </Heading>
+          <Heading
+            as="h3"
+            style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
+          >
+            Table Number: {data.table}
+          </Heading>
+          <Heading
+            as="h3"
+            style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
+          >
+            Table Group: {tableGroupName}
+          </Heading>
+          <Link
+            href={data.devpostUrl}
+            target="_blank"
+            rel="noreferrer"
+            style={{ paddingBottom: "10px", fontSize: "15px", fontWeight: "normal" }}
+          >
+            Devpost Submission
+          </Link>
+        </Box>
+        {skippedProjects.length > 0 && (
+          <Box display="flex">
+            <Button onClick={onOpen} padding="8px" colorScheme="purple">
+              View Skipped
+            </Button>
+            <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
+          </Box>
+        )}
+      </Box>
       <JudgingCardsContainer data={[data, next]} />
-
-      {/* <div style={{ marginTop: "5px" }}>{next}</div> */}
     </>
   );
 };
