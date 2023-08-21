@@ -134,6 +134,7 @@ const Winners: React.FC = () => {
                 category={winner.category}
                 members={winner.project.members}
                 rank={winner.rank}
+                visible
                 onClick={() => openModal(winner)}
               />
             </List.Item>

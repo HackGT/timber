@@ -50,6 +50,8 @@ const ConfigEditPane: React.FC = props => {
       });
   };
 
+  console.log(data);
+
   return (
     <>
       <Title level={3}>Config</Title>
@@ -149,6 +151,16 @@ const ConfigEditPane: React.FC = props => {
               name="revealTableGroups"
               initialValue={data.revealTableGroups}
               label="Are Table Groups Revealed"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              name="revealWinners"
+              initialValue={0} // fix this
+              label="Are Winners Revealed"
               valuePropName="checked"
             >
               <Switch />

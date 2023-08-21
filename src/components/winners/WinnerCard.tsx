@@ -11,6 +11,7 @@ interface Props {
   category: Category;
   members: User[];
   rank: string;
+  visible: boolean;
   onClick?: (data: any) => any;
 }
 
@@ -30,7 +31,7 @@ const WinnerCard: React.FC<Props> = props => {
       title={
         <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
       }
-      extra={<Button onClick={props.onClick}>Edit</Button>}
+      extra={props.visible ? <Button onClick={props.onClick}>Edit</Button> : <></>}
     >
       <p>
         <b>Rank:</b> <Tag color={rankColor}>{props.rank}</Tag>
