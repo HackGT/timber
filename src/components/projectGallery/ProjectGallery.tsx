@@ -12,6 +12,8 @@ import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import WinnerCard from "../winners/WinnerCard";
+import { Category } from "../../types/Category";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -26,6 +28,8 @@ const ProjectGallery: React.FC<Props> = props => {
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
+  const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
+
   const [sortCondition, setSortCondition] = useState("");
 
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
@@ -51,6 +55,14 @@ const ProjectGallery: React.FC<Props> = props => {
     apiUrl(Service.EXPO, "/config")
   );
 
+  const [{ data: winnersData, loading: winnersLoading, error: winnersError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/winners"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
+
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -64,11 +76,11 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (categoriesLoading || configLoading) {
+  if (categoriesLoading || configLoading || winnersLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError) {
+  if (projectsError || categoriesError || configError || winnersError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -86,6 +98,71 @@ const ProjectGallery: React.FC<Props> = props => {
   const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
+  }
+
+  if (configData.revealWinners) {
+    let updatedData = winnersData
+      ? winnersData.filter((winner: any) =>
+          winner.project.name.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : [];
+
+    updatedData = selectedCategory
+      ? updatedData.filter((winner: any) => winner.category.id === selectedCategory)
+      : updatedData;
+
+    const categoryOptions = categoriesData
+      ? categoriesData.map((category: Category) => ({
+          label: category.name,
+          value: category.id,
+        }))
+      : [];
+
+    return (
+      <>
+        <Title level={2}>Project Gallery</Title>
+        <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
+          <Col xs={24} sm={8} md={5}>
+            <Search
+              placeholder="Search"
+              value={searchText}
+              onChange={event => setSearchText(event.target.value)}
+            />
+          </Col>
+          <Col xs={24} sm={16} md={5}>
+            <Select
+              placeholder="Filter by Category"
+              style={{ width: "100%" }}
+              options={categoryOptions}
+              optionFilterProp="label"
+              onChange={value => setSelectedCategory(value)}
+              allowClear
+            />
+          </Col>
+        </Row>
+
+        <div>
+          <List
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
+            loading={winnersLoading}
+            dataSource={updatedData}
+            renderItem={(winner: any) => (
+              <List.Item>
+                <WinnerCard
+                  id={winner.id}
+                  project={winner.project}
+                  category={winner.category}
+                  members={winner.project.members}
+                  rank={winner.rank}
+                  visible={false}
+                  onClick={() => openModal(winner)}
+                />
+              </List.Item>
+            )}
+          />
+        </div>
+      </>
+    );
   }
 
   return (

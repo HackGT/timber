@@ -31,7 +31,7 @@ const ConfigEditPane: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-
+    console.log(values);
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
@@ -159,7 +159,7 @@ const ConfigEditPane: React.FC = props => {
           <Col span={6}>
             <Form.Item
               name="revealWinners"
-              initialValue={0} // fix this
+              initialValue={data.revealWinners}
               label="Are Winners Revealed"
               valuePropName="checked"
             >
