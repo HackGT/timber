@@ -9,6 +9,7 @@ interface Props {
   key: number;
   project: any;
   user?: User;
+  isWinner: boolean;
   onClick?: (data: any) => any;
 }
 
@@ -16,8 +17,27 @@ const ProjectCard: React.FC<Props> = props => (
   <Card
     key={props.key}
     title={
-      <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
+      props.isWinner ? (
+        <>
+          <span
+            style={{
+              wordBreak: "break-word",
+              whiteSpace: "normal",
+              display: "block",
+              fontWeight: "bold",
+            }}
+          >
+            Winner
+          </span>
+          <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>
+            {props.project.name}
+          </span>
+        </>
+      ) : (
+        <span style={{ wordBreak: "break-word", whiteSpace: "normal" }}>{props.project.name}</span>
+      )
     }
+    headStyle={props.isWinner ? { backgroundColor: "#ebb521" } : {}}
     extra={props.user && props.user.roles.admin && <Button onClick={props.onClick}>Edit</Button>}
     size="small"
   >

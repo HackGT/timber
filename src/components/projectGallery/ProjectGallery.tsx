@@ -10,12 +10,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
-import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import WinnerCard from "../winners/WinnerCard";
-import { Category } from "../../types/Category";
-import ProtectedRoute from "../../util/ProtectedRoute";
-import Winners from "../winners/WinnersGallery";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -53,6 +48,14 @@ const ProjectGallery: React.FC<Props> = props => {
     },
   });
 
+  const [{ data: winnersData, loading: winnersLoading, error: winnersError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/winners"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
+
   const [{ loading: configLoading, data: configData, error: configError }] = useAxios(
     apiUrl(Service.EXPO, "/config")
   );
@@ -63,6 +66,7 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const openModal = (values: any) => {
+    console.log("Clicked");
     const newCategories = values.categories.map((category: any) => category.name);
     setModalState({
       visible: true,
@@ -70,11 +74,11 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (categoriesLoading || configLoading) {
+  if (categoriesLoading || configLoading || winnersLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError) {
+  if (projectsError || categoriesError || configError || winnersError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -94,72 +98,69 @@ const ProjectGallery: React.FC<Props> = props => {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
 
+  const winnerIds = new Set();
+  winnersData.forEach((winner: any) => {
+    winnerIds.add(winner.id);
+  });
+
   return (
     <>
       <Title level={2}>Project Gallery</Title>
-      <Divider />
-      {configData.revealWinners ? (
-        <ProtectedRoute type="admin" user={props.user}>
-          <Winners />
-        </ProtectedRoute>
-      ) : (
-        <>
-          <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
-            <Col xs={24} sm={8} md={8}>
-              <Search
-                placeholder="Search"
-                value={searchText}
-                onChange={event => setSearchText(event.target.value)}
-              />
-            </Col>
-            <Col xs={24} sm={12} md={8}>
-              <Select
-                mode="multiple"
-                placeholder="Filter by Categories"
-                style={{ width: "100%" }}
-                onChange={value => setCategoriesSelected(value)}
-              >
-                {categoriesData &&
-                  categoriesData.map((item: any) => (
-                    <Option key={item.name} value={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-              </Select>
-            </Col>
-            <Col xs={24} sm={4} md={4}>
-              <Select
-                placeholder="Sort"
-                style={{ width: "100%" }}
-                onChange={(value: any) => setSortCondition(value)}
-              >
-                <Option value="name">Name</Option>
-                <Option value="recent">Recent</Option>
-              </Select>
-            </Col>
-          </Row>
-          <List
-            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
-            loading={projectsLoading}
-            dataSource={updatedData}
-            renderItem={(project: Project) => (
-              <List.Item>
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  user={props.user}
-                  onClick={() => openModal(project)}
-                />
-              </List.Item>
-            )}
+      <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
+        <Col xs={24} sm={8} md={8}>
+          <Search
+            placeholder="Search"
+            value={searchText}
+            onChange={event => setSearchText(event.target.value)}
           />
-          <ProjectEditFormModal
-            modalState={modalState}
-            setModalState={setModalState}
-            refetch={refetch}
-          />
-        </>
-      )}
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <Select
+            mode="multiple"
+            placeholder="Filter by Categories"
+            style={{ width: "100%" }}
+            onChange={value => setCategoriesSelected(value)}
+          >
+            {categoriesData &&
+              categoriesData.map((item: any) => (
+                <Option key={item.name} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+          </Select>
+        </Col>
+        <Col xs={24} sm={4} md={4}>
+          <Select
+            placeholder="Sort"
+            style={{ width: "100%" }}
+            onChange={(value: any) => setSortCondition(value)}
+          >
+            <Option value="name">Name</Option>
+            <Option value="recent">Recent</Option>
+          </Select>
+        </Col>
+      </Row>
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+        loading={projectsLoading}
+        dataSource={updatedData}
+        renderItem={(project: Project) => (
+          <List.Item>
+            <ProjectCard
+              key={project.id}
+              project={project}
+              user={props.user}
+              onClick={() => openModal(project)}
+              isWinner={configData.revealWinners ? winnerIds.has(project.id) : false}
+            />
+          </List.Item>
+        )}
+      />
+      <ProjectEditFormModal
+        modalState={modalState}
+        setModalState={setModalState}
+        refetch={refetch}
+      />
     </>
   );
 };

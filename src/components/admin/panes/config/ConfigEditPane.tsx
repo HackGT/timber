@@ -31,7 +31,6 @@ const ConfigEditPane: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-    console.log(values);
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
