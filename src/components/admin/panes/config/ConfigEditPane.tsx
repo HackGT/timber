@@ -40,9 +40,9 @@ const ConfigEditPane: React.FC = props => {
         setCurrentHexathon(() => ({ ...currHexObject }));
         hide();
 
-        message.loading("Config updating...", 2, async () => {
+        message.loading("Config updating...", 2, () => {
+          localStorage.setItem("successMessage", "Config successfully updated!");
           window.location.reload();
-          message.success("Config successfully updated!");
         });
         refetch();
       })
@@ -52,6 +52,13 @@ const ConfigEditPane: React.FC = props => {
         console.log(err);
       });
   };
+
+  const successMessage = localStorage.getItem("successMessage");
+
+  if (successMessage) {
+    message.success(successMessage);
+    localStorage.removeItem("successMessage");
+  }
 
   console.log(data);
 

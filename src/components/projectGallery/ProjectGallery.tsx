@@ -160,7 +160,7 @@ const ProjectGallery: React.FC<Props> = props => {
                   project={project}
                   user={props.user}
                   onClick={() => openModal(project)}
-                  isWinner={winnerIds.has(project.id)}
+                  isWinner
                   winnerInfo={winnerIds}
                 />
               </List.Item>
