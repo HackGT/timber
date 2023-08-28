@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -59,8 +59,6 @@ const ConfigEditPane: React.FC = props => {
     message.success(successMessage);
     localStorage.removeItem("successMessage");
   }
-
-  console.log(data);
 
   return (
     <>
