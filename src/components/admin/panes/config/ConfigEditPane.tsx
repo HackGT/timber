@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Form, InputNumber, message, Row, Select, Switch, Typography } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -34,12 +34,16 @@ const ConfigEditPane: React.FC = props => {
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
-        const newCurrentHexathonData = hexathonsData.find(
+        const currHexObject = hexathonsData.find(
           (hexathon: any) => hexathon.id === values.currentHexathon
         );
-        setCurrentHexathon(() => ({ ...newCurrentHexathonData }));
+        setCurrentHexathon(() => ({ ...currHexObject }));
         hide();
-        message.success("Config successfully updated", 2);
+
+        message.loading("Config updating...", 2, async () => {
+          window.location.reload();
+          message.success("Config successfully updated!");
+        });
         refetch();
       })
       .catch(err => {
