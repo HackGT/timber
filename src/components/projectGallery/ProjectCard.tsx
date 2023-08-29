@@ -21,7 +21,7 @@ const ProjectCard: React.FC<Props> = props => {
     FIRST: "gold",
     SECOND: "#C0C0C0",
     THIRD: "#cd7f32",
-    GENERAL: "purple",
+    EMERGING: "purple",
   };
 
   const projectData = props.isWinner ? props.winnerInfo.get(props.project.id) : {};
@@ -43,15 +43,10 @@ const ProjectCard: React.FC<Props> = props => {
               >
                 Winner
               </span>
+              <Tag color={colors[projectData.rank as keyof typeof colors]}>{projectData.rank}</Tag>
               <Tooltip
                 label={
                   <Stack>
-                    <p>
-                      <b>Rank: </b>
-                      <Tag color={colors[projectData.rank as keyof typeof colors]}>
-                        {projectData.rank}
-                      </Tag>
-                    </p>
                     <p>
                       <b>Category: </b>
                       <Tag color="blue">{projectData.category.name}</Tag>

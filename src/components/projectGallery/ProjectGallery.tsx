@@ -65,7 +65,6 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const openModal = (values: any) => {
-    console.log("Clicked");
     const newCategories = values.categories.map((category: any) => category.name);
     setModalState({
       visible: true,
