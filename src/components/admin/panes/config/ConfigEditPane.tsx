@@ -31,16 +31,19 @@ const ConfigEditPane: React.FC = props => {
 
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-
     axios
       .post(apiUrl(Service.EXPO, "/config"), values)
       .then(res => {
-        const newCurrentHexathonData = hexathonsData.find(
+        const currHexObject = hexathonsData.find(
           (hexathon: any) => hexathon.id === values.currentHexathon
         );
-        setCurrentHexathon(() => ({ ...newCurrentHexathonData }));
+        setCurrentHexathon(() => ({ ...currHexObject }));
         hide();
-        message.success("Config successfully updated", 2);
+
+        message.loading("Config updating...", 2, () => {
+          localStorage.setItem("successMessage", "Config successfully updated!");
+          window.location.reload();
+        });
         refetch();
       })
       .catch(err => {
@@ -49,6 +52,13 @@ const ConfigEditPane: React.FC = props => {
         console.log(err);
       });
   };
+
+  const successMessage = localStorage.getItem("successMessage");
+
+  if (successMessage) {
+    message.success(successMessage);
+    localStorage.removeItem("successMessage");
+  }
 
   return (
     <>
@@ -149,6 +159,16 @@ const ConfigEditPane: React.FC = props => {
               name="revealTableGroups"
               initialValue={data.revealTableGroups}
               label="Are Table Groups Revealed"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              name="revealWinners"
+              initialValue={data.revealWinners}
+              label="Are Winners Revealed"
               valuePropName="checked"
             >
               <Switch />

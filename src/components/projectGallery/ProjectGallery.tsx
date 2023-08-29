@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { List, Typography, Input, Select, Col, Row } from "antd";
+import { List, Typography, Input, Select, Col, Row, Divider } from "antd";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import { Project } from "../../types/Project";
@@ -10,7 +10,6 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { User } from "../../types/User";
 import { ModalState } from "../../util/FormModalProps";
 import ProjectEditFormModal from "./ProjectEditFormModal";
-import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -26,6 +25,7 @@ const ProjectGallery: React.FC<Props> = props => {
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
+
   const [sortCondition, setSortCondition] = useState("");
 
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
@@ -42,6 +42,14 @@ const ProjectGallery: React.FC<Props> = props => {
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
+
+  const [{ data: winnersData, loading: winnersLoading, error: winnersError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/winners"),
     params: {
       hexathon: currentHexathon.id,
     },
@@ -64,11 +72,11 @@ const ProjectGallery: React.FC<Props> = props => {
     });
   };
 
-  if (categoriesLoading || configLoading) {
+  if (categoriesLoading || configLoading || winnersLoading || projectsLoading) {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError) {
+  if (projectsError || categoriesError || configError || winnersError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -81,12 +89,25 @@ const ProjectGallery: React.FC<Props> = props => {
     );
   }
 
+  const winnerIds = new Map();
+  winnersData.forEach((winner: any) => {
+    const winnerInfo = {
+      rank: winner.rank,
+      category: winner.category,
+      members: winner.project.members,
+    };
+    winnerIds.set(winner.id, winnerInfo);
+  });
+
   let updatedData = projectsData || [];
 
   const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
   if (sortCondition) {
     updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
   }
+
+  const winnerCards = projectsData.filter((project: any) => winnerIds.has(project.id));
+  const regularCards = projectsData.filter((project: any) => !winnerIds.has(project.id));
 
   return (
     <>
@@ -125,21 +146,63 @@ const ProjectGallery: React.FC<Props> = props => {
           </Select>
         </Col>
       </Row>
-      <List
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
-        loading={projectsLoading}
-        dataSource={updatedData}
-        renderItem={(project: Project) => (
-          <List.Item>
-            <ProjectCard
-              key={project.id}
-              project={project}
-              user={props.user}
-              onClick={() => openModal(project)}
-            />
-          </List.Item>
-        )}
-      />
+      {configData.revealWinners ? (
+        <>
+          <List
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+            loading={projectsLoading}
+            dataSource={winnerCards}
+            renderItem={(project: Project) => (
+              <List.Item>
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  user={props.user}
+                  onClick={() => openModal(project)}
+                  isWinner
+                  winnerInfo={winnerIds}
+                />
+              </List.Item>
+            )}
+          />
+          <Divider />
+          <List
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+            loading={projectsLoading}
+            dataSource={regularCards}
+            renderItem={(project: Project) => (
+              <List.Item>
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  user={props.user}
+                  onClick={() => openModal(project)}
+                  isWinner={false}
+                  winnerInfo={winnerIds}
+                />
+              </List.Item>
+            )}
+          />
+        </>
+      ) : (
+        <List
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+          loading={projectsLoading}
+          dataSource={updatedData}
+          renderItem={(project: Project) => (
+            <List.Item>
+              <ProjectCard
+                key={project.id}
+                project={project}
+                user={props.user}
+                onClick={() => openModal(project)}
+                isWinner={false}
+                winnerInfo={winnerIds}
+              />
+            </List.Item>
+          )}
+        />
+      )}
       <ProjectEditFormModal
         modalState={modalState}
         setModalState={setModalState}
