@@ -152,7 +152,7 @@ const RankingTable = () => {
             <Title level={4}>{category.name}</Title>
 
             {categoryProjects.forEach((project: Project) => {
-              let score = 0;
+              let projectScore = 0;
               const allScores: number[] = [];
               let numJudged = 0;
               let editButton;
@@ -160,15 +160,16 @@ const RankingTable = () => {
               category.criterias.forEach((criteria: Criteria) => {
                 criteria.ballots.forEach((ballot: Ballot) => {
                   if (ballot.projectId === project.id) {
-                    score += ballot.score;
+                    projectScore += ballot.score;
                     allScores.push(ballot.score);
-                    // TODO: temporary fix for hackgt 9 for duplicate userId, need to revert back
+
                     if (!judgesSet.has(ballot.userId)) {
                       judgesSet.add(ballot.userId);
                       numJudged += 1;
                     }
                   }
                 });
+
               });
 
               const winnerButton = (
@@ -193,7 +194,7 @@ const RankingTable = () => {
                 }
                 return median;
               }
-              
+
               data.push({
                 id: project.id,
                 name: project.name,
@@ -202,8 +203,8 @@ const RankingTable = () => {
                     View Devpost
                   </a>
                 ),
-                average: numJudged > 0 ? score / numJudged : 0,
-                median: calculateMedian(allScores),
+                average: numJudged > 0 ? parseFloat((projectScore/allScores.length).toFixed(1)) : 0,
+                median: numJudged > 0 ? calculateMedian(allScores) : 0,
                 numJudged,
                 editScore: editButton,
                 makeWinner: winnerButton,
