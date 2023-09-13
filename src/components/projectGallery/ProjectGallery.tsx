@@ -32,8 +32,6 @@ const ProjectGallery: React.FC<Props> = props => {
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
       hexathon: currentHexathon.id,
-      // search: searchText,
-      // categories: categoriesSelected,
     },
   });
 
@@ -63,7 +61,7 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const [projects, setProjects] = useState(projectsData || []);
-  
+
   useEffect(() => {
     if (!projectsLoading) {
       if (searchText === "") {
