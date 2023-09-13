@@ -155,9 +155,12 @@ const ProjectGallery: React.FC<Props> = props => {
             placeholder="Filter by Categories"
             style={{ width: "100%" }}
             onChange={value => setCategoriesSelected(value)}
+            allowClear
           >
             {categoriesData &&
-              categoriesData.map((item: any) => (
+              categoriesData
+              .filter((category: any) => category.isDefault === false)
+              .map((item: any) => (
                 <Option key={item.name} value={item.id}>
                   {item.name}
                 </Option>
