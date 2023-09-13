@@ -178,24 +178,30 @@ const ProjectGallery: React.FC<Props> = props => {
       </Row>
       {configData.revealWinners ? (
         <>
-          <List
-            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
-            loading={projectsLoading}
-            dataSource={winnerCards}
-            renderItem={(project: Project) => (
-              <List.Item>
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  user={props.user}
-                  onClick={() => openModal(project)}
-                  isWinner
-                  winnerInfo={winnerIds}
-                />
-              </List.Item>
-            )}
-          />
-          <Divider />
+          {winnerIds.size > 0 ? (
+            <>
+              <List
+                grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+                loading={projectsLoading}
+                dataSource={winnerCards}
+                renderItem={(project: Project) => (
+                  <List.Item>
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      user={props.user}
+                      onClick={() => openModal(project)}
+                      isWinner
+                      winnerInfo={winnerIds}
+                    />
+                  </List.Item>
+                )}
+              />
+              <Divider />
+            </>
+          ) : (
+            <></>
+          )}
           <List
             grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
             loading={projectsLoading}
