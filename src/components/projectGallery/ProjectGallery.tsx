@@ -36,7 +36,6 @@ const ProjectGallery: React.FC<Props> = props => {
       // categories: categoriesSelected,
     },
   });
-  console.log(`projectsLoading: ${projectsLoading}`);
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -64,9 +63,9 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const [projects, setProjects] = useState(projectsData || []);
-  useEffect(() => {
-    setProjects(projectsData || []);
-  }, [projectsData]);
+  // useEffect(() => {
+  //   setProjects(projectsData || []);
+  // }, [projectsData]);
 
   useEffect(() => {
     if (!projectsLoading) {
