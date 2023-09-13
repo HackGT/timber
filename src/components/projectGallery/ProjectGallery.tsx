@@ -63,10 +63,7 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const [projects, setProjects] = useState(projectsData || []);
-  // useEffect(() => {
-  //   setProjects(projectsData || []);
-  // }, [projectsData]);
-
+  
   useEffect(() => {
     if (!projectsLoading) {
       if (searchText === "") {
