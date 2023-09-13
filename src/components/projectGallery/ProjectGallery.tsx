@@ -27,14 +27,16 @@ const ProjectGallery: React.FC<Props> = props => {
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
   const [sortCondition, setSortCondition] = useState("");
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
-    useAxios({
-      method: "GET",
-      url: apiUrl(Service.EXPO, "/projects"),
-      params: {
-        hexathon: currentHexathon.id,
-      },
-    });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id,
+      // search: searchText,
+      // categories: categoriesSelected,
+    },
+  });
+  console.log(`projectsLoading: ${projectsLoading}`);
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -62,27 +64,35 @@ const ProjectGallery: React.FC<Props> = props => {
   } as ModalState);
 
   const [projects, setProjects] = useState(projectsData || []);
+  useEffect(() => {
+    setProjects(projectsData || []);
+  }, [projectsData]);
 
   useEffect(() => {
-    if (searchText === "") {
-      setProjects(projectsData);
+    if (!projectsLoading) {
+      if (searchText === "") {
+        setProjects(projectsData);
+      } else {
+        setProjects(
+          projectsData.filter((project: any) =>
+            project.name.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+      }
     }
-    setProjects(
-      projectsData.filter((project: any) =>
-        project.name.toLowerCase().includes(searchText.toLowerCase())
-      )
-    );
   }, [searchText, projectsData]);
 
   useEffect(() => {
-    if (categoriesSelected.length === 0) {
-      setProjects(projectsData);
-    } else {
-      setProjects(
-        projectsData.filter((project: any) =>
-          project.categories.some((cg: any) => categoriesSelected.includes(cg.id))
-        )
-      );
+    if (!projectsLoading) {
+      if (categoriesSelected.length === 0) {
+        setProjects(projectsData);
+      } else {
+        setProjects(
+          projectsData.filter((project: any) =>
+            project.categories.some((cg: any) => categoriesSelected.includes(cg.id))
+          )
+        );
+      }
     }
   }, [categoriesSelected, projectsData]);
 
