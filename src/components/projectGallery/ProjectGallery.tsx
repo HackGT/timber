@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAxios from "axios-hooks";
 import { List, Typography, Input, Select, Col, Row, Divider } from "antd";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -25,19 +25,15 @@ const ProjectGallery: React.FC<Props> = props => {
 
   const [searchText, setSearchText] = useState("");
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
-
   const [sortCondition, setSortCondition] = useState("");
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
-    useAxios({
-      method: "GET",
-      url: apiUrl(Service.EXPO, "/projects"),
-      params: {
-        hexathon: currentHexathon.id,
-        search: searchText,
-        categories: categoriesSelected,
-      },
-    });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/projects"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -63,6 +59,36 @@ const ProjectGallery: React.FC<Props> = props => {
     visible: false,
     initialValues: null,
   } as ModalState);
+
+  const [projects, setProjects] = useState(projectsData || []);
+
+  useEffect(() => {
+    if (!projectsLoading) {
+      if (searchText === "") {
+        setProjects(projectsData);
+      } else {
+        setProjects(
+          projectsData.filter((project: any) =>
+            project.name.toLowerCase().includes(searchText.toLowerCase())
+          )
+        );
+      }
+    }
+  }, [searchText, projectsData]);
+
+  useEffect(() => {
+    if (!projectsLoading) {
+      if (categoriesSelected.length === 0) {
+        setProjects(projectsData);
+      } else {
+        setProjects(
+          projectsData.filter((project: any) =>
+            project.categories.some((cg: any) => categoriesSelected.includes(cg.id))
+          )
+        );
+      }
+    }
+  }, [categoriesSelected, projectsData]);
 
   const openModal = (values: any) => {
     const newCategories = values.categories.map((category: any) => category.name);
@@ -99,15 +125,17 @@ const ProjectGallery: React.FC<Props> = props => {
     winnerIds.set(winner.id, winnerInfo);
   });
 
-  let updatedData = projectsData || [];
-
   const sortByName = (names: any) => names.sort((a: any, b: any) => a.name.localeCompare(b.name));
   if (sortCondition) {
-    updatedData = sortCondition === "name" ? sortByName(updatedData) : updatedData;
+    if (sortCondition === "name") {
+      sortByName(projects);
+    } else {
+      projects.sort((a: any, b: any) => a.id - b.id);
+    }
   }
 
-  const winnerCards = projectsData.filter((project: any) => winnerIds.has(project.id));
-  const regularCards = projectsData.filter((project: any) => !winnerIds.has(project.id));
+  const winnerCards = projects.filter((project: any) => winnerIds.has(project.id));
+  const regularCards = projects.filter((project: any) => !winnerIds.has(project.id));
 
   return (
     <>
@@ -123,6 +151,7 @@ const ProjectGallery: React.FC<Props> = props => {
         <Col xs={24} sm={12} md={8}>
           <Select
             mode="multiple"
+            value={categoriesSelected}
             placeholder="Filter by Categories"
             style={{ width: "100%" }}
             onChange={value => setCategoriesSelected(value)}
@@ -132,7 +161,8 @@ const ProjectGallery: React.FC<Props> = props => {
                 <Option key={item.name} value={item.id}>
                   {item.name}
                 </Option>
-              ))}
+              ))
+            }
           </Select>
         </Col>
         <Col xs={24} sm={4} md={4}>
@@ -188,7 +218,7 @@ const ProjectGallery: React.FC<Props> = props => {
         <List
           grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
           loading={projectsLoading}
-          dataSource={updatedData}
+          dataSource={projects}
           renderItem={(project: Project) => (
             <List.Item>
               <ProjectCard
