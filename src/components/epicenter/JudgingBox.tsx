@@ -12,8 +12,9 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
+import { Box, Text } from "@chakra-ui/react";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface Props {
   key: number;
@@ -77,7 +78,7 @@ const JudgingBox: React.FC<Props> = props => {
           <Tag>{category.name}</Tag>
         ))}
       </div>
-      <Text strong>Scores</Text>
+      <Text as="b">Scores</Text>
       {Object.entries(scoreData).map((category: any) => {
         let scoreString = "";
         Object.entries(category[1]).map(score => {
@@ -94,7 +95,7 @@ const JudgingBox: React.FC<Props> = props => {
           Join Video Call
         </a>
       )}
-      <Text strong>Change Round</Text>
+      <Text as="b">Change Round</Text>
       <div>
         <Button disabled={props.project.round === 1} onClick={() => updateRound(-1)} size="small">
           Move Back 1
@@ -103,7 +104,7 @@ const JudgingBox: React.FC<Props> = props => {
           Move Up 1
         </Button>
       </div>
-      <Text strong>Change Expo</Text>
+      <Text as="b">Change Expo</Text>
       <div>
         <Button disabled={props.project.expo === 1} onClick={() => updateExpo(-1)} size="small">
           Move Back 1
@@ -117,24 +118,24 @@ const JudgingBox: React.FC<Props> = props => {
 
   return (
     <Popover content={content} key={props.key} placement="bottom">
-      <div
+      <Box
         className="judging-boxes"
         key={props.key}
         style={{
-          background: props.assignment?.status.toString() === "QUEUED" ? "#888888" : undefined,
+          background: props.assignment?.status.toString() === "QUEUED" ? "#000000" : "#808080",
         }}
       >
-        <div className="judging-box-top-row">
-          <p>E:{props.project.expo}</p>
-          <p>R:{props.project.round}</p>
-        </div>
-        <p className="judging-box-project-id">P{props.project.id}</p>
-        <div className="judging-box-bottom-row">
-          <p>
+        <Box className="judging-box-top-row" paddingBottom="3">
+          <Text>E:{props.project.expo}</Text>
+          <Text>R:{props.project.round}</Text>
+        </Box>
+        <Text className="judging-box-project-id">P{props.project.id}</Text>
+        <Box className="judging-box-bottom-row">
+          <Text>
             {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
-          </p>
-        </div>
-      </div>
+          </Text>
+        </Box>
+      </Box>
     </Popover>
   );
 };
