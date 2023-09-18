@@ -122,7 +122,7 @@ const JudgingBox: React.FC<Props> = props => {
         className="judging-boxes"
         key={props.key}
         style={{
-          background: props.assignment?.status.toString() === "QUEUED" ? "#000000" : "#808080",
+          background: props.assignment?.status.toString() === "QUEUED" ? "#808080" : "#000000",
         }}
       >
         <Box className="judging-box-top-row" paddingBottom="3">
