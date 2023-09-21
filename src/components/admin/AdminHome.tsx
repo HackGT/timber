@@ -52,7 +52,7 @@ const AdminHome: React.FC = () => {
                 description={
                   <div>
                     <Text style={{ display: "block" }}>
-                      Category Group: {item.categoryGroup?.name || "N/A"}
+                      Category Group: {item.newCategoryGroupName}
                     </Text>
                     <div>
                       <Tag>{item.role}</Tag>
