@@ -79,6 +79,17 @@ const AdminContentList: React.FC<Props> = props => {
     ? updatedData.filter((user: User) => user.isJudging.toString() === isJudging)
     : updatedData;
 
+  if (props.queryUrl === "/users") {
+    for (const user of updatedData) {
+      console.log(user);
+      if (user.categoryGroup?.hexathon.toString() !== currentHexathon.id) {
+        user.newCategoryGroupName = "N/A";
+      } else {
+        user.newCategoryGroupName = user.categoryGroup.name;
+      }
+    }
+  }
+
   const Modal = props.modal;
 
   return (
