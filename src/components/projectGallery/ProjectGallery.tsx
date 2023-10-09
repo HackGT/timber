@@ -27,13 +27,14 @@ const ProjectGallery: React.FC<Props> = props => {
   const [categoriesSelected, setCategoriesSelected] = useState([] as any);
   const [sortCondition, setSortCondition] = useState("");
 
-  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/projects"),
-    params: {
-      hexathon: currentHexathon.id,
-    },
-  });
+  const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetch] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    });
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -102,7 +103,9 @@ const ProjectGallery: React.FC<Props> = props => {
     return <LoadingDisplay />;
   }
 
-  if (projectsError || categoriesError || configError || winnersError) {
+  const winError = configData.isProjectsPublished && winnersError;
+
+  if (projectsError || categoriesError || configError || winError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
@@ -159,13 +162,12 @@ const ProjectGallery: React.FC<Props> = props => {
           >
             {categoriesData &&
               categoriesData
-              .filter((category: any) => category.isDefault === false)
-              .map((item: any) => (
-                <Option key={item.name} value={item.id}>
-                  {item.name}
-                </Option>
-              ))
-            }
+                .filter((category: any) => category.isDefault === false)
+                .map((item: any) => (
+                  <Option key={item.name} value={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
           </Select>
         </Col>
         <Col xs={24} sm={4} md={4}>
