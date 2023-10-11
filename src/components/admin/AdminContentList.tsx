@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, List, Typography, Input, Select } from "antd";
+import { Button, List, Typography, Input } from "antd";
 import { Alert, AlertIcon, Box, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
@@ -8,7 +8,6 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { FormModalProps, ModalState } from "../../util/FormModalProps";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
-import { User } from "../../types/User";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
@@ -19,7 +18,6 @@ interface Props {
   queryUrl: string;
   sortData: (data: any) => any;
   modal: React.FC<FormModalProps>;
-  showSortUsersByRoleButton?: boolean;
   showIsJudging?: boolean;
   hideAddButton?: boolean;
   searchFilterField: string;
@@ -37,7 +35,6 @@ const AdminContentList: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
   const [searchText, setSearchText] = useState("");
-  const [isJudging, setIsJudging] = useState<any>(undefined);
 
   const [{ loading, data, error }, refetch] = useAxios({
     method: "GET",
@@ -62,33 +59,13 @@ const AdminContentList: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  let updatedData = data
+  const updatedData = data
     ? props
         .sortData(data)
         .filter((item: any) =>
           item[props.searchFilterField].toLowerCase().includes(searchText.toLowerCase())
         )
     : [];
-
-  const judgingOptions = [
-    { value: "true", label: "Is Judging" },
-    { value: "false", label: "Is Not Judging" },
-  ];
-
-  updatedData = isJudging
-    ? updatedData.filter((user: User) => user.isJudging.toString() === isJudging)
-    : updatedData;
-
-  if (props.queryUrl === "/users") {
-    for (const user of updatedData) {
-      console.log(user);
-      if (user.categoryGroup?.hexathon.toString() !== currentHexathon.id) {
-        user.newCategoryGroupName = "N/A";
-      } else {
-        user.newCategoryGroupName = user.categoryGroup.name;
-      }
-    }
-  }
 
   const Modal = props.modal;
 
@@ -97,27 +74,25 @@ const AdminContentList: React.FC<Props> = props => {
       <Flex>
         <Title level={3}>{props.title}</Title>
       </Flex>
-
-      {(props.title=="Categories") && (
+      {props.title === "Categories" && (
         <Box paddingBottom={2}>
-          <Alert status='info'>
+          <Alert status="info">
             <AlertIcon />
-            Categories are prizes or awards that hackathon submissions can win. 
-            For example, “Best Overall”  or “T-Mobile Winner” or “Best Design”. Categories belong 
-            to category groups for judging organization purposes.
+            Categories are prizes or awards that hackathon submissions can win. For example, “Best
+            Overall” or “T-Mobile Winner” or “Best Design”. Categories belong to category groups for
+            judging organization purposes.
           </Alert>
         </Box>
       )}
-
-
-      {(props.title=="Category Groups") && (
+      {props.title === "Category Groups" && (
         <Box paddingBottom={2}>
-          <Alert status='info'>
+          <Alert status="info">
             <AlertIcon />
-            Category Groups are internal identifiers for judging purposes where each judge is assigned a category 
-            group to review. For example, let’s say we need a T-Mobile judge that should be designated to judge 
-            all projects that have been submitted for a T-Mobile project. A category group would be created to 
-            handle this grouping and would be assigned to the respective judge.
+            Category Groups are internal identifiers for judging purposes where each judge is
+            assigned a category group to review. For example, let’s say we need a T-Mobile judge
+            that should be designated to judge all projects that have been submitted for a T-Mobile
+            project. A category group would be created to handle this grouping and would be assigned
+            to the respective judge.
           </Alert>
         </Box>
       )}
@@ -127,16 +102,6 @@ const AdminContentList: React.FC<Props> = props => {
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
       />
-      {props.showSortUsersByRoleButton && (
-        <Select
-          placeholder="Filter by Judging"
-          style={{ width: "300px" }}
-          optionFilterProp="label2"
-          onChange={(value: any) => setIsJudging(value)}
-          options={judgingOptions}
-          allowClear
-        />
-      )}
       {!props.hideAddButton && (
         <Button style={{ marginLeft: "10px" }} onClick={() => openModal(null)}>
           Add +

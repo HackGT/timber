@@ -2,7 +2,6 @@ import React from "react";
 import { Typography, Layout, Menu, Button, List, Tag } from "antd";
 import { useParams, useNavigate, Navigate } from "react-router-dom";
 import {
-  UserOutlined,
   SettingOutlined,
   ContainerOutlined,
   FolderOutlined,
@@ -10,7 +9,6 @@ import {
 } from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
-import UserFormModal from "./panes/users/UserFormModal";
 import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
@@ -20,7 +18,7 @@ const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
-  const paneKeys = ["config", "users", "categories", "categorygroups", "tablegroups"];
+  const paneKeys = ["config", "categories", "categorygroups", "tablegroups"];
   const { activePane } = useParams<any>();
   const navigate = useNavigate();
 
@@ -33,42 +31,6 @@ const AdminHome: React.FC = () => {
   switch (activePane) {
     case "config":
       content = <ConfigEditPane />;
-      break;
-    case "users":
-      content = (
-        <AdminContentList
-          queryUrl="/users"
-          title="Users"
-          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
-          modal={UserFormModal}
-          searchFilterField="name"
-          userRoleFilterField="general"
-          showSortUsersByRoleButton
-          hideAddButton
-          renderItem={(item, index, openModal) => (
-            <List.Item style={{ backgroundColor: "white" }}>
-              <List.Item.Meta
-                title={`${item.name} (${item.email})`}
-                description={
-                  <div>
-                    <Text style={{ display: "block" }}>
-                      Category Group: {item.newCategoryGroupName}
-                    </Text>
-                    <div>
-                      <Tag>{item.role}</Tag>
-                      {item.isJudging && <Tag>Judging</Tag>}
-                    </div>
-                  </div>
-                }
-                avatar={<UserOutlined />}
-              />
-              <Button onClick={() => openModal(item)}>Edit</Button>
-            </List.Item>
-          )}
-          key="users"
-          listBordered
-        />
-      );
       break;
     case "categories":
       content = (
@@ -111,8 +73,28 @@ const AdminHome: React.FC = () => {
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
-                title={item.name}
-                description={item.categories.map((category: any) => category.name).join(", ")}
+                title={
+                  <>
+                    <Text>{item.name}</Text>
+                    {item.isSponsor && (
+                      <Tag color="orange" style={{ marginLeft: "5px" }}>
+                        Sponsor
+                      </Tag>
+                    )}
+                  </>
+                }
+                description={
+                  <>
+                    <div>
+                      <i>Categories: </i>
+                      {item.categories.map((category: any) => category.name).join(", ")}
+                    </div>
+                    <div>
+                      <i>Judges: </i>
+                      {item.users.map((user: any) => user.name)}
+                    </div>
+                  </>
+                }
                 avatar={<FolderOutlined />}
               />
               <Button onClick={() => openModal(item)}>Edit</Button>
@@ -173,9 +155,6 @@ const AdminHome: React.FC = () => {
           >
             <Menu.Item key="config" icon={<SettingOutlined />}>
               Config
-            </Menu.Item>
-            <Menu.Item key="users" icon={<UserOutlined />}>
-              Users
             </Menu.Item>
             <Menu.Item key="categories" icon={<ContainerOutlined />}>
               Categories

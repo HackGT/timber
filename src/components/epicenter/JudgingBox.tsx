@@ -17,7 +17,6 @@ import { Box, Text } from "@chakra-ui/react";
 const { Title } = Typography;
 
 interface Props {
-  key: number;
   project: Project;
   assignment?: Assignment;
   tableGroup: TableGroup | undefined;
@@ -117,10 +116,9 @@ const JudgingBox: React.FC<Props> = props => {
   );
 
   return (
-    <Popover content={content} key={props.key} placement="bottom">
+    <Popover content={content} placement="bottom">
       <Box
         className="judging-boxes"
-        key={props.key}
         style={{
           background: props.assignment?.status.toString() === "QUEUED" ? "#808080" : "#000000",
         }}

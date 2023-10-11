@@ -29,7 +29,7 @@ export const routes = [
   // new Page(
   //   "Sponsor Page",
   //   `/category-group`,
-  //   user => [UserRole.SPONSOR].includes(user.role) && user.categoryGroupId !== undefined
+  //   user => user.isSponsor
   // ), // TODO: Update sponsor page
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => user.roles.admin),
@@ -61,12 +61,13 @@ const Navigation: React.FC<Props> = props => {
     };
   });
 
-  const filteredRoutes = routes.filter((page: Page) => {
-    if (page.link === "/category-group") {
-      page.setLink(`/category-group/${props.user.categoryGroupId}`);
-    }
-    return page.isAllowed(props.user);
-  });
+  const filteredRoutes = routes.filter((page: Page) =>
+    // TODO: Fix for category group
+    // if (page.link === "/category-group") {
+    //   page.setLink(`/category-group/${props.user.categoryGroupId}`);
+    // }
+    page.isAllowed(props.user)
+  );
 
   // return <Header routes={filteredRoutes} />;
   return (

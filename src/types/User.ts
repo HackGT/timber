@@ -6,12 +6,11 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  categoryGroupId: number;
   isJudging: boolean;
   isSponsor: boolean;
   projects: Project[];
   assignments: Assignment[];
-  categoryGroup: CategoryGroup;
+  categoryGroups: CategoryGroup[];
   roles: {
     admin: boolean;
     exec: boolean;
