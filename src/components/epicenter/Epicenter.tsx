@@ -18,12 +18,7 @@ import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 const { Title } = Typography;
 
 const Epicenter: React.FC = () => {
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
-
-  const [{ loading: userLoading, data: userData, error: userError }, refetchUsers] = useAxios(
-    apiUrl(Service.EXPO, "/users")
-  );
+  const { currentHexathon } = useCurrentHexathon();
 
   const [{ loading: categoryGroupsLoading, data: categoryGroupsData, error: categoryGroupsError }] =
     useAxios({
@@ -69,7 +64,6 @@ const Epicenter: React.FC = () => {
       });
       console.log("New Assignment: ", response.data);
       hide();
-      refetchUsers();
       message.info("There are no more projects available for this user to judge", 3);
     } catch (err: any) {
       hide();
@@ -77,17 +71,12 @@ const Epicenter: React.FC = () => {
     }
   };
 
-  if (userLoading || categoryGroupsLoading || configLoading || tableGroupsLoading) {
+  if (categoryGroupsLoading || configLoading || tableGroupsLoading) {
     return <LoadingDisplay />;
   }
-
-  if (userError || categoryGroupsError || configError || tableGroupsError) {
-    return <ErrorDisplay error={userError} />;
+  if (categoryGroupsError || configError || tableGroupsError) {
+    return <ErrorDisplay error={categoryGroupsError} />;
   }
-
-  const judges = userData
-    .filter((user: User) => user.isJudging)
-    .sort((a: Assignment, b: Assignment) => (a.priority > b.priority ? 1 : -1));
 
   const categoryGroups = [...categoryGroupsData, { name: "Unassigned", id: null }];
 
@@ -119,19 +108,19 @@ const Epicenter: React.FC = () => {
         onClick={autoAssign}
         style={{ margin: "10px 10px 15px 0" }}
       >
-        Auto-assign
+        Auto Assign
       </Button>
       <Button onClick={handleJudgingModalOpen} style={{ margin: "10px 0 15px 0" }}>
         Manual Assign
       </Button>
-      <JudgeAssignmentModal visible={judgingModalOpen} handleCancel={handleCancel} />
+      <JudgeAssignmentModal open={judgingModalOpen} handleCancel={handleCancel} />
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
           <List
             grid={{ gutter: 16, column: 4 }}
             loading={categoryGroupsLoading}
-            dataSource={judges.filter((judge: any) => judge.categoryGroupId === categoryGroup.id)}
+            dataSource={categoryGroup.users}
             renderItem={(user: User) => (
               <List.Item>
                 <JudgeCard key={user.id} user={user} tableGroupMap={tableGroupMap} />

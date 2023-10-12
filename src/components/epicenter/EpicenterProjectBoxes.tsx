@@ -154,7 +154,6 @@ const EpicenterProjectBoxes: React.FC = () => {
         <Col xs={24} sm={8} md={2}>
           <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>
             <Option value={0}>E: All</Option>
-
             {maxExpoArr.map((project: Project, index) => (
               <Option value={index + 1}> E: {index + 1}</Option>
             ))}

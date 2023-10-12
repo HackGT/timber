@@ -18,8 +18,7 @@ interface Props {
 
 const JudgingHome: React.FC<Props> = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
+  const { currentHexathon } = useCurrentHexathon();
 
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/assignments/current-project"));
 
@@ -48,7 +47,7 @@ const JudgingHome: React.FC<Props> = props => {
     },
   });
 
-  if (!props.user.categoryGroupId) {
+  if (!props.user.categoryGroups.filter(categoryGroup => categoryGroup.id === currentHexathon.id)) {
     return (
       <p>
         Please ask a HexLabs team member to assign you a category group before you start judging.
@@ -84,7 +83,7 @@ const JudgingHome: React.FC<Props> = props => {
     return (
       <Box>
         {skippedProjects.length > 0 && (
-          <Button onClick={onOpen} colorScheme="purple" padding="8px" borderRadius="10px">
+          <Button onClick={onOpen} colorScheme="purple">
             View Skipped
           </Button>
         )}

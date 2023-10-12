@@ -26,7 +26,7 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
   const onSubmit = async (assignmentId: any) => {
     try {
       await axios.patch(apiUrl(Service.EXPO, `/assignments/${assignmentId}`), {
-        data: { status: "STARTED" },
+        data: { status: "QUEUED" },
       });
       toast({
         title: "Success",
@@ -42,7 +42,7 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick size="sm">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
@@ -50,16 +50,20 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
         <ModalBody>
           <Box display="grid">
             {projects.map((project: any) => (
-              <Box key={project.id} display="flex" justifyContent="space-between" pb="2">
-                <Text fontSize="18px" display="flex" height="100%">
-                  <Text fontSize="18px" fontWeight="bold" height="100%">
-                    Name:&nbsp;
-                  </Text>{" "}
+              <Box
+                key={project.id}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                pb="2"
+              >
+                <Text>
+                  <strong>Project Name: </strong>
                   {project.name}
                 </Text>
                 <Button
                   colorScheme="purple"
-                  size="xs"
+                  size="sm"
                   px="3"
                   onClick={() => onSubmit(project.assignmentId)}
                 >

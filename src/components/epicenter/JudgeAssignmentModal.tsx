@@ -1,16 +1,11 @@
-import { DownOutlined } from "@ant-design/icons";
-import { Form, Modal, Select, Menu, Dropdown, Typography, message } from "antd";
+import { Form, Modal, Select, Typography, message, Button } from "antd";
 import useAxios from "axios-hooks";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import { Project } from "../../types/Project";
-import { ModalState } from "../../util/FormModalProps";
-import { Category } from "../../types/Category";
-import { CategoryGroup } from "../../types/CategoryGroup";
-import { User } from "../../types/User";
-import { handleAxiosError } from "../../util/util";
+import { FORM_RULES, handleAxiosError } from "../../util/util";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
@@ -19,88 +14,76 @@ const { Option } = Select;
 const { Title } = Typography;
 
 type JudgeTypes = {
-  visible: boolean;
+  open: boolean;
   handleCancel: () => void;
 };
 
-const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
-  const [form] = Form.useForm();
-  const [selectedProject, setSelectedProject] = useState<Project>();
-  const [selectedUser, setSelectedUser] = useState("");
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
+const JudgeAssignmentModal = ({ open, handleCancel }: JudgeTypes) => {
+  const { currentHexathon } = useCurrentHexathon();
 
-  const [{ loading, data, error }, refetchProjects] = useAxios({
+  const [{ data: projectsData, loading: projectsLoading, error: projectsError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
       hexathon: currentHexathon.id,
     },
   });
-  const [{ data: userData, loading: userLoading, error: userError }] = useAxios(
-    apiUrl(Service.EXPO, "/users")
-  );
-  const [users, setUsers] = useState<any[]>([]);
-
-  // const getJudges = () => {
-  //   selectedProject;
-  // };
-
-  if (loading || userLoading) {
-    return <LoadingDisplay />;
-  }
-
-  if (error || userError) {
-    return <ErrorDisplay error={error} />;
-  }
-
-  const handleChange = (e: any) => {
-    const project: Project = data.find((o: Project) => o.id === e);
-    let categoryGroupIds: number[] = [];
-    project.categories.forEach((category: Category) => {
-      category.categoryGroups.forEach((categoryGroup: CategoryGroup) => {
-        categoryGroupIds.push(categoryGroup.id);
-      });
+  const [{ data: categoryGroupsData, loading: categoryGroupsLoading, error: categoryGroupsError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/category-groups"),
+      params: {
+        hexathon: currentHexathon.id,
+      },
     });
-    categoryGroupIds = categoryGroupIds.filter(
-      (item, index, inputArray) => inputArray.indexOf(item) === index
+
+  const [form] = Form.useForm();
+  const selectedProject = Form.useWatch("project", form);
+
+  // filter projects and get all judges eligible for this project
+  const eligibleJudgeOptions = useMemo(() => {
+    const project: Project = projectsData?.find((p: Project) => p.id === selectedProject);
+    if (!project) {
+      return [];
+    }
+
+    const projectCategoryGroupsIdSet = new Set(
+      project.categories.flatMap(p => p.categoryGroups).map(categoryGroup => categoryGroup.id)
     );
-    type UserArrayType = {
+
+    const eligibleJudges: {
       name: string;
       id: string;
-    };
-    const userArray: UserArrayType[] = [];
-    userData.forEach((user: User) => {
-      if (!user.categoryGroup) {
-        return;
-      }
-      if (categoryGroupIds.includes(user.categoryGroup.id)) {
-        userArray.push({ name: user.name, id: user.id });
-      }
-    });
-    setSelectedProject(project);
-    setUsers(userArray);
-  };
+    }[] = [];
 
-  const handleUserChange = (user: string) => {
-    setSelectedUser(user);
-  };
+    for (const categoryGroup of categoryGroupsData ?? []) {
+      if (projectCategoryGroupsIdSet.has(categoryGroup.id)) {
+        for (const user of categoryGroup.users) {
+          eligibleJudges.push({ name: user.name, id: user.id });
+        }
+      }
+    }
 
-  const handleSubmit = async () => {
-    const user: User = userData.find((o: User) => o.id === selectedUser);
-    user.assignments = [];
+    return eligibleJudges;
+  }, [selectedProject, projectsData, categoryGroupsData]);
+
+  if (projectsLoading || categoryGroupsLoading) {
+    return <LoadingDisplay />;
+  }
+  if (projectsError) {
+    return <ErrorDisplay error={projectsError} />;
+  }
+  if (categoryGroupsError) {
+    return <ErrorDisplay error={categoryGroupsError} />;
+  }
+
+  const onSubmit = async () => {
+    const values = await form.validateFields();
     const hide = message.loading("Loading...", 0);
     try {
-      const submittedAssignment = await axios.post(apiUrl(Service.EXPO, "/assignments"), {
-        user,
-        project: selectedProject,
-        data: {
-          userId: user.id,
-          projectId: selectedProject?.id,
-          priority: 1,
-          categoryIds: user.categoryGroup.categories,
-          status: "QUEUED",
-        },
+      await axios.post(apiUrl(Service.EXPO, "/assignments"), {
+        user: values.user,
+        project: values.project,
       });
       hide();
       message.success("Judge assigned!");
@@ -111,42 +94,50 @@ const JudgeAssignmentModal = ({ visible, handleCancel }: JudgeTypes) => {
   };
 
   return (
-    <Modal visible={visible} onCancel={handleCancel} onOk={handleSubmit} okText="Create Assignment">
-      <Form>
-        <Title level={3}>Manual Assignment</Title>
-        <Select
-          style={{ width: 240 }}
-          showSearch
-          placeholder="Select a Project"
-          optionFilterProp="children"
-          filterOption={(input: any, option: any) =>
-            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          onChange={handleChange}
-        >
-          {data.map((project: Project) => (
-            <Option value={project.id} key={project.id}>
-              {project.name}
-            </Option>
-          ))}
-        </Select>
-        <Select
-          showSearch
-          placeholder="Select a Judge"
-          style={{ width: 240, marginTop: 10 }}
-          onChange={handleUserChange}
-          disabled={users.length === 0}
-          optionFilterProp="children"
-          filterOption={(input: any, option: any) =>
-            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {users.map(user => (
-            <Option value={user.id} key={user.id}>
-              {user.name}
-            </Option>
-          ))}
-        </Select>
+    <Modal
+      open={open}
+      onCancel={handleCancel}
+      okText="Create Assignment"
+      onOk={onSubmit}
+      destroyOnClose
+    >
+      <Form form={form} layout="vertical" preserve={false}>
+        <Title level={3}>Manual Judge Assignment</Title>
+        <Form.Item name="project" label="Project" rules={[FORM_RULES.requiredRule]}>
+          <Select
+            style={{ width: 250 }}
+            showSearch
+            placeholder="Select a Project"
+            optionFilterProp="children"
+            filterOption={(input: any, option: any) =>
+              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {projectsData.map((project: Project) => (
+              <Option value={project.id} key={project.id}>
+                {project.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="user" label="Judge" rules={[FORM_RULES.requiredRule]}>
+          <Select
+            showSearch
+            placeholder="Select a Judge"
+            style={{ width: 250 }}
+            disabled={eligibleJudgeOptions.length === 0}
+            optionFilterProp="children"
+            filterOption={(input: any, option: any) =>
+              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {eligibleJudgeOptions.map(user => (
+              <Option value={user.id} key={user.id}>
+                {user.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
       </Form>
     </Modal>
   );

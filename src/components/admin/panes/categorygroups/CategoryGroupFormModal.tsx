@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, message, Modal, Select, Popconfirm } from "antd";
+import { Button, Form, Input, message, Modal, Select, Popconfirm, Switch } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -167,6 +167,9 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
             loading={userLoading}
             allowClear
           />
+        </Form.Item>
+        <Form.Item name="isSponsor" label="Is Sponsor Category Group" valuePropName="checked">
+          <Switch />
         </Form.Item>
       </Form>
     </Modal>
