@@ -44,7 +44,7 @@ const AdminHome: React.FC = () => {
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
-                title={item.name}
+                title={<strong>{item.name}</strong>}
                 description={item.criterias
                   .map(
                     (criteria: any) =>
@@ -117,7 +117,7 @@ const AdminHome: React.FC = () => {
           renderItem={(item, index, openModal) => (
             <List.Item style={{ backgroundColor: "white" }}>
               <List.Item.Meta
-                title={item.name}
+                title={<strong>{item.name}</strong>}
                 description={`[${item.shortCode}] - ${item.color}`}
                 avatar={<TableOutlined />}
               />
