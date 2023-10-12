@@ -156,7 +156,6 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
             options={categoryOptions}
             optionFilterProp="label"
             loading={categoriesLoading}
-            allowClear
           />
         </Form.Item>
         <Form.Item name="users" label="Users">
@@ -165,7 +164,6 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
             options={userOptions}
             optionFilterProp="label"
             loading={userLoading}
-            allowClear
           />
         </Form.Item>
         <Form.Item name="isSponsor" label="Is Sponsor Category Group" valuePropName="checked">

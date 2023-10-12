@@ -75,7 +75,7 @@ const AdminHome: React.FC = () => {
               <List.Item.Meta
                 title={
                   <>
-                    <Text>{item.name}</Text>
+                    <strong>{item.name}</strong>
                     {item.isSponsor && (
                       <Tag color="orange" style={{ marginLeft: "5px" }}>
                         Sponsor
@@ -91,7 +91,7 @@ const AdminHome: React.FC = () => {
                     </div>
                     <div>
                       <i>Judges: </i>
-                      {item.users.map((user: any) => user.name)}
+                      {item.users.map((user: any) => user.name).join(", ")}
                     </div>
                   </>
                 }
