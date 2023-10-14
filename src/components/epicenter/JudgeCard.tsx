@@ -6,6 +6,7 @@ import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
 import { AssignmentStatus } from "../../types/AssignmentStatus";
 import { TableGroup } from "../../types/TableGroup";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 interface Props {
   key: string;
@@ -14,10 +15,13 @@ interface Props {
 }
 
 const JudgeCard: React.FC<Props> = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
   const queuedProjects: any[] = [];
   const completedProjects: any[] = [];
 
   props.user.assignments.forEach((assignment: Assignment) => {
+    if (assignment.project.hexathon !== currentHexathon.id) return;
     switch (assignment.status) {
       case AssignmentStatus.QUEUED:
         queuedProjects.push(
