@@ -34,7 +34,13 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   );
 
   const [{ data: tableGroupsData, loading: tableGroupsLoading }] = useAxios(
-    apiUrl(Service.EXPO, `/table-groups`),
+    {
+      url: apiUrl(Service.EXPO, `/table-groups`),
+      method: "GET",
+      params: {
+        hexathon: currentHexathon.id,
+      },
+    },
     {
       useCache: false,
     }
