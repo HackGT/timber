@@ -47,22 +47,21 @@ const ProjectCard: React.FC<Props> = props => {
               <Tooltip
                 label={
                   <Stack>
-                    <p>
-                      <b>Category: </b>
+                    <div>
+                      <strong>Category: </strong>
                       <Tag color="blue">{projectData.category.name}</Tag>
-                    </p>
-                    <p>
-                      <b>Members: </b>
-                      <p>
+                    </div>
+                    <div>
+                      <strong>Members: </strong>
+                      <div>
                         {projectData.members.map((member: any) => (
-                          <li key={member.id}>
-                            {member.name} - {member.email}
-                          </li>
+                          <li key={member.id}>{member.name}</li>
                         ))}
-                      </p>
-                    </p>
+                      </div>
+                    </div>
                   </Stack>
                 }
+                padding={3}
               >
                 <InfoIcon />
               </Tooltip>
