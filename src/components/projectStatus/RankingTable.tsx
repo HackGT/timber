@@ -5,7 +5,7 @@ import React from "react";
 import { SortOrder } from "antd/lib/table/interface";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, Service } from "@hex-labs/core";
 import axios from "axios";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
@@ -54,6 +54,13 @@ const columns = [
     sorter: (a: any, b: any) => a.median - b.median,
   },
   {
+    title: "Normalized Score",
+    dataIndex: "normalized",
+    key: "normalized",
+    defaultSortOrder: "descend" as SortOrder,
+    sorter: (a: any, b: any) => a.normalized - b.normalized,
+  },
+  {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
@@ -69,6 +76,12 @@ const columns = [
 const RankingTable = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+
+  const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }] =
+    useAxios({
+      method: "GET",
+      url: apiUrl(Service.EXPO, "/projects/special/calculate-normalized-scores"),
+    });
 
   const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios({
     method: "GET",
@@ -86,16 +99,12 @@ const RankingTable = () => {
     },
   });
 
-  if (categoryLoading || projectsLoading) {
+  if (categoryLoading || projectsLoading || projectScoresLoading) {
     return <LoadingDisplay />;
   }
 
-  if (categoryError) {
-    return <ErrorDisplay error={categoryError} />;
-  }
-
-  if (projectsError) {
-    return <ErrorDisplay error={projectsError} />;
+  if (categoryError || projectsError || projectScoresError) {
+    return <ErrorDisplay error={categoryError || projectsError || projectScoresError} />;
   }
 
   const createWinner = async (
@@ -169,7 +178,6 @@ const RankingTable = () => {
                     }
                   }
                 });
-
               });
 
               const winnerButton = (
@@ -203,8 +211,11 @@ const RankingTable = () => {
                     View Devpost
                   </a>
                 ),
-                average: numJudged > 0 ? parseFloat((projectScore/allScores.length).toFixed(1)) : 0,
+                average:
+                  numJudged > 0 ? parseFloat((projectScore / allScores.length).toFixed(1)) : 0,
                 median: numJudged > 0 ? calculateMedian(allScores) : 0,
+                normalized:
+                  numJudged > 0 && project.id in projectScores ? projectScores[project.id] : 0,
                 numJudged,
                 editScore: editButton,
                 makeWinner: winnerButton,
