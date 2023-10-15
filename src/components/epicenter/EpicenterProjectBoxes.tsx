@@ -66,7 +66,7 @@ const EpicenterProjectBoxes: React.FC = () => {
         .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
         .filter((project: Project) => round === 0 || project.round === round)
         .filter((project: Project) => expo === 0 || project.expo === expo)
-        .filter((project: Project) => tableGroup === 0 || project.tableGroupId === tableGroup)
+        .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
         .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
     : [];
 
@@ -117,11 +117,11 @@ const EpicenterProjectBoxes: React.FC = () => {
   const maxExpoArr = new Array(maxExpo).fill(0);
   const maxTableNumberArr = new Array(maxTableNumber).fill(0);
 
-  const tableGroupMap = new Map<number, TableGroup>();
+  // const tableGroupMap = new Map<number, TableGroup>();
 
-  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
-    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  });
+  // tableGroupsData.forEach((tableGroupItem: TableGroup) => {
+  //   tableGroupMap.set(tableGroupItem.id, tableGroupItem);
+  // });
 
   return (
     <>
@@ -207,7 +207,7 @@ const EpicenterProjectBoxes: React.FC = () => {
           <JudgingBox
             key={project.id}
             project={project}
-            tableGroup={tableGroupMap.get(project.tableGroupId)}
+            tableGroup={project.tableGroup}
             refetch={refetchProjects}
           />
         ))}

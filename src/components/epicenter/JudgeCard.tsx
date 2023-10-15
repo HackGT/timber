@@ -11,7 +11,7 @@ import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 interface Props {
   key: string;
   user: User;
-  tableGroupMap: Map<number, TableGroup>;
+  tableGroup: any;
 }
 
 const JudgeCard: React.FC<Props> = props => {
@@ -29,7 +29,7 @@ const JudgeCard: React.FC<Props> = props => {
             key={assignment.id}
             project={assignment.project}
             assignment={assignment}
-            tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}
+            tableGroup={assignment.project.tableGroup}
           />
         );
         break;
@@ -40,7 +40,7 @@ const JudgeCard: React.FC<Props> = props => {
             key={assignment.id}
             project={assignment.project}
             assignment={assignment}
-            tableGroup={props.tableGroupMap.get(assignment.project.tableGroupId)}
+            tableGroup={props.tableGroup}
           />
         );
         break;

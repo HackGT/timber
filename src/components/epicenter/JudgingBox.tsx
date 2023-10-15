@@ -70,7 +70,7 @@ const JudgingBox: React.FC<Props> = props => {
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         {props.project.devpostUrl}
       </a>
-      <Text>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : 1}</Text>
+      <Text>Table Group: {props.tableGroup !== undefined ? props.tableGroup.name : "N/A"}</Text>
       <Text>Table Number: {props.project.table}</Text>
       <div>
         {props.project.categories.map(category => (

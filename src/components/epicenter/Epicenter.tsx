@@ -80,11 +80,6 @@ const Epicenter: React.FC = () => {
 
   const categoryGroups = [...categoryGroupsData, { name: "Unassigned", id: null }];
 
-  const tableGroupMap = new Map<number, TableGroup>();
-
-  tableGroupsData.forEach((tableGroupItem: TableGroup) => {
-    tableGroupMap.set(tableGroupItem.id, tableGroupItem);
-  });
   return (
     <>
       {configData.isJudgingOn ? (
@@ -123,7 +118,7 @@ const Epicenter: React.FC = () => {
             dataSource={categoryGroup.users}
             renderItem={(user: User) => (
               <List.Item>
-                <JudgeCard key={user.id} user={user} tableGroupMap={tableGroupMap} />
+                <JudgeCard key={user.id} user={user} tableGroup={tableGroupsData} />
               </List.Item>
             )}
           />

@@ -77,7 +77,7 @@ const DetailInfoForm: React.FC<Props> = props => {
           <Col {...FORM_LAYOUT.full}>
             <Form.Item
               name="githubUrl"
-              rules={[/* FORM_RULES.requiredRule, */ FORM_RULES.urlRule]}
+              rules={[FORM_RULES.urlRule]}
               label="GitHub Url"
             >
               <Input placeholder="https://github.com/HackGT/timber" />
