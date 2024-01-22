@@ -141,7 +141,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
           okText="Yes"
           cancelText="No"
         >
-          <Button>This Project Is Not Here</Button>
+          <Button style={{ marginRight: "10px" }}>This Project Is Not Here</Button>
         </Popconfirm>
         <Popconfirm
           placement="right"
