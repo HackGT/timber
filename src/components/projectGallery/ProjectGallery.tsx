@@ -69,8 +69,9 @@ const ProjectGallery: React.FC<Props> = props => {
         setProjects(projectsData);
       } else {
         setProjects(
-          projectsData.filter((project: any) =>
-            project.name.toLowerCase().includes(searchText.toLowerCase())
+          projectsData.filter((project: Project) =>
+            project.name.toLowerCase().includes(searchText.toLowerCase()) || 
+            project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
           )
         );
       }

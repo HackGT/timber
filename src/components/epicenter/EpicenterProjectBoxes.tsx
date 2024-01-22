@@ -62,12 +62,15 @@ const EpicenterProjectBoxes: React.FC = () => {
   }
 
   let updatedData = projectsData
-    ? projectsData
-        .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
+    ? (projectsData
+        .filter((project: Project) =>
+          project.name.toLowerCase().includes(searchText.toLowerCase()) || 
+          project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
+        )
         .filter((project: Project) => round === 0 || project.round === round)
         .filter((project: Project) => expo === 0 || project.expo === expo)
         .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
-        .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
+        .filter((project: Project) => tableNumber === 0 || project.table === tableNumber))
     : [];
 
   updatedData = selectedCategory
