@@ -15,10 +15,11 @@ import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Search } = Input;
-
+const CurrentHexathonContext = useCurrentHexathon();
+const { currentHexathon } = CurrentHexathonContext;
 const handleDownload = async () => {
   await axios
-    .get(apiUrl(Service.EXPO, "/winners/export"), { responseType: "blob" })
+    .get(apiUrl(Service.EXPO, "/winners/export"), {params: {hexathon: currentHexathon..id}, responseType: "blob" })
     .then(response => {
       const href = URL.createObjectURL(response.data);
 
@@ -43,8 +44,7 @@ const Winners: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
+
 
   const openModal = (values: any) => {
     setModalState({
