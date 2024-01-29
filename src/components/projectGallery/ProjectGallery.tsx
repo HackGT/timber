@@ -70,7 +70,7 @@ const ProjectGallery: React.FC<Props> = props => {
       } else {
         setProjects(
           projectsData.filter((project: Project) =>
-            project.name.toLowerCase().includes(searchText.toLowerCase()) || 
+            project.name.toLowerCase().includes(searchText.toLowerCase()) ||
             project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
           )
         );
@@ -143,7 +143,7 @@ const ProjectGallery: React.FC<Props> = props => {
 
   return (
     <>
-      <Title level={2}>Project Gallery</Title>
+      <Title level={2}>Project Gallery {props.user.roles.admin && `(${projects.length} total projects)`}</Title>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={8} md={8}>
           <Search

@@ -11,6 +11,7 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
+import { Text } from '@chakra-ui/react'
 
 const { Option } = Select;
 const { Search } = Input;
@@ -63,20 +64,20 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   let updatedData = projectsData
     ? (projectsData
-        .filter((project: Project) =>
-          project.name.toLowerCase().includes(searchText.toLowerCase()) || 
-          project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
-        )
-        .filter((project: Project) => round === 0 || project.round === round)
-        .filter((project: Project) => expo === 0 || project.expo === expo)
-        .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
-        .filter((project: Project) => tableNumber === 0 || project.table === tableNumber))
+      .filter((project: Project) =>
+        project.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
+      )
+      .filter((project: Project) => round === 0 || project.round === round)
+      .filter((project: Project) => expo === 0 || project.expo === expo)
+      .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
+      .filter((project: Project) => tableNumber === 0 || project.table === tableNumber))
     : [];
 
   updatedData = selectedCategory
     ? updatedData.filter((project: Project) =>
-        project.categories.map((category: Category) => category.id).includes(selectedCategory)
-      )
+      project.categories.map((category: Category) => category.id).includes(selectedCategory)
+    )
     : updatedData;
 
   if (selectedCategory && sortCondition === "highest") {
@@ -97,9 +98,9 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   const categoryOptions = categoriesData
     ? categoriesData.map((category: Category) => ({
-        label: category.name,
-        value: category.id,
-      }))
+      label: category.name,
+      value: category.id,
+    }))
     : [];
   let maxRound = 0;
   let maxExpo = 0;
@@ -128,6 +129,7 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   return (
     <>
+      <Text fontSize='md' mb={2}>{updatedData.length} projects total</Text>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={8} md={5}>
           <Search
