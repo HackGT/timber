@@ -15,26 +15,7 @@ import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Search } = Input;
-const CurrentHexathonContext = useCurrentHexathon();
-const { currentHexathon } = CurrentHexathonContext;
-const handleDownload = async () => {
-  await axios
-    .get(apiUrl(Service.EXPO, "/winners/export"), {params: {hexathon: currentHexathon..id}, responseType: "blob" })
-    .then(response => {
-      const href = URL.createObjectURL(response.data);
 
-      // create "a" HTML element with href to file & click
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("download", "Winners.csv");
-      document.body.appendChild(link);
-      link.click();
-
-      // clean up "a" element & remove ObjectURL
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
-    });
-};
 
 const Winners: React.FC = () => {
   const [modalState, setModalState] = useState({
@@ -45,7 +26,28 @@ const Winners: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
 
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
 
+  const handleDownload = async () => {
+    await axios
+      .get(apiUrl(Service.EXPO, "/winners/export"), {params: {hexathon: currentHexathon.id}, responseType: "blob" })
+      .then(response => {
+        const href = URL.createObjectURL(response.data);
+  
+        // create "a" HTML element with href to file & click
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", "Winners.csv");
+        document.body.appendChild(link);
+        link.click();
+  
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+      });
+  };
+  
   const openModal = (values: any) => {
     setModalState({
       visible: true,
