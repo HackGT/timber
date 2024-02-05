@@ -32,7 +32,7 @@ const ProjectGallery: React.FC<Props> = props => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 
@@ -40,7 +40,7 @@ const ProjectGallery: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
@@ -48,7 +48,7 @@ const ProjectGallery: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/winners"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 

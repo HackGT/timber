@@ -43,8 +43,8 @@ const Winners: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
+  const {currentHexathon} = useCurrentHexathon();
+
 
   const openModal = (values: any) => {
     setModalState({
@@ -57,7 +57,7 @@ const Winners: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/winners"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
