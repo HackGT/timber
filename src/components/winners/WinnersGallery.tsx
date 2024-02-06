@@ -26,8 +26,9 @@ const Winners: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
 
-  const CurrentHexathonContext = useCurrentHexathon();
-  const { currentHexathon } = CurrentHexathonContext;
+  const {currentHexathon} = useCurrentHexathon();
+
+
 
   const handleDownload = async () => {
     await axios
@@ -59,7 +60,7 @@ const Winners: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/winners"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 

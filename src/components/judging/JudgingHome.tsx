@@ -26,7 +26,7 @@ const JudgingHome: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/assignments"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
@@ -35,7 +35,7 @@ const JudgingHome: React.FC<Props> = props => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 
@@ -43,7 +43,7 @@ const JudgingHome: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
