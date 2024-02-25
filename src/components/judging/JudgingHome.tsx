@@ -1,7 +1,7 @@
 import useAxios from "axios-hooks";
 import React from "react";
 import { apiUrl, Service } from "@hex-labs/core";
-import { useDisclosure, Box, Button, Heading, Link } from "@chakra-ui/react";
+import { useDisclosure, Box, Button, Heading, Link, HStack } from "@chakra-ui/react";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -11,6 +11,7 @@ import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { SkippedModal } from "./SkippedModal";
+import JudgingTimer from "./JudgingTimer";
 
 interface Props {
   user: User;
@@ -145,12 +146,16 @@ const JudgingHome: React.FC<Props> = props => {
     <>
       <Box display="flex" justifyContent="space-between">
         <Box>
-          <Heading
-            as="h1"
-            style={{ paddingBottom: "15px", fontSize: "35px", fontWeight: "normal" }}
-          >
-            Project Name: {data.name}
-          </Heading>
+          <HStack spacing={1}>
+            <Heading
+              as="h1"
+              style={{ paddingBottom: "15px", fontSize: "35px", fontWeight: "normal" }}
+            >
+              Project Name: {data.name}
+            </Heading>
+            <JudgingTimer />
+          </HStack>
+
           <Heading
             as="h3"
             style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
