@@ -1,5 +1,5 @@
 import { apiUrl, Service } from "@hex-labs/core";
-import { Row, Col, Select, Input } from "antd";
+import { Row, Col, Select, Input, Alert } from "antd";
 import useAxios from "axios-hooks";
 import React, { useState } from "react";
 
@@ -11,7 +11,7 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
-import { Text } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 
 const { Option } = Select;
 const { Search } = Input;
@@ -50,6 +50,7 @@ const EpicenterProjectBoxes: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
   const [sortCondition, setSortCondition] = useState("default");
   const [round, setRound] = useState(0);
+  const [judged, setJudged] = useState(0);
   const [expo, setExpo] = useState(0);
   const [tableGroup, setTableGroup] = useState(0);
   const [tableNumber, setTableNumber] = useState(0);
@@ -121,6 +122,12 @@ const EpicenterProjectBoxes: React.FC = () => {
   const maxExpoArr = new Array(maxExpo).fill(0);
   const maxTableNumberArr = new Array(maxTableNumber).fill(0);
 
+  if (judged != 0) {
+    // judged = 0 = show unjudged projects
+    updatedData = updatedData.filter((project: Project) => project.ballots.length == 0);
+  }
+
+
   // const tableGroupMap = new Map<number, TableGroup>();
 
   // tableGroupsData.forEach((tableGroupItem: TableGroup) => {
@@ -129,7 +136,20 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   return (
     <>
-      <Text fontSize='md' mb={2}>{updatedData.length} projects total</Text>
+      <Text fontSize='md' mb={2} color='black'>{updatedData.length} projects total</Text>
+
+      {
+        judged == 1 && (
+          <Box mb={2}>
+            <Alert
+              message="Currently showing all projects with 0 ballots cast. Note that some projects may have >= 1 ballots cast, but still need to be judged more times."
+              type="warning"
+              showIcon
+            />
+          </Box>
+        )
+      }
+
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={8} md={5}>
           <Search
@@ -149,12 +169,17 @@ const EpicenterProjectBoxes: React.FC = () => {
           />
         </Col>
         <Col xs={24} sm={8} md={2}>
-          <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
+          <Select value={judged} style={{ width: "100%" }} onChange={value => setJudged(value)}>
+            <Option value={0}>J: All</Option>
+            <Option value={1}>J: Unjudged</Option>
+          </Select>
+
+          {/* <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
             <Option value={0}>R: All</Option>
             {maxRoundArr.map((project: Project, index) => (
               <Option value={index + 1}> R: {index + 1}</Option>
             ))}
-          </Select>
+          </Select> */}
         </Col>
         <Col xs={24} sm={8} md={2}>
           <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>
