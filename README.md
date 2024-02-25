@@ -1,7 +1,7 @@
 # Timber
 
 Hexlab's mystical new project submission and judging system for hackathons and other events. Goes by
-many names such as Ballot, Expo, and Timber. Used most recently at HackGT 9.
+many names such as Ballot, Expo, and Timber. Used most recently at HackGT 10.
 
 ## Getting Started
 
