@@ -21,7 +21,7 @@ const JudgeCard: React.FC<Props> = props => {
   const completedProjects: any[] = [];
 
   props.user.assignments.forEach((assignment: Assignment) => {
-    if (assignment.project.hexathon !== currentHexathon.id) return;
+    if (assignment.project.hexathon !== currentHexathon?.id) return;
     switch (assignment.status) {
       case AssignmentStatus.QUEUED:
         queuedProjects.push(

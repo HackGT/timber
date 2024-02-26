@@ -87,7 +87,7 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
@@ -95,7 +95,7 @@ const RankingTable = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
