@@ -32,7 +32,7 @@ const Winners: React.FC = () => {
 
   const handleDownload = async () => {
     await axios
-      .get(apiUrl(Service.EXPO, "/winners/export"), {params: {hexathon: currentHexathon.id}, responseType: "blob" })
+      .get(apiUrl(Service.EXPO, "/winners/export"), {params: {hexathon: currentHexathon?.id}, responseType: "blob" })
       .then(response => {
         const href = URL.createObjectURL(response.data);
   
@@ -68,7 +68,7 @@ const Winners: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
