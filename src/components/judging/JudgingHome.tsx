@@ -48,7 +48,7 @@ const JudgingHome: React.FC<Props> = props => {
     },
   });
 
-  if (!props.user.categoryGroups.filter(categoryGroup => categoryGroup.id === currentHexathon.id)) {
+  if (!props.user.categoryGroups.filter(categoryGroup => categoryGroup.id === currentHexathon?.id)) {
     return (
       <p>
         Please ask a HexLabs team member to assign you a category group before you start judging.

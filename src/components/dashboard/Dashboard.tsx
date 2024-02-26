@@ -131,7 +131,7 @@ const Dashboard: React.FC<Props> = props => {
           >
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter((project: any) => project.hexathon.id === currentHexathon.id)}
+              dataSource={data.filter((project: any) => project.hexathon.id === currentHexathon?.id)}
               renderItem={(project: any) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>
@@ -141,7 +141,7 @@ const Dashboard: React.FC<Props> = props => {
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
                       <br />
-                      {project.hexathon.id === currentHexathon.id && configData.revealTableGroups && (
+                      {project.hexathon.id === currentHexathon?.id && configData.revealTableGroups && (
                         <>
                           <p>
                             <b>Table Group: </b>
@@ -162,7 +162,7 @@ const Dashboard: React.FC<Props> = props => {
           <ConfigProvider renderEmpty={() => <Empty description="You have no past submissions" />}>
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter((project: any) => project.hexathon.id !== currentHexathon.id)}
+              dataSource={data.filter((project: any) => project.hexathon.id !== currentHexathon?.id)}
               renderItem={(project: any) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>

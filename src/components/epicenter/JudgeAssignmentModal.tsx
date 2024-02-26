@@ -25,7 +25,7 @@ const JudgeAssignmentModal = ({ open, handleCancel }: JudgeTypes) => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
   const [{ data: categoryGroupsData, loading: categoryGroupsLoading, error: categoryGroupsError }] =
@@ -33,7 +33,7 @@ const JudgeAssignmentModal = ({ open, handleCancel }: JudgeTypes) => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/category-groups"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 

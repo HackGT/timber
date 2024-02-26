@@ -40,7 +40,7 @@ const AdminContentList: React.FC<Props> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, props.queryUrl),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
