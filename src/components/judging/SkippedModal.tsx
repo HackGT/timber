@@ -12,6 +12,7 @@ import {
   Box,
   Text,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import { Service, apiUrl, handleAxiosError } from "@hex-labs/core";
 
@@ -57,10 +58,21 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                 alignItems="center"
                 pb="2"
               >
-                <Text>
-                  <strong>Project Name: </strong>
-                  {project.name}
-                </Text>
+                <VStack spacing={1} alignItems="start">
+                  <Text>
+                    <strong>Project Name: </strong>
+                    {project.name}
+                  </Text>
+                  <Text>
+                    <strong>Table Number: </strong>
+                    {project.table}
+                  </Text>
+                  <Text>
+                    <strong>Table Group: </strong>
+                    {project.tableGroup.name}
+                  </Text>
+                </VStack>
+                
                 <Button
                   colorScheme="purple"
                   size="sm"
