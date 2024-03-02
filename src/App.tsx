@@ -152,7 +152,7 @@ export const App = () => {
                 <Route
                   path="/winners"
                   element={
-                    <ProtectedRoute type="admin" user={user}>
+                    <ProtectedRoute type="member" user={user}>
                       <Winners />
                     </ProtectedRoute>
                   }

@@ -25,10 +25,8 @@ const Winners: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
 
-
-  const {currentHexathon} = useCurrentHexathon();
-
-
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
 
   const handleDownload = async () => {
     await axios

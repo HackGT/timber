@@ -35,7 +35,7 @@ export const routes = [
   new Page("Admin", "/admin", user => user.roles.admin),
   new Page("Epicenter", "/epicenter", user => user.roles.admin),
   new Page("Project Status", "/project-status", user => user.roles.admin),
-  new Page("Winners", "/winners", user => user.roles.admin),
+  new Page("Winners", "/winners", user => user.roles.member),
 ];
 
 interface Props {
