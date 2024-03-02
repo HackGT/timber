@@ -31,7 +31,10 @@ const columns = [
       </>
     ),
     key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+    sorter: {
+      compare: (a: any, b: any) => a.name.localeCompare(b.name),
+      multiple: 1,
+    }
   },
   // {
   //   title: "DevPost URL",
@@ -44,27 +47,39 @@ const columns = [
     dataIndex: "average",
     key: "average",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.average - b.average,
+    sorter: {
+      compare: (a: any, b: any) => a.average - b.average,
+      multiple: 4,
+    }
   },
   {
     title: "Median Score",
     dataIndex: "median",
     key: "median",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.median - b.median,
+    sorter: {
+      compare: (a: any, b: any) => a.median - b.median,
+      multiple: 3,
+    },
   },
   {
     title: "Normalized Score",
     dataIndex: "normalized",
     key: "normalized",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.normalized - b.normalized,
+    sorter: {
+      compare: (a: any, b: any) => a.normalized - b.normalized,
+      multiple: 5,
+    }
   },
   {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
-    sorter: (a: any, b: any) => a.numJudged - b.numJudged,
+    sorter: {
+      compare: (a: any, b: any) => a.numJudged - b.numJudged,
+      multiple: 2,
+    }
   },
   {
     title: "Make Winner",
