@@ -4,6 +4,7 @@ import { Space, Typography } from "antd";
 import { Ballot } from "../../types/Ballot";
 import { Project } from "../../types/Project";
 import CategoryGroupProjectTable from "./CategoryGroupProjectTable";
+import { Category } from "../../types/Category";
 
 const { Title } = Typography;
 
@@ -40,8 +41,8 @@ const CategoryGroupProjectTableContainer: React.FC<Props> = props => (
             {props.isSponsor ? `Project Name: ${project.name}` : `${project.id} - ${project.name}`}
           </Title>
           {project.categories
-            .filter((category: any) => props.categoryIds.includes(category.id))
-            .map((category: any) => (
+            .filter((category: Category) => props.categoryIds.includes(category.id))
+            .map((category: Category) => (
               <>
                 <Title level={5} key={category.id}>
                   {category.name}

@@ -26,11 +26,7 @@ export const routes = [
   new Page("Home", "/", user => true),
   new Page("Create Submission", "/create", user => true),
   new Page("Project Gallery", "/projectgallery", user => true),
-  // new Page(
-  //   "Sponsor Page",
-  //   `/category-group`,
-  //   user => user.isSponsor
-  // ), // TODO: Update sponsor page
+  new Page("Sponsor Page", `/category-group`, user => user.isSponsor),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => user.roles.admin),
   new Page("Epicenter", "/epicenter", user => user.roles.admin),
@@ -61,13 +57,20 @@ const Navigation: React.FC<Props> = props => {
     };
   });
 
-  const filteredRoutes = routes.filter((page: Page) =>
-    // TODO: Fix for category group
-    // if (page.link === "/category-group") {
-    //   page.setLink(`/category-group/${props.user.categoryGroupId}`);
-    // }
-    page.isAllowed(props.user)
-  );
+  // Find the id of the category group that is for sponsors and use it to route to sponsor page
+  const findSponsorCategoryGroupId = () => {
+    let sponsorCategoryId = null;
+    props.user.categoryGroups.forEach((item: any) => {
+      if (item.isSponsor) {
+        sponsorCategoryId = item.id;
+      }
+    });
+    return sponsorCategoryId;
+  };
+  const sponsorCategoryGroupId = findSponsorCategoryGroupId();
+  routes[3].setLink(`/category-group/${sponsorCategoryGroupId}`)
+
+  const filteredRoutes = routes.filter((page: Page) => page.isAllowed(props.user));
 
   // return <Header routes={filteredRoutes} />;
   return (
