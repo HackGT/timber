@@ -173,7 +173,9 @@ const EpicenterProjectBoxes: React.FC = () => {
             <Option value={0}>J: All</Option>
             <Option value={1}>J: Unjudged</Option>
           </Select>
+        </Col>
 
+        <Col xs={24} sm={8} md={2}>
           <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
             <Option value={0}>R: All</Option>
             {maxRoundArr.map((project: Project, index) => (
