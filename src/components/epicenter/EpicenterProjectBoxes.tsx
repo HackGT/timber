@@ -1,7 +1,7 @@
 import { apiUrl, Service } from "@hex-labs/core";
 import { Row, Col, Select, Input, Alert } from "antd";
 import useAxios from "axios-hooks";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -12,6 +12,8 @@ import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
 import { Box, Text } from '@chakra-ui/react'
+import { redirect } from "react-router-dom";
+
 
 const { Option } = Select;
 const { Search } = Input;
@@ -19,6 +21,9 @@ const { Search } = Input;
 const EpicenterProjectBoxes: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+
+
+
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -45,6 +50,13 @@ const EpicenterProjectBoxes: React.FC = () => {
         hexathon: currentHexathon?.id,
       },
     });
+
+  useEffect(() => {
+    setInterval(() => {
+      refetchProjects(); // updates every 20 seconds
+    }, 20000);
+  }, [])
+
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
