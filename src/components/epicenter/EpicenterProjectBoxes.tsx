@@ -24,7 +24,6 @@ const EpicenterProjectBoxes: React.FC = () => {
 
 
 
-
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
@@ -54,7 +53,7 @@ const EpicenterProjectBoxes: React.FC = () => {
   useEffect(() => {
     setInterval(() => {
       refetchProjects(); // updates every 20 seconds
-    }, 20000);
+    }, 2000);
   }, [])
 
 
@@ -67,9 +66,13 @@ const EpicenterProjectBoxes: React.FC = () => {
   const [tableGroup, setTableGroup] = useState(0);
   const [tableNumber, setTableNumber] = useState(0);
 
-  if (projectsLoading || categoriesLoading || tableGroupsLoading) {
+  if (projectsData === undefined) {
     return <LoadingDisplay />;
   }
+  if (categoriesLoading || tableGroupsLoading) {
+    return <LoadingDisplay />;
+  }
+
 
   if (projectsError || categoriesError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
