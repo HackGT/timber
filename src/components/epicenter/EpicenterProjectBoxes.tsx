@@ -11,6 +11,7 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
+import AllProjectBoxes from "./AllProjectBoxes";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -202,15 +203,16 @@ const EpicenterProjectBoxes: React.FC = () => {
           </Select>
         </Col>
       </Row>
-      <div id="judging">
-        {updatedData.map((project: Project) => (
-          <JudgingBox
-            key={project.id}
-            project={project}
-            tableGroup={project.tableGroup}
-            refetch={refetchProjects}
+      <div id="judging" style={{overflowY: 'auto', height: '500px'}}>
+          {/* <JudgingBox
+          //   key={project.id}
+          //   project={project}
+          //   tableGroup={project.tableGroup}
+          //   refetch={refetchProjects}
+          // /> */}
+          <AllProjectBoxes
+            projects={updatedData}
           />
-        ))}
       </div>
     </>
   );
