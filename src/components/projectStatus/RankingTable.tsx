@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Typography, Table, Button, Modal, message } from "antd/lib";
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { useEffect } from "react";
 import { SortOrder } from "antd/lib/table/interface";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
@@ -77,13 +77,13 @@ const RankingTable = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }] =
+  const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }, refetchProjectScores] =
     useAxios({
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects/special/calculate-normalized-scores"),
     });
 
-  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios({
+  const [{ data: categoryData, loading: categoryLoading, error: categoryError }, refetchCategories] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
@@ -91,7 +91,7 @@ const RankingTable = () => {
     },
   });
 
-  const [{ loading: projectsLoading, data: projects, error: projectsError }] = useAxios({
+  const [{ loading: projectsLoading, data: projects, error: projectsError }, refetchProjects] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
@@ -99,9 +99,21 @@ const RankingTable = () => {
     },
   });
 
-  if (categoryLoading || projectsLoading || projectScoresLoading) {
+  useEffect(() => {
+    setInterval(() => {
+      refetchProjectScores();
+      refetchCategories();
+      refetchProjects();
+    }, 1000);
+  }, []);
+
+  if (projects === undefined || categoryData === undefined || projectScores === undefined) {
     return <LoadingDisplay />;
   }
+
+  // if (categoryLoading || projectsLoading || projectScoresLoading) {
+  //   return <LoadingDisplay />;
+  // }
 
   if (categoryError || projectsError || projectScoresError) {
     return <ErrorDisplay error={categoryError || projectsError || projectScoresError} />;
