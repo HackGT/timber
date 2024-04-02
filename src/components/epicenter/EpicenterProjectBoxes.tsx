@@ -11,7 +11,7 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
-import { Box, Text } from '@chakra-ui/react'
+import { Box, Text, Switch } from '@chakra-ui/react'
 import { redirect } from "react-router-dom";
 
 
@@ -21,8 +21,8 @@ const { Search } = Input;
 const EpicenterProjectBoxes: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
-
-
+  const [autoUpdate, setAutoUpdate] = useState(false);
+  const [ourInterval, setOurInterval] = useState<any>();
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -51,10 +51,18 @@ const EpicenterProjectBoxes: React.FC = () => {
     });
 
   useEffect(() => {
-    setInterval(() => {
+    if (!autoUpdate) {
+      return () => { console.log("Auto Update Stopped!") }
+    }
+
+    const intervalId = setInterval(() => {
       refetchProjects(); // updates every 20 seconds
+      console.log("Updated Projects!")
     }, 2000);
-  }, [])
+
+    return () => { clearInterval(intervalId) }
+
+  }, [autoUpdate])
 
 
   const [searchText, setSearchText] = useState("");
@@ -151,7 +159,9 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   return (
     <>
-      <Text fontSize='md' mb={2} color='black'>{updatedData.length} projects total</Text>
+      <Text fontSize='md' mb={2} color='black'><Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
+        setAutoUpdate(!autoUpdate);
+      }} /> auto update {autoUpdate ? "enabled" : "not enabled"}  • {updatedData.length} projects total</Text>
 
       {
         judged == 1 && (
