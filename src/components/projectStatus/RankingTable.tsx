@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Typography, Table, Button, Modal, message } from "antd/lib";
 import useAxios from "axios-hooks";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SortOrder } from "antd/lib/table/interface";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { Box, Switch } from "@chakra-ui/react";
 
 const { Title } = Typography;
 
@@ -76,6 +77,8 @@ const columns = [
 const RankingTable = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+  const [autoUpdate, setAutoUpdate] = useState(false);
+
 
   const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }, refetchProjectScores] =
     useAxios({
@@ -99,13 +102,22 @@ const RankingTable = () => {
     },
   });
 
+
   useEffect(() => {
-    setInterval(() => {
+    if (!autoUpdate) {
+      return () => { console.log("Auto Update Stopped!") }
+    }
+
+    const intervalId = setInterval(() => {
       refetchProjectScores();
       refetchCategories();
       refetchProjects();
-    }, 1000);
-  }, []);
+      console.log("Updated Projects!")
+    }, 2000);
+
+    return () => { clearInterval(intervalId) }
+
+  }, [autoUpdate])
 
   if (projects === undefined || categoryData === undefined || projectScores === undefined) {
     return <LoadingDisplay />;
@@ -163,8 +175,15 @@ const RankingTable = () => {
     });
   }
 
+
+
   return (
     <>
+      <Box mb={4}>
+        <Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
+          setAutoUpdate(!autoUpdate);
+        }} /> auto update {autoUpdate ? "enabled" : "not enabled"}
+      </Box>
       {categoryData?.map((category: Category) => {
         const data: any = [];
         const categoryProjects = category.isDefault ? projects : category.projects;

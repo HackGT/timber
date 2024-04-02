@@ -22,7 +22,6 @@ const EpicenterProjectBoxes: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
   const [autoUpdate, setAutoUpdate] = useState(false);
-  const [ourInterval, setOurInterval] = useState<any>();
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
