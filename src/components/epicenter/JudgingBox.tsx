@@ -130,7 +130,7 @@ const JudgingBox: React.FC<Props> = props => {
         </Button>
       </div>
 
-      <Text as="b">Members</Text>
+      {props.project.members && <Text as="b">Members</Text>}
 
       <div>
         {
@@ -144,19 +144,21 @@ const JudgingBox: React.FC<Props> = props => {
 
   return (
     <>
-      <AccordionItem >
+      <AccordionItem>
         <h2>
           <AccordionButton _expanded={{ bg: 'purple.400', color: 'white' }}>
             <Box as="span" flex='1' textAlign='left'>
-              <Flex gap={4} alignItems='center'>
+              <Flex alignItems='center' justify='space-between'>
                 <Text><Badge>{props.project.id}</Badge> {props.project.name} </Text>
 
-                <Badge colorScheme={colorSchemeMapper[props.project.round]}>Round: {props.project.round}</Badge>
+                <Flex gap={4}>
+                  <Badge colorScheme={colorSchemeMapper[props.project.round]}>R: {props.project.round}</Badge>
 
-                <Badge colorScheme={colorSchemeMapper[props.project.expo]}>Expo: {props.project.expo}</Badge>
+                  <Badge colorScheme={colorSchemeMapper[props.project.expo]}>E: {props.project.expo}</Badge>
 
-                <Badge colorScheme='blue'>{props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
-                </Badge>
+                  <Badge colorScheme='blue'>{props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
+                  </Badge>
+                </Flex>
               </Flex>
             </Box>
             <AccordionIcon />

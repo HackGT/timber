@@ -14,6 +14,7 @@ import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { SimpleGrid } from "@chakra-ui/react";
 
 const { Title } = Typography;
 
@@ -114,7 +115,14 @@ const Epicenter: React.FC = () => {
         <>
           <Title level={4}>{categoryGroup.name}</Title>
           <List
-            grid={{ gutter: 16, column: 4 }}
+            grid={{
+              gutter: 16,
+              column: 4,
+              // xs: 1,
+              // sm: 2,
+              // md: 2,
+              // lg: 4,
+            }}
             loading={categoryGroupsLoading}
             dataSource={categoryGroup.users}
             renderItem={(user: User) => (
