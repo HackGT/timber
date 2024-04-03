@@ -108,6 +108,7 @@ const Epicenter: React.FC = () => {
       <Button onClick={handleJudgingModalOpen} style={{ margin: "10px 0 15px 0" }}>
         Manual Assign
       </Button>
+
       <JudgeAssignmentModal open={judgingModalOpen} handleCancel={handleCancel} />
       {categoryGroups.map((categoryGroup: any) => (
         <>

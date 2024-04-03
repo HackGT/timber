@@ -78,6 +78,9 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
+
+  console.log(props.project);
+
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       {/* <Title level={5}>{props.project.name}</Title> */}
@@ -125,6 +128,16 @@ const JudgingBox: React.FC<Props> = props => {
         <Button style={{ marginLeft: "10px" }} onClick={() => updateExpo(1)} size="small">
           Move Up 1
         </Button>
+      </div>
+
+      <Text as="b">Members</Text>
+
+      <div>
+        {
+          props.project.members && props.project.members.map(member => (
+            <Text key={member.id}>{member.name} ({member.email})</Text>
+          ))
+        }
       </div>
     </div>
   );
