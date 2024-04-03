@@ -7,6 +7,7 @@ import { Assignment } from "../../types/Assignment";
 import { AssignmentStatus } from "../../types/AssignmentStatus";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { Accordion } from "@chakra-ui/react";
 
 interface Props {
   key: string;
@@ -49,8 +50,8 @@ const JudgeCard: React.FC<Props> = props => {
 
   return (
     <Card key={props.key} title={`${props.user.id} - ${props.user.name}`} size="small">
-      <div id="judging">Queued: {queuedProjects}</div>
-      <div id="judging">Completed/Skipped: {completedProjects}</div>
+      <div id="judging">Queued: <Accordion>{queuedProjects}</Accordion></div>
+      <div id="judging">Completed/Skipped: <Accordion>{completedProjects}</Accordion></div>
     </Card>
   );
 };

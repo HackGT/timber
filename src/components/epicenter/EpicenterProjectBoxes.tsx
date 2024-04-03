@@ -12,6 +12,14 @@ import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
 import AllProjectBoxes from "./AllProjectBoxes";
+import {
+  Accordion,
+  Box,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -64,17 +72,17 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   let updatedData = projectsData
     ? projectsData
-        .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
-        .filter((project: Project) => round === 0 || project.round === round)
-        .filter((project: Project) => expo === 0 || project.expo === expo)
-        .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
-        .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
+      .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
+      .filter((project: Project) => round === 0 || project.round === round)
+      .filter((project: Project) => expo === 0 || project.expo === expo)
+      .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
+      .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
     : [];
 
   updatedData = selectedCategory
     ? updatedData.filter((project: Project) =>
-        project.categories.map((category: Category) => category.id).includes(selectedCategory)
-      )
+      project.categories.map((category: Category) => category.id).includes(selectedCategory)
+    )
     : updatedData;
 
   if (selectedCategory && sortCondition === "highest") {
@@ -95,9 +103,9 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   const categoryOptions = categoriesData
     ? categoriesData.map((category: Category) => ({
-        label: category.name,
-        value: category.id,
-      }))
+      label: category.name,
+      value: category.id,
+    }))
     : [];
   let maxRound = 0;
   let maxExpo = 0;
@@ -183,7 +191,7 @@ const EpicenterProjectBoxes: React.FC = () => {
           >
             <Option value={0}>Table Number: All</Option>
             {maxTableNumberArr.map((project: Project, index) => (
-              <Option value={index + 1}> Table Number: {index + 1}</Option>
+              <Option value={index + 1} key={project.id}> Table Number: {index + 1}</Option>
             ))}
             {/* <Option value={1}>Table Number: 1</Option>
             <Option value={2}>Table Number: 2</Option>
@@ -203,17 +211,24 @@ const EpicenterProjectBoxes: React.FC = () => {
           </Select>
         </Col>
       </Row>
-      <div id="judging" style={{overflowY: 'auto', height: '500px'}}>
-          {/* <JudgingBox
-          //   key={project.id}
-          //   project={project}
-          //   tableGroup={project.tableGroup}
-          //   refetch={refetchProjects}
-          // /> */}
-          <AllProjectBoxes
-            projects={updatedData}
-          />
-      </div>
+      <div id="judging">
+
+        <Accordion allowMultiple w='100%'>
+          {updatedData.map((project: Project) => (
+            <JudgingBox
+              key={project.id}
+              project={project}
+              tableGroup={project.tableGroup}
+              refetch={refetchProjects}
+            />
+          ))}
+        </Accordion>
+
+
+        {/* <AllProjectBoxes
+          projects={updatedData}
+        /> */}
+      </div >
     </>
   );
 };
