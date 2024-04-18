@@ -13,6 +13,8 @@ import BallotEditFormModal from "./BallotEditFormModal";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { TableGroup } from "../../types/TableGroup";
+import { Category } from "../../types/Category";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 
@@ -23,6 +25,9 @@ interface Props {
 }
 
 const ProjectTableContainer: React.FC<Props> = props => {
+  const CurrentHexathonContext = useCurrentHexathon();
+  const { currentHexathon } = CurrentHexathonContext;
+
   const [modalState, setModalState] = useState({
     visible: false,
     initialValues: null,
@@ -32,13 +37,23 @@ const ProjectTableContainer: React.FC<Props> = props => {
     apiUrl(Service.EXPO, "/criterias")
   );
 
-  if (loading) {
+  const [{ data: categoriesData, loading: categoriesLoading, error: categoriesError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/categories"),
+    params: {
+      hexathon: currentHexathon.id,
+    },
+  });
+
+  if (categoriesLoading || loading) {
     return <LoadingDisplay />;
   }
 
-  if (error) {
+  if (categoriesError || error) {
     return <ErrorDisplay error={error} />;
   }
+
+  const defaultCategories = categoriesData.filter((category: Category) => category.isDefault);
 
   const deleteScores = async (values: any) => {
     const ballotIds = values.scores.map((ballot: any) => ballot.id);
@@ -149,6 +164,8 @@ const ProjectTableContainer: React.FC<Props> = props => {
           return newData;
         };
 
+        const allCategories = [...project.categories, ...defaultCategories];
+
         return (
           <div key={project.id}>
             <Title key={project.id} level={4}>
@@ -162,7 +179,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
               {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}, Table #
               {project.table}, Expo #{project.expo}
             </p>
-            {project.categories.map((category: any) => (
+            {allCategories.map((category: Category) => (
               <>
                 <Title level={5} key={category.id}>
                   {category.name}
