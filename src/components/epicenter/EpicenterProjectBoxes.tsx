@@ -1,7 +1,7 @@
 import { apiUrl, Service } from "@hex-labs/core";
 import { Row, Col, Select, Input, Alert } from "antd";
 import useAxios from "axios-hooks";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -11,7 +11,9 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
-import { Box, Text } from '@chakra-ui/react'
+import { Box, Text, Switch } from '@chakra-ui/react'
+import { redirect } from "react-router-dom";
+
 
 const { Option } = Select;
 const { Search } = Input;
@@ -19,6 +21,7 @@ const { Search } = Input;
 const EpicenterProjectBoxes: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+  const [autoUpdate, setAutoUpdate] = useState(false);
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
@@ -46,6 +49,21 @@ const EpicenterProjectBoxes: React.FC = () => {
       },
     });
 
+  useEffect(() => {
+    if (!autoUpdate) {
+      return () => { console.log("Auto Update Stopped!") }
+    }
+
+    const intervalId = setInterval(() => {
+      refetchProjects(); // updates every 20 seconds
+      console.log("Updated Projects!")
+    }, 2000);
+
+    return () => { clearInterval(intervalId) }
+
+  }, [autoUpdate])
+
+
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
   const [sortCondition, setSortCondition] = useState("default");
@@ -55,9 +73,13 @@ const EpicenterProjectBoxes: React.FC = () => {
   const [tableGroup, setTableGroup] = useState(0);
   const [tableNumber, setTableNumber] = useState(0);
 
-  if (projectsLoading || categoriesLoading || tableGroupsLoading) {
+  if (projectsData === undefined) {
     return <LoadingDisplay />;
   }
+  if (categoriesLoading || tableGroupsLoading) {
+    return <LoadingDisplay />;
+  }
+
 
   if (projectsError || categoriesError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
@@ -136,7 +158,9 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   return (
     <>
-      <Text fontSize='md' mb={2} color='black'>{updatedData.length} projects total</Text>
+      <Text fontSize='md' mb={2} color='black'><Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
+        setAutoUpdate(!autoUpdate);
+      }} /> auto update {autoUpdate ? "enabled" : "not enabled"}  • {updatedData.length} projects total</Text>
 
       {
         judged == 1 && (

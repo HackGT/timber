@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Typography, Table, Button, Modal, message } from "antd/lib";
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SortOrder } from "antd/lib/table/interface";
 import { AnyRecord } from "dns";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import { Ballot } from "../../types/Ballot";
 import { Criteria } from "../../types/Criteria";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { Box, Switch } from "@chakra-ui/react";
 
 const { Title } = Typography;
 
@@ -31,7 +32,10 @@ const columns = [
       </>
     ),
     key: "name",
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+    sorter: {
+      compare: (a: any, b: any) => a.name.localeCompare(b.name),
+      multiple: 1,
+    }
   },
   // {
   //   title: "DevPost URL",
@@ -44,27 +48,39 @@ const columns = [
     dataIndex: "average",
     key: "average",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.average - b.average,
+    sorter: {
+      compare: (a: any, b: any) => a.average - b.average,
+      multiple: 4,
+    }
   },
   {
     title: "Median Score",
     dataIndex: "median",
     key: "median",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.median - b.median,
+    sorter: {
+      compare: (a: any, b: any) => a.median - b.median,
+      multiple: 3,
+    },
   },
   {
     title: "Normalized Score",
     dataIndex: "normalized",
     key: "normalized",
     defaultSortOrder: "descend" as SortOrder,
-    sorter: (a: any, b: any) => a.normalized - b.normalized,
+    sorter: {
+      compare: (a: any, b: any) => a.normalized - b.normalized,
+      multiple: 5,
+    }
   },
   {
     title: "Number of Times Judged",
     dataIndex: "numJudged",
     key: "numJudged",
-    sorter: (a: any, b: any) => a.numJudged - b.numJudged,
+    sorter: {
+      compare: (a: any, b: any) => a.numJudged - b.numJudged,
+      multiple: 2,
+    }
   },
   {
     title: "Make Winner",
@@ -76,14 +92,16 @@ const columns = [
 const RankingTable = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+  const [autoUpdate, setAutoUpdate] = useState(false);
 
-  const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }] =
+
+  const [{ data: projectScores, loading: projectScoresLoading, error: projectScoresError }, refetchProjectScores] =
     useAxios({
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects/special/calculate-normalized-scores"),
     });
 
-  const [{ data: categoryData, loading: categoryLoading, error: categoryError }] = useAxios({
+  const [{ data: categoryData, loading: categoryLoading, error: categoryError }, refetchCategories] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
@@ -91,7 +109,7 @@ const RankingTable = () => {
     },
   });
 
-  const [{ loading: projectsLoading, data: projects, error: projectsError }] = useAxios({
+  const [{ loading: projectsLoading, data: projects, error: projectsError }, refetchProjects] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/projects"),
     params: {
@@ -99,9 +117,30 @@ const RankingTable = () => {
     },
   });
 
-  if (categoryLoading || projectsLoading || projectScoresLoading) {
+
+  useEffect(() => {
+    if (!autoUpdate) {
+      return () => { console.log("Auto Update Stopped!") }
+    }
+
+    const intervalId = setInterval(() => {
+      refetchProjectScores();
+      refetchCategories();
+      refetchProjects();
+      console.log("Updated Projects!")
+    }, 2000);
+
+    return () => { clearInterval(intervalId) }
+
+  }, [autoUpdate])
+
+  if (projects === undefined || categoryData === undefined || projectScores === undefined) {
     return <LoadingDisplay />;
   }
+
+  // if (categoryLoading || projectsLoading || projectScoresLoading) {
+  //   return <LoadingDisplay />;
+  // }
 
   if (categoryError || projectsError || projectScoresError) {
     return <ErrorDisplay error={categoryError || projectsError || projectScoresError} />;
@@ -151,8 +190,15 @@ const RankingTable = () => {
     });
   }
 
+
+
   return (
     <>
+      <Box mb={4}>
+        <Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
+          setAutoUpdate(!autoUpdate);
+        }} /> auto update {autoUpdate ? "enabled" : "not enabled"}
+      </Box>
       {categoryData?.map((category: Category) => {
         const data: any = [];
         const categoryProjects = category.isDefault ? projects : category.projects;
