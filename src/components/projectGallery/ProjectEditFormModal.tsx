@@ -25,7 +25,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/categories"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     },
     {
@@ -38,7 +38,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
       url: apiUrl(Service.EXPO, `/table-groups`),
       method: "GET",
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     },
     {

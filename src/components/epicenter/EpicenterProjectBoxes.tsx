@@ -1,7 +1,7 @@
 import { apiUrl, Service } from "@hex-labs/core";
-import { Row, Col, Select, Input } from "antd";
+import { Row, Col, Select, Input, Alert } from "antd";
 import useAxios from "axios-hooks";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import ErrorDisplay from "../../displays/ErrorDisplay";
@@ -15,12 +15,17 @@ import AllProjectBoxes from "./AllProjectBoxes";
 import {
   Accordion,
   Box,
+  Text,
+  Switch,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
   SimpleGrid,
 } from "@chakra-ui/react";
+import { redirect } from "react-router-dom";
+
+
 
 const { Option } = Select;
 const { Search } = Input;
@@ -28,12 +33,13 @@ const { Search } = Input;
 const EpicenterProjectBoxes: React.FC = () => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
+  const [autoUpdate, setAutoUpdate] = useState(false);
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.EXPO, "/categories"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 
@@ -42,7 +48,7 @@ const EpicenterProjectBoxes: React.FC = () => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 
@@ -51,33 +57,56 @@ const EpicenterProjectBoxes: React.FC = () => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
+
+  useEffect(() => {
+    if (!autoUpdate) {
+      return () => { console.log("Auto Update Stopped!") }
+    }
+
+    const intervalId = setInterval(() => {
+      refetchProjects(); // updates every 20 seconds
+      console.log("Updated Projects!")
+    }, 2000);
+
+    return () => { clearInterval(intervalId) }
+
+  }, [autoUpdate])
+
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<any>(undefined);
   const [sortCondition, setSortCondition] = useState("default");
   const [round, setRound] = useState(0);
+  const [judged, setJudged] = useState(0);
   const [expo, setExpo] = useState(0);
   const [tableGroup, setTableGroup] = useState(0);
   const [tableNumber, setTableNumber] = useState(0);
 
-  if (projectsLoading || categoriesLoading || tableGroupsLoading) {
+  if (projectsData === undefined) {
     return <LoadingDisplay />;
   }
+  if (categoriesLoading || tableGroupsLoading) {
+    return <LoadingDisplay />;
+  }
+
 
   if (projectsError || categoriesError || tableGroupsError) {
     return <ErrorDisplay error={projectsError} />;
   }
 
   let updatedData = projectsData
-    ? projectsData
-      .filter((project: Project) => project.name.toLowerCase().includes(searchText.toLowerCase()))
+    ? (projectsData
+      .filter((project: Project) =>
+        project.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
+      )
       .filter((project: Project) => round === 0 || project.round === round)
       .filter((project: Project) => expo === 0 || project.expo === expo)
       .filter((project: Project) => tableGroup === 0 || project.tableGroup.id === tableGroup)
-      .filter((project: Project) => tableNumber === 0 || project.table === tableNumber)
+      .filter((project: Project) => tableNumber === 0 || project.table === tableNumber))
     : [];
 
   updatedData = selectedCategory
@@ -127,6 +156,12 @@ const EpicenterProjectBoxes: React.FC = () => {
   const maxExpoArr = new Array(maxExpo).fill(0);
   const maxTableNumberArr = new Array(maxTableNumber).fill(0);
 
+  if (judged != 0) {
+    // judged = 0 = show unjudged projects
+    updatedData = updatedData.filter((project: Project) => project.ballots.length == 0);
+  }
+
+
   // const tableGroupMap = new Map<number, TableGroup>();
 
   // tableGroupsData.forEach((tableGroupItem: TableGroup) => {
@@ -148,6 +183,22 @@ const EpicenterProjectBoxes: React.FC = () => {
 
   return (
     <>
+      <Text fontSize='md' mb={2} color='black'><Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
+        setAutoUpdate(!autoUpdate);
+      }} /> auto update {autoUpdate ? "enabled" : "not enabled"}  • {updatedData.length} projects total</Text>
+
+      {
+        judged == 1 && (
+          <Box mb={2}>
+            <Alert
+              message="Currently showing all projects with 0 ballots cast. Note that some projects may have >= 1 ballots cast, but still need to be judged more times."
+              type="warning"
+              showIcon
+            />
+          </Box>
+        )
+      }
+
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={8} md={5}>
           <Search
@@ -167,12 +218,17 @@ const EpicenterProjectBoxes: React.FC = () => {
           />
         </Col>
         <Col xs={24} sm={8} md={2}>
-          <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
+          <Select value={judged} style={{ width: "100%" }} onChange={value => setJudged(value)}>
+            <Option value={0}>J: All</Option>
+            <Option value={1}>J: Unjudged</Option>
+          </Select>
+
+          {/* <Select value={round} style={{ width: "100%" }} onChange={value => setRound(value)}>
             <Option value={0}>R: All</Option>
             {maxRoundArr.map((project: Project, index) => (
               <Option value={index + 1}> R: {index + 1}</Option>
             ))}
-          </Select>
+          </Select> */}
         </Col>
         <Col xs={24} sm={8} md={2}>
           <Select value={expo} style={{ width: "100%" }} onChange={value => setExpo(value)}>

@@ -18,7 +18,7 @@ const TableGroupsModal: React.FC<FormModalProps> = props => {
     method: "GET",
     url: apiUrl(Service.EXPO, "/table-groups"),
     params: {
-      hexathon: currentHexathon.id,
+      hexathon: currentHexathon?.id,
     },
   });
 

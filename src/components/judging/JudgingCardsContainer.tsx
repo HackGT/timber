@@ -141,7 +141,16 @@ const JudgingCardsContainer: React.FC<Props> = props => {
           okText="Yes"
           cancelText="No"
         >
-          <Button>This Project Is Not Here</Button>
+          <Button style={{ marginRight: "10px" }}>This Project Is Not Here</Button>
+        </Popconfirm>
+        <Popconfirm
+          placement="right"
+          title="Are you sure you want to skip this project?"
+          onConfirm={onSkip}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button>Skip Project</Button>
         </Popconfirm>
       </div>
     </>

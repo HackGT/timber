@@ -26,7 +26,7 @@ const Epicenter: React.FC = () => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/category-groups"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 
@@ -35,7 +35,7 @@ const Epicenter: React.FC = () => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/table-groups"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 

@@ -21,7 +21,7 @@ const ProjectStatusHome: React.FC = () => {
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects"),
       params: {
-        hexathon: currentHexathon.id,
+        hexathon: currentHexathon?.id,
       },
     });
 
