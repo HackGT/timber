@@ -33,7 +33,6 @@ const ProjectStatusHome: React.FC = () => {
     return <ErrorDisplay error={projectsError} />;
   }
 
-  console.log(projectsData)
   return (
     <>
       <Title level={2}>Project Status</Title>

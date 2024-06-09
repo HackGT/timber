@@ -1,7 +1,9 @@
 import { Typography } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
-import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, 
-         Box, Button, Tag, TagLabel, Text } from '@chakra-ui/react';
+import {
+  Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
+  Box, Button, Tag, TagLabel, Text
+} from '@chakra-ui/react';
 
 import { Ballot } from "../../types/Ballot";
 import { Category } from "../../types/Category";
@@ -20,7 +22,6 @@ interface ScoreData {
 }
 
 const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
-  console.log("here");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -49,7 +50,6 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
   //   });
   //   return totalScore;
   // }, []);
-  console.log("Here2");
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -70,7 +70,7 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
           <AccordionItem key={project.id}>
             <h2>
               <AccordionButton>
-                <Box as="span" flex="1"  w="300px" textAlign="left">
+                <Box as="span" flex="1" w="300px" textAlign="left">
                   {project.name} {" "}
                   <Tag size='sm' colorScheme={tagExpoColors[project.expo as keyof typeof tagExpoColors]} borderRadius='full'>
                     <TagLabel>Expo: {project.expo}</TagLabel>

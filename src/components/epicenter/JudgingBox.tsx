@@ -79,8 +79,6 @@ const JudgingBox: React.FC<Props> = props => {
     });
   });
 
-  console.log(props.project);
-
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       {/* <Title level={5}>{props.project.name}</Title> */}
