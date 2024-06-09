@@ -19,6 +19,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  SimpleGrid,
 } from "@chakra-ui/react";
 
 const { Option } = Select;
@@ -132,6 +133,19 @@ const EpicenterProjectBoxes: React.FC = () => {
   //   tableGroupMap.set(tableGroupItem.id, tableGroupItem);
   // });
 
+  // we need to split updated data into 3 arrays of equal length
+  const splitToNChunks = (array: any, n: number) => {
+    const result = [];
+    for (let i = n; i > 0; i--) {
+      result.push(array.splice(0, Math.ceil(array.length / i)));
+    }
+    return result;
+  }
+
+  const splitData = splitToNChunks(updatedData, 3);
+
+
+
   return (
     <>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
@@ -213,7 +227,57 @@ const EpicenterProjectBoxes: React.FC = () => {
       </Row>
       <div id="judging">
 
-        <Accordion allowMultiple w='100%'>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+          {
+            splitData.map((data: Project[]) => (
+              <Accordion allowMultiple w='100%'>
+                {data.map((project: Project) => (
+                  <JudgingBox
+
+                    key={project.id}
+                    project={project}
+                    tableGroup={project.tableGroup}
+                    refetch={refetchProjects}
+                  />
+                ))}
+              </Accordion>
+            ))
+          }
+          {/* <Accordion allowMultiple w='100%'>
+            {data1.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion>
+
+          <Accordion allowMultiple w='100%'>
+            {data2.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion>
+
+          <Accordion allowMultiple w='100%'>
+            {data3.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion> */}
+        </SimpleGrid>
+
+        {/* <Accordion allowMultiple w='100%'>
           {updatedData.map((project: Project) => (
             <JudgingBox
               key={project.id}
@@ -222,7 +286,7 @@ const EpicenterProjectBoxes: React.FC = () => {
               refetch={refetchProjects}
             />
           ))}
-        </Accordion>
+        </Accordion> */}
 
 
         {/* <AllProjectBoxes
