@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Col, Form, message, Modal, Row, InputNumber } from "antd";
+import { Col, Form, message, Modal, Row, Slider } from "antd";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
@@ -65,7 +65,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
             return (
               <div>
                 {fields.map((field: any, index: any) => (
-                  <Row gutter={[8, 0]}>
+                  <Row gutter={[8, 0]} key={field.key}>
                     <Col span={24}>
                       <Form.Item
                         name={[field.name, "score"]}
@@ -73,7 +73,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
                         rules={[FORM_RULES.requiredRule]}
                         label={scores[field.fieldKey].criteria.name}
                       >
-                        <InputNumber style={{ width: "100%" }} precision={0} />
+                        <Slider min={0} max={10} marks={{ 0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10' }} />
                       </Form.Item>
                     </Col>
                   </Row>
