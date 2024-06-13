@@ -12,7 +12,15 @@ import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
-import { Box, Text } from "@chakra-ui/react";
+import {
+  Box, Text, Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Badge,
+  Flex
+} from "@chakra-ui/react";
 
 const { Title } = Typography;
 
@@ -27,6 +35,12 @@ interface Props {
 }
 
 const JudgingBox: React.FC<Props> = props => {
+
+  const colorSchemeMapper: { [index: string]: any } = {
+    0: "blue",
+    1: "green",
+    2: "purple",
+  }
   const updateRound = async (difference: number) => {
     axios
       .patch(apiUrl(Service.EXPO, `/projects/${props.project.id}`), {
@@ -64,9 +78,10 @@ const JudgingBox: React.FC<Props> = props => {
       }
     });
   });
+
   const content = (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-      <Title level={5}>{props.project.name}</Title>
+      {/* <Title level={5}>{props.project.name}</Title> */}
       <a href={props.project.devpostUrl} target="_blank" rel="noreferrer">
         {props.project.devpostUrl}
       </a>
@@ -112,29 +127,68 @@ const JudgingBox: React.FC<Props> = props => {
           Move Up 1
         </Button>
       </div>
+
+      {props.project.members && <Text as="b">Members</Text>}
+
+      <div>
+        {
+          props.project.members && props.project.members.map(member => (
+            <Text key={member.id}>{member.name} ({member.email})</Text>
+          ))
+        }
+      </div>
     </div>
   );
 
   return (
-    <Popover content={content} placement="bottom">
-      <Box
-        className="judging-boxes"
-        style={{
-          background: props.assignment?.status.toString() === "QUEUED" ? "#808080" : "#000000",
-        }}
-      >
-        <Box className="judging-box-top-row" paddingBottom="3">
-          <Text>E:{props.project.expo}</Text>
-          <Text>R:{props.project.round}</Text>
+    <>
+      <AccordionItem>
+        <h2>
+          <AccordionButton _expanded={{ bg: 'purple.400', color: 'white' }}>
+            <Box as="span" flex='1' textAlign='left'>
+              <Flex alignItems='center' justify='space-between'>
+                <Text><Badge>{props.project.id}</Badge> {props.project.name} </Text>
+
+                <Flex gap={4}>
+                  <Badge colorScheme={colorSchemeMapper[props.project.round]}>R: {props.project.round}</Badge>
+
+                  <Badge colorScheme={colorSchemeMapper[props.project.expo]}>E: {props.project.expo}</Badge>
+
+                  <Badge colorScheme='blue'>{props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
+                  </Badge>
+                </Flex>
+              </Flex>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4} textAlign='left' fontWeight='normal' bg='purple.100'>
+          {content}
+        </AccordionPanel>
+      </AccordionItem>
+
+      {/* <Popover content={content} placement="bottom">
+        <Box
+          className="judging-boxes"
+          style={{
+            background: props.assignment?.status.toString() === "QUEUED" ? "#808080" : "#000000",
+          }}
+        >
+          <Box className="judging-box-top-row" paddingBottom="3">
+            <Text>E:{props.project.expo}</Text>
+            <Text>R:{props.project.round}</Text>
+          </Box>
+          <Text className="judging-box-project-id">P{props.project.id}</Text>
+          <Box className="judging-box-bottom-row">
+            <Text>
+              {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
+            </Text>
+          </Box>
         </Box>
-        <Text className="judging-box-project-id">P{props.project.id}</Text>
-        <Box className="judging-box-bottom-row">
-          <Text>
-            {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
-          </Text>
-        </Box>
-      </Box>
-    </Popover>
+      </Popover> */}
+
+
+    </>
   );
 };
 

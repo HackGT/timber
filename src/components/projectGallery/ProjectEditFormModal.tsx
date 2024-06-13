@@ -54,16 +54,16 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
   const categoryOptions = categoryLoading
     ? []
     : categoryData.map((category: Category) => ({
-        label: category.name,
-        value: category.name,
-      }));
+      label: category.name,
+      value: category.name,
+    }));
 
   const tableGroupsOptions = tableGroupsLoading
     ? []
     : tableGroupsData.map((tableGroup: TableGroup) => ({
-        label: tableGroup.name,
-        value: tableGroup.id,
-      }));
+      label: tableGroup.name,
+      value: tableGroup.id,
+    }));
 
   const roundOptions = ["FLAGGED", "SUBMITTED", "ACCEPTED", "REJECTED"].map((round: string) => ({
     label: round,
@@ -75,6 +75,7 @@ const ProjectEditFormModal: React.FC<FormModalProps> = props => {
     const values = await form.validateFields();
 
     const formattedMembers = values.members.map((member: any) => ({ email: member.email }));
+
     values.members = formattedMembers;
     try {
       axios

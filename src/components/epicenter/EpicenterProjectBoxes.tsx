@@ -11,8 +11,20 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
-import { Box, Text, Switch } from '@chakra-ui/react'
+import AllProjectBoxes from "./AllProjectBoxes";
+import {
+  Accordion,
+  Box,
+  Text,
+  Switch,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import { redirect } from "react-router-dom";
+
 
 
 const { Option } = Select;
@@ -156,6 +168,19 @@ const EpicenterProjectBoxes: React.FC = () => {
   //   tableGroupMap.set(tableGroupItem.id, tableGroupItem);
   // });
 
+  // we need to split updated data into 3 arrays of equal length
+  const splitToNChunks = (array: any, n: number) => {
+    const result = [];
+    for (let i = n; i > 0; i--) {
+      result.push(array.splice(0, Math.ceil(array.length / i)));
+    }
+    return result;
+  }
+
+  const splitData = splitToNChunks(updatedData, 3);
+
+
+
   return (
     <>
       <Text fontSize='md' mb={2} color='black'><Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
@@ -236,7 +261,7 @@ const EpicenterProjectBoxes: React.FC = () => {
           >
             <Option value={0}>Table Number: All</Option>
             {maxTableNumberArr.map((project: Project, index) => (
-              <Option value={index + 1}> Table Number: {index + 1}</Option>
+              <Option value={index + 1} key={project.id}> Table Number: {index + 1}</Option>
             ))}
             {/* <Option value={1}>Table Number: 1</Option>
             <Option value={2}>Table Number: 2</Option>
@@ -257,15 +282,73 @@ const EpicenterProjectBoxes: React.FC = () => {
         </Col>
       </Row>
       <div id="judging">
-        {updatedData.map((project: Project) => (
-          <JudgingBox
-            key={project.id}
-            project={project}
-            tableGroup={project.tableGroup}
-            refetch={refetchProjects}
-          />
-        ))}
-      </div>
+
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+          {
+            splitData.map((data: Project[]) => (
+              <Accordion allowMultiple w='100%'>
+                {data.map((project: Project) => (
+                  <JudgingBox
+
+                    key={project.id}
+                    project={project}
+                    tableGroup={project.tableGroup}
+                    refetch={refetchProjects}
+                  />
+                ))}
+              </Accordion>
+            ))
+          }
+          {/* <Accordion allowMultiple w='100%'>
+            {data1.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion>
+
+          <Accordion allowMultiple w='100%'>
+            {data2.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion>
+
+          <Accordion allowMultiple w='100%'>
+            {data3.map((project: Project) => (
+              <JudgingBox
+                key={project.id}
+                project={project}
+                tableGroup={project.tableGroup}
+                refetch={refetchProjects}
+              />
+            ))}
+          </Accordion> */}
+        </SimpleGrid>
+
+        {/* <Accordion allowMultiple w='100%'>
+          {updatedData.map((project: Project) => (
+            <JudgingBox
+              key={project.id}
+              project={project}
+              tableGroup={project.tableGroup}
+              refetch={refetchProjects}
+            />
+          ))}
+        </Accordion> */}
+
+
+        {/* <AllProjectBoxes
+          projects={updatedData}
+        /> */}
+      </div >
     </>
   );
 };
