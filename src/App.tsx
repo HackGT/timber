@@ -7,6 +7,7 @@ import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import { useLogin, LoadingScreen, AuthProvider, apiUrl, Service } from "@hex-labs/core";
+import theme from "./util/ChakraTheme";
 
 import "./App.less";
 
@@ -87,7 +88,7 @@ export const App = () => {
   }
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <AuthProvider app={app}>
         <CurrentHexathonContext.Provider value={hexathonValues}>
           <Layout style={{ minHeight: "100vh" }}>
