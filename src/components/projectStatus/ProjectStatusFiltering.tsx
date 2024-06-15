@@ -8,6 +8,10 @@ interface Props {
   setExpoNum: React.Dispatch<React.SetStateAction<any>>;
   roundNum: any;
   setRoundNum: React.Dispatch<React.SetStateAction<any>>;
+  unjudged: boolean;
+  setUnjudged: React.Dispatch<React.SetStateAction<boolean>>;
+  invalidInput: boolean;
+  setInvalidInput: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ProjectStatusFiltering({
@@ -15,18 +19,33 @@ export default function ProjectStatusFiltering({
   setExpoNum,
   roundNum,
   setRoundNum,
+  unjudged,
+  setUnjudged,
+  invalidInput,
+  setInvalidInput,
 }: Props) {
   const [expo, setExpo] = useState(expoNum || "");
   const [round, setRound] = useState(roundNum || "");
-  const [unjudged, setUnjudged] = useState(false);
+  const [unjudgedTemp, setUnjudgedTemp] = useState(false);
 
   const handleFilter = () => {
-    try {
-      setExpoNum(expo === "" ? null : parseInt(expo));
-      setRoundNum(round === "" ? null : parseInt(round));
-    } catch (e) {
-      console.log(e);
+    setExpoNum(expo === "" ? null : parseInt(expo));
+    setRoundNum(round === "" ? null : parseInt(round));
+    setUnjudged(unjudgedTemp);
+    if (
+      (expo.length > 0 && isNaN(parseInt(expo))) ||
+      (round.length > 0 && isNaN(parseInt(round)))
+    ) {
+      setInvalidInput(true);
+    } else {
+      setInvalidInput(false);
     }
+  };
+
+  const handleClear = () => {
+    setExpoNum(null);
+    setRoundNum(null);
+    setUnjudged(false);
   };
 
   return (
@@ -69,21 +88,32 @@ export default function ProjectStatusFiltering({
             <Switch
               size="md"
               onClick={() => {
-                setUnjudged(!unjudged);
+                setUnjudgedTemp(!unjudgedTemp);
               }}
               colorScheme="brand"
             />
           </HStack>
         </HStack>
-        <Button
-          onClick={handleFilter}
-          bgColor="#7b69ec"
-          borderRadius="25px"
-          _hover={{ bgColor: "#a498f5" }}
-          color="white"
-        >
-          Filter
-        </Button>
+        <HStack>
+          <Text
+            onClick={handleClear}
+            _hover={{ cursor: "pointer" }}
+            fontSize="md"
+            mr="4"
+            color="gray.500"
+          >
+            Clear
+          </Text>
+          <Button
+            onClick={handleFilter}
+            bgColor="#7b69ec"
+            borderRadius="25px"
+            _hover={{ bgColor: "#a498f5" }}
+            color="white"
+          >
+            Filter
+          </Button>
+        </HStack>
       </Flex>
     </>
   );

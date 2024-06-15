@@ -19,6 +19,8 @@ const ProjectStatusHome: React.FC = () => {
   const { currentHexathon } = CurrentHexathonContext;
   const [expoNum, setExpoNum] = useState(null);
   const [roundNum, setRoundNum] = useState(null);
+  const [unjudged, setUnjudged] = useState(false);
+  const [invalidInput, setInvalidInput] = useState(false);
 
   const [{ loading: projectsLoading, data: projectsData, error: projectsError }, refetchProjects] =
     useAxios({
@@ -51,8 +53,12 @@ const ProjectStatusHome: React.FC = () => {
             setExpoNum={setExpoNum}
             roundNum={roundNum}
             setRoundNum={setRoundNum}
+            unjudged={unjudged}
+            setUnjudged={setUnjudged}
+            invalidInput={invalidInput}
+            setInvalidInput={setInvalidInput}
           />
-          {projectsData.length === 0 ? (
+          {projectsData.length === 0 || invalidInput ? (
             <Text>No projects match your search</Text>
           ) : (
             <ProjectTableContainer
