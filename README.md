@@ -59,6 +59,7 @@ Here are an overview of the core features:
 ## Past Events
 
 Timber has been used at many of Hexlab's past events. These include but are not limited to:
+- Horizons 2024
 - HackGT 10
 - Horizons 2023
 - HackGT 9
