@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Tabs, Typography } from "antd";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
+import { Assignment } from "../../types/Assignment";
+import { Project } from "../../types/Project";
 
 import ProjectTableContainer from "./ProjectTableContainer";
 import RankingTable from "./RankingTable";
@@ -32,8 +34,16 @@ const ProjectStatusHome: React.FC = () => {
         hexathon: currentHexathon?.id,
       },
     });
-
-  console.log(projectsData);
+  
+  const [{ data: assignments }] = useAxios({
+    method: "GET", 
+    url: apiUrl(Service.EXPO, "/assignments"), 
+    params: {
+      hexathon: currentHexathon?.id,
+      expo: expoNum, 
+      round: roundNum,
+    }
+  })
 
   if (projectsLoading) {
     return <LoadingDisplay />;
@@ -41,6 +51,16 @@ const ProjectStatusHome: React.FC = () => {
 
   if (projectsError) {
     return <ErrorDisplay error={projectsError} />;
+  }
+
+  function getUnjudgedProjects() {
+    const unjudgedProjectIds = assignments.reduce((accumulator: number[], assignment: Assignment) => {
+      if (assignment.status !== "COMPLETED" && !accumulator.includes(assignment.projectId)) {
+        accumulator.push(assignment.projectId);
+      }
+      return accumulator;
+    }, []);
+    return projectsData.filter((project: Project) => unjudgedProjectIds.includes(project.id));
   }
 
   return (
@@ -55,18 +75,19 @@ const ProjectStatusHome: React.FC = () => {
             setRoundNum={setRoundNum}
             unjudged={unjudged}
             setUnjudged={setUnjudged}
-            invalidInput={invalidInput}
             setInvalidInput={setInvalidInput}
           />
-          {projectsData.length === 0 || invalidInput ? (
-            <Text>No projects match your search</Text>
-          ) : (
-            <ProjectTableContainer
-              projects={projectsData}
-              isSponsor={false}
-              refetch={refetchProjects}
-            />
-          )}
+          {
+            (unjudged ? getUnjudgedProjects().length === 0 : projectsData.length === 0) || invalidInput ? (
+              <Text>No projects found</Text>
+            ) : (
+              <ProjectTableContainer
+                projects={unjudged ? getUnjudgedProjects() : projectsData}
+                isSponsor={false}
+                refetch={refetchProjects}
+              />
+            )
+          }
         </TabPane>
         <TabPane tab="Rankings" key="2">
           <RankingTable />

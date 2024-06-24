@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Button, Switch, Flex, HStack, Input, Text } from "@chakra-ui/react";
-// import useAxios from "axios-hooks";
-// import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   expoNum: any;
@@ -10,7 +8,6 @@ interface Props {
   setRoundNum: React.Dispatch<React.SetStateAction<any>>;
   unjudged: boolean;
   setUnjudged: React.Dispatch<React.SetStateAction<boolean>>;
-  invalidInput: boolean;
   setInvalidInput: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -21,12 +18,11 @@ export default function ProjectStatusFiltering({
   setRoundNum,
   unjudged,
   setUnjudged,
-  invalidInput,
   setInvalidInput,
 }: Props) {
   const [expo, setExpo] = useState(expoNum || "");
   const [round, setRound] = useState(roundNum || "");
-  const [unjudgedTemp, setUnjudgedTemp] = useState(false);
+  const [unjudgedTemp, setUnjudgedTemp] = useState(unjudged);
 
   const handleFilter = () => {
     setExpoNum(expo === "" ? null : parseInt(expo));
@@ -40,12 +36,6 @@ export default function ProjectStatusFiltering({
     } else {
       setInvalidInput(false);
     }
-  };
-
-  const handleClear = () => {
-    setExpoNum(null);
-    setRoundNum(null);
-    setUnjudged(false);
   };
 
   return (
@@ -87,33 +77,23 @@ export default function ProjectStatusFiltering({
             <Text fontSize="md">Unjudged:</Text>
             <Switch
               size="md"
-              onClick={() => {
+              isChecked={unjudgedTemp}
+              onChange={() => {
                 setUnjudgedTemp(!unjudgedTemp);
               }}
               colorScheme="brand"
             />
           </HStack>
         </HStack>
-        <HStack>
-          <Text
-            onClick={handleClear}
-            _hover={{ cursor: "pointer" }}
-            fontSize="md"
-            mr="4"
-            color="gray.500"
-          >
-            Clear
-          </Text>
-          <Button
-            onClick={handleFilter}
-            bgColor="#7b69ec"
-            borderRadius="25px"
-            _hover={{ bgColor: "#a498f5" }}
-            color="white"
-          >
-            Filter
-          </Button>
-        </HStack>
+        <Button
+          onClick={handleFilter}
+          bgColor="#7b69ec"
+          borderRadius="25px"
+          _hover={{ bgColor: "#a498f5" }}
+          color="white"
+        >
+          Filter
+        </Button>
       </Flex>
     </>
   );
