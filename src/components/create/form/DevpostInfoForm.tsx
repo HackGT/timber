@@ -87,7 +87,8 @@ const DevpostInfoForm: React.FC<Props> = props => {
               rules={[FORM_RULES.requiredRule, FORM_RULES.maxLengthRule]}
               label="Project Name (should match Devpost submission name)"
             >
-              <Input placeholder="Alexa Assistant" maxLength={30} />
+              <Input placeholder="Alexa Assistant" maxLength={FORM_RULES.maxLengthRule.max} />
+              
             </Form.Item>
           </Col>
         </Row>
