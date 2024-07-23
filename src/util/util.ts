@@ -15,6 +15,10 @@ export const FORM_RULES = {
     type: "email",
     message: "Please enter a valid email.",
   } as Rule,
+  maxLengthRule: {
+    max: 30,
+    message: 'Project name cannot exceed 50 characters'
+  } as Rule,
 };
 
 export const FORM_LAYOUT = {
