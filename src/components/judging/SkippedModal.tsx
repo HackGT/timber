@@ -13,8 +13,12 @@ import {
   Text,
   useToast,
   VStack,
+  Stack,
+  Flex,
 } from "@chakra-ui/react";
 import { Service, apiUrl, handleAxiosError } from "@hex-labs/core";
+import { Divider } from "antd";
+import useAxios from "axios-hooks";
 
 type SkipModalProps = {
   isOpen: boolean;
@@ -42,21 +46,25 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
     }
   };
 
+  const [{ data, loading, error }, refetch] = useAxios(apiUrl(Service.EXPO, "/config"));
+
+  // filter for only projects in current expo
+  projects = projects.filter((project: any) => project.expo === data.currentExpo);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick size="sm">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader>Skipped Projects</ModalHeader>
         <ModalBody>
-          <Box display="grid">
+          <Stack divider={<Divider />}>
             {projects.map((project: any) => (
-              <Box
+              <Flex
                 key={project.id}
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
-                pb="2"
               >
                 <VStack spacing={1} alignItems="start">
                   <Text>
@@ -71,8 +79,13 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                     <strong>Table Group: </strong>
                     {project.tableGroup.name}
                   </Text>
+
+                  <Text>
+                    <strong>Expo: </strong>
+                    {project.expo}
+                  </Text>
                 </VStack>
-                
+
                 <Button
                   colorScheme="purple"
                   size="sm"
@@ -81,17 +94,11 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                 >
                   Judge
                 </Button>
-              </Box>
+              </Flex>
             ))}
-          </Box>
+          </Stack>
         </ModalBody>
       </ModalContent>
-      <ModalFooter>
-        <Button colorScheme="blue" mr={3} onClick={onClose}>
-          Close
-        </Button>
-        <Button variant="ghost">Secondary Action</Button>
-      </ModalFooter>
     </Modal>
   );
 };
