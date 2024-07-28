@@ -6,6 +6,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import { User } from "../../../types/User";
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
+import useAxios from "axios-hooks";
 
 const { Title, Text } = Typography;
 
@@ -17,6 +18,23 @@ interface Props {
 }
 
 const TeamInfoForm: React.FC<Props> = props => {
+  const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
+    apiUrl(Service.HEXATHONS, "/hexathons")
+  );
+
+  const activeHexathon = hexathonsData?.find((hexathon: any) => hexathon.isActive); // TODO: change to current hexathon context
+  // TODO: verify that isTeamBased is set to true 
+
+  const [{ data: teamsData, loading: teamsLoading, error: teamsError }] = useAxios(
+    {
+      url: apiUrl(Service.HEXATHONS, `/teams`),
+      params: {
+        hexathon: "647fee51768e521dc8ef88e0",
+        userId: props.user.id
+      }
+    }
+  );
+
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     const newValues = {
@@ -38,6 +56,8 @@ const TeamInfoForm: React.FC<Props> = props => {
         handleAxiosError(err);
       });
   };
+
+
 
   const onFinishFailed = (errorInfo: any) => {
     message.error("Please complete the required fields.", 2);
