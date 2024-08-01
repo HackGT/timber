@@ -166,6 +166,13 @@ const JudgingHome: React.FC<Props> = props => {
             as="h3"
             style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
           >
+            Expo: {data.expo}
+          </Heading>
+
+          <Heading
+            as="h3"
+            style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
+          >
             Table Group: {tableGroupName}
           </Heading>
           <Link
