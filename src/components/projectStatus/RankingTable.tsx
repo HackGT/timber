@@ -117,21 +117,17 @@ const RankingTable = () => {
     },
   });
 
-
   useEffect(() => {
-    if (!autoUpdate) {
-      return () => { console.log("Auto Update Stopped!") }
+    let intervalId: NodeJS.Timeout;
+    if (autoUpdate) {
+      intervalId = setInterval(() => {
+        refetchProjectScores();
+        refetchCategories();
+        refetchProjects();
+        console.log("Updated Projects!")
+      }, 2000);
     }
-
-    const intervalId = setInterval(() => {
-      refetchProjectScores();
-      refetchCategories();
-      refetchProjects();
-      console.log("Updated Projects!")
-    }, 2000);
-
     return () => { clearInterval(intervalId) }
-
   }, [autoUpdate])
 
   if (projects === undefined || categoryData === undefined || projectScores === undefined) {

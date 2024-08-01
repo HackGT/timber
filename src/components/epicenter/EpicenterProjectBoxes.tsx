@@ -11,21 +11,13 @@ import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
 import { TableGroup } from "../../types/TableGroup";
 import JudgingBox from "./JudgingBox";
-import AllProjectBoxes from "./AllProjectBoxes";
 import {
   Accordion,
   Box,
   Text,
   Switch,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { redirect } from "react-router-dom";
-
-
 
 const { Option } = Select;
 const { Search } = Input;
@@ -62,17 +54,14 @@ const EpicenterProjectBoxes: React.FC = () => {
     });
 
   useEffect(() => {
-    if (!autoUpdate) {
-      return () => { console.log("Auto Update Stopped!") }
+    let intervalId: NodeJS.Timeout;
+    if (autoUpdate) {
+      intervalId = setInterval(() => {
+        refetchProjects();
+        console.log("Updated Projects!")
+      }, 2000);
     }
-
-    const intervalId = setInterval(() => {
-      refetchProjects(); // updates every 20 seconds
-      console.log("Updated Projects!")
-    }, 2000);
-
     return () => { clearInterval(intervalId) }
-
   }, [autoUpdate])
 
 
@@ -169,6 +158,7 @@ const EpicenterProjectBoxes: React.FC = () => {
   // });
 
   // we need to split updated data into 3 arrays of equal length
+
   const splitToNChunks = (array: any, n: number) => {
     const result = [];
     for (let i = n; i > 0; i--) {
@@ -177,15 +167,14 @@ const EpicenterProjectBoxes: React.FC = () => {
     return result;
   }
 
+  const numProjects = updatedData.length;
   const splitData = splitToNChunks(updatedData, 3);
-
-
 
   return (
     <>
       <Text fontSize='md' mb={2} color='black'><Switch colorScheme='purple' isChecked={autoUpdate} onChange={() => {
         setAutoUpdate(!autoUpdate);
-      }} /> auto update {autoUpdate ? "enabled" : "not enabled"}  • {updatedData.length} projects total</Text>
+      }} /> auto update {autoUpdate ? "enabled" : "not enabled"}  • {numProjects} projects total</Text>
 
       {
         judged == 1 && (
@@ -283,7 +272,7 @@ const EpicenterProjectBoxes: React.FC = () => {
       </Row>
       <div id="judging">
 
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} w='full'>
           {
             splitData.map((data: Project[]) => (
               <Accordion allowMultiple w='100%'>
