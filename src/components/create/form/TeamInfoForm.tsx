@@ -29,7 +29,7 @@ const TeamInfoForm: React.FC<Props> = props => {
     {
       url: apiUrl(Service.HEXATHONS, `/teams`),
       params: {
-        hexathon: "647fee51768e521dc8ef88e0",
+        hexathon: "6695c14ed8fb7680e9e3955c",
         userId: props.user.id
       }
     }
