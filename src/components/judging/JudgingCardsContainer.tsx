@@ -113,6 +113,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
           criteriaArray={cToCMapping[key]}
           changeScore={changeScore}
           categoryName={key}
+          projectScores={projectScores}
         />
       );
     }
