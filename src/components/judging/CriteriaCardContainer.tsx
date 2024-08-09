@@ -9,14 +9,18 @@ interface Props {
   criteriaArray: any[];
   changeScore: (value: number, id: number) => void;
   categoryName: string;
+  projectScores: any;
 }
 
 const CriteriaCardContainer: React.FC<Props> = props => (
   <div>
     <Title level={3}>{props.categoryName}</Title>
-    {props.criteriaArray.map((criteria: any) => (
-      <CriteriaCard criteria={criteria} changeScore={props.changeScore} />
-    ))}
+    {props.criteriaArray.map((criteria: any) => {
+      const currScore = props.projectScores[criteria.id];
+      return (
+        <CriteriaCard criteria={criteria} changeScore={props.changeScore} currScore={currScore} />
+      )
+    })}
   </div>
 );
 
