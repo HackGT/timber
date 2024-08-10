@@ -171,7 +171,8 @@ const ProjectTableContainer: React.FC<Props> = props => {
 
             const deleteJudgeButton = (
               <Button
-                type="danger"
+                type="primary"
+                danger
                 onClick={() => {
                   deleteJudge(e[0], project);
                 }}
