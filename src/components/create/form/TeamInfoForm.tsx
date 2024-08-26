@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Row, Col, message, Input, Button, Typography, Alert } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, Service, useAuth } from "@hex-labs/core";
 
 import { User } from "../../../types/User";
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
@@ -18,19 +18,19 @@ interface Props {
 }
 
 const TeamInfoForm: React.FC<Props> = props => {
+  const theUser = useAuth();
   const [{ data: hexathonsData, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
     apiUrl(Service.HEXATHONS, "/hexathons")
   );
 
   const activeHexathon = hexathonsData?.find((hexathon: any) => hexathon.isActive); // TODO: change to current hexathon context
   // TODO: verify that isTeamBased is set to true 
-
   const [{ data: teamsData, loading: teamsLoading, error: teamsError }] = useAxios(
     {
       url: apiUrl(Service.HEXATHONS, `/teams`),
       params: {
-        hexathon: "6695c14ed8fb7680e9e3955c",
-        userId: props.user.id
+        hexathon: activeHexathon?.id,
+        userId: (theUser as any)?.user?.uid,
       }
     }
   );
@@ -63,10 +63,23 @@ const TeamInfoForm: React.FC<Props> = props => {
     message.error("Please complete the required fields.", 2);
   };
 
-  let formInitialValue = {};
+
+  if (teamsLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  let formInitialValue: { members?: { email: string }[] } = {};
 
   if (props.data.members) {
+    console.log("props.data", props.data);
     formInitialValue = props.data;
+  } else if (teamsData && teamsData.count > 0) {
+    const emails = teamsData.teams[0].members.map((member: any) => ({ email: member.email }));
+
+    const first = theUser?.user?.email;
+    // eslint-disable-next-line no-nested-ternary
+    emails.sort((a: any, b: any) => (a.email === first ? -1 : b.email === first ? 1 : 0));
+    formInitialValue = { members: emails };
   } else {
     formInitialValue = {
       members: [
@@ -92,7 +105,7 @@ const TeamInfoForm: React.FC<Props> = props => {
       <Title level={2}>Team Info</Title>
       <Text>
         Please list all the emails of all your team members below. Make sure the emails used are the
-        ones that they were accepted for through registration.
+        ones that they were accepted for through registration. Data is auto-populated based on match.hexlabs.org (if available).
       </Text>
       <Form
         name="team"
