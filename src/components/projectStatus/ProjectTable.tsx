@@ -22,6 +22,11 @@ const columns = [
     dataIndex: "deleteScore",
     key: "deleteScore",
   },
+  {
+    title: "Delete Judge",
+    dataIndex: "deleteJudge",
+    key: "deleteJudge",
+  },
 ];
 
 type ProjectTableType = {
