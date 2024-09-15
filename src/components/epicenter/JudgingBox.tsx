@@ -147,8 +147,10 @@ const JudgingBox: React.FC<Props> = props => {
           <AccordionButton _expanded={{ bg: 'purple.400', color: 'white' }}>
             <Box as="span" flex='1' textAlign='left'>
               <Flex alignItems='center' justify='space-between'>
-                <Text><Badge>{props.project.id}</Badge> {props.project.name} </Text>
-
+                <Text>
+                  <Badge>{props.project.id}</Badge> 
+                  <Text mx={1.5} as="span">{props.project.name}</Text>
+                </Text>
                 <Flex gap={4}>
                   <Badge colorScheme={colorSchemeMapper[props.project.round]}>R: {props.project.round}</Badge>
 
