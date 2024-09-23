@@ -4,8 +4,9 @@ import { Card, Tag, Button } from "antd";
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 import { TableGroup } from "../../types/TableGroup";
-import { HStack, Stack, Tooltip } from "@chakra-ui/react";
+import { HStack, Icon, Stack, Tooltip } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
+import { LikeFilled, LikeOutlined } from "@ant-design/icons";
 
 interface Props {
   key: number;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const ProjectCard: React.FC<Props> = props => {
+  const [liked, setLiked] = React.useState(false);
+  const [numLikes, setNumLikes] = React.useState(0);
   const colors = {
     FIRST: "gold",
     SECOND: "#C0C0C0",
@@ -77,7 +80,30 @@ const ProjectCard: React.FC<Props> = props => {
         )
       }
       headStyle={props.isWinner ? { backgroundColor: "#ebb521" } : {}}
-      extra={props.user && props.user.roles.admin && <Button onClick={props.onClick}>Edit</Button>}
+      extra={
+        <HStack gap={2}>
+
+          <HStack align='center'>
+            <Icon as={
+              liked ? LikeFilled : LikeOutlined
+            } color="black"  onClick={() => {
+              setLiked(!liked);
+
+              if (liked) {
+                // API call to unlike the project
+                setNumLikes(numLikes - 1);
+              } else {
+                // API call to like the project
+                setNumLikes(numLikes + 1);
+              }
+            }} />
+            <span>{numLikes}</span>
+          </HStack>
+
+          {props.user && props.user.roles.admin && <Button onClick={props.onClick}>Edit</Button>}
+
+        </HStack>
+      }
       size="small"
     >
       <strong>Expo</strong>
