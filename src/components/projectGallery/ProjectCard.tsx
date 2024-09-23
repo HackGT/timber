@@ -19,6 +19,7 @@ interface Props {
 
 const ProjectCard: React.FC<Props> = props => {
   const [liked, setLiked] = React.useState(false);
+  const [numLikes, setNumLikes] = React.useState(0);
   const colors = {
     FIRST: "gold",
     SECOND: "#C0C0C0",
@@ -82,17 +83,22 @@ const ProjectCard: React.FC<Props> = props => {
       extra={
         <HStack gap={2}>
 
-          <Icon as={
-            liked ? LikeFilled : LikeOutlined
-          } color="black"  onClick={() => {
-            setLiked(!liked);
+          <HStack align='center'>
+            <Icon as={
+              liked ? LikeFilled : LikeOutlined
+            } color="black"  onClick={() => {
+              setLiked(!liked);
 
-            if (liked) {
-              // API call to unlike the project
-            } else {
-              // API call to like the project
-            }
-          }} />
+              if (liked) {
+                // API call to unlike the project
+                setNumLikes(numLikes - 1);
+              } else {
+                // API call to like the project
+                setNumLikes(numLikes + 1);
+              }
+            }} />
+            <span>{numLikes}</span>
+          </HStack>
 
           {props.user && props.user.roles.admin && <Button onClick={props.onClick}>Edit</Button>}
 
