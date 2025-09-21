@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
 import { Typography, Button, Alert, message } from "antd";
+import { Box } from "@chakra-ui/react";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
@@ -113,13 +114,23 @@ const Epicenter: React.FC = () => {
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
-          <div className="judge-columns">
+          <Box
+            mb={6}
+            sx={{
+              columnCount: { base: 1, sm: 2, md: 2, lg: 4 },
+              columnGap: "16px",
+              "& > *": {
+                breakInside: "avoid",
+                marginBottom: "16px"
+              }
+            }}
+          >
             {categoryGroup.users?.map((user: User) => (
-              <div key={user.id} className="judge-card">
+              <Box key={user.id}>
                 <JudgeCard key={user.id} user={user} tableGroup={tableGroupsData} />
-              </div>
+              </Box>
             ))}
-          </div>
+          </Box>
         </>
       ))}
     </>
