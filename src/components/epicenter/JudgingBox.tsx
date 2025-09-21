@@ -13,13 +13,15 @@ import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import {
-  Box, Text, Accordion,
+  Box,
+  Text,
+  Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
   Badge,
-  Flex
+  Flex,
 } from "@chakra-ui/react";
 
 const { Title } = Typography;
@@ -35,12 +37,11 @@ interface Props {
 }
 
 const JudgingBox: React.FC<Props> = props => {
-
   const colorSchemeMapper: { [index: string]: any } = {
     0: "blue",
     1: "green",
     2: "purple",
-  }
+  };
   const updateRound = async (difference: number) => {
     axios
       .patch(apiUrl(Service.EXPO, `/projects/${props.project.id}`), {
@@ -109,7 +110,7 @@ const JudgingBox: React.FC<Props> = props => {
           Join Video Call
         </a>
       )}
-      <Text as="b">Change Round</Text>
+      {/* <Text as="b">Change Round</Text>
       <div>
         <Button disabled={props.project.round === 1} onClick={() => updateRound(-1)} size="small">
           Move Back 1
@@ -117,25 +118,31 @@ const JudgingBox: React.FC<Props> = props => {
         <Button style={{ marginLeft: "10px" }} onClick={() => updateRound(1)} size="small">
           Move Up 1
         </Button>
-      </div>
+      </div> */}
       <Text as="b">Change Expo</Text>
       <div>
         <Button disabled={props.project.expo === 1} onClick={() => updateExpo(-1)} size="small">
-          Move Back 1
+          Move to 1
         </Button>
-        <Button style={{ marginLeft: "10px" }} onClick={() => updateExpo(1)} size="small">
-          Move Up 1
+        <Button
+          disabled={props.project.expo === 2}
+          style={{ marginLeft: "10px" }}
+          onClick={() => updateExpo(1)}
+          size="small"
+        >
+          Move to {props.project.expo + 1}
         </Button>
       </div>
 
       {props.project.members && <Text as="b">Members</Text>}
 
       <div>
-        {
-          props.project.members && props.project.members.map(member => (
-            <Text key={member.id}>{member.name} ({member.email})</Text>
-          ))
-        }
+        {props.project.members &&
+          props.project.members.map(member => (
+            <Text key={member.id}>
+              {member.name} ({member.email})
+            </Text>
+          ))}
       </div>
     </div>
   );
@@ -144,19 +151,27 @@ const JudgingBox: React.FC<Props> = props => {
     <>
       <AccordionItem>
         <h2>
-          <AccordionButton _expanded={{ bg: 'purple.400', color: 'white' }}>
-            <Box as="span" flex='1' textAlign='left'>
-              <Flex alignItems='center' justify='space-between'>
+          <AccordionButton _expanded={{ bg: "purple.400", color: "white" }}>
+            <Box as="span" flex="1" textAlign="left">
+              <Flex alignItems="center" justify="space-between">
                 <Text>
-                  <Badge>{props.project.id}</Badge> 
-                  <Text mx={1.5} as="span">{props.project.name}</Text>
+                  <Badge>{props.project.id}</Badge>
+                  <Text mx={1.5} as="span">
+                    {props.project.name}
+                  </Text>
                 </Text>
                 <Flex gap={4}>
-                  <Badge colorScheme={colorSchemeMapper[props.project.round]}>R: {props.project.round}</Badge>
+                  {/* <Badge colorScheme={colorSchemeMapper[props.project.round]}>
+                    R: {props.project.round}
+                  </Badge> */}
 
-                  <Badge colorScheme={colorSchemeMapper[props.project.expo]}>E: {props.project.expo}</Badge>
+                  <Badge colorScheme={colorSchemeMapper[props.project.expo]}>
+                    E: {props.project.expo}
+                  </Badge>
 
-                  <Badge colorScheme='blue'>{props.tableGroup !== undefined ? props.tableGroup.shortCode : 1} {props.project.table}
+                  <Badge colorScheme="blue">
+                    {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1}{" "}
+                    {props.project.table}
                   </Badge>
                 </Flex>
               </Flex>
@@ -164,7 +179,7 @@ const JudgingBox: React.FC<Props> = props => {
             <AccordionIcon />
           </AccordionButton>
         </h2>
-        <AccordionPanel pb={4} textAlign='left' fontWeight='normal' bg='purple.100'>
+        <AccordionPanel pb={4} textAlign="left" fontWeight="normal" bg="purple.100">
           {content}
         </AccordionPanel>
       </AccordionItem>
@@ -188,8 +203,6 @@ const JudgingBox: React.FC<Props> = props => {
           </Box>
         </Box>
       </Popover> */}
-
-
     </>
   );
 };
