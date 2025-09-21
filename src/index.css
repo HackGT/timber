@@ -71,3 +71,33 @@ html {
 *::after {
   box-sizing: inherit;
 }
+
+.judge-columns {
+  column-count: 4;
+  column-gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .judge-columns {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .judge-columns {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .judge-columns {
+    column-count: 1;
+  }
+}
+
+.judge-card {
+  break-inside: avoid;
+  margin-bottom: 16px;
+}
