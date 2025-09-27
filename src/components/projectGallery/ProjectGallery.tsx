@@ -69,9 +69,12 @@ const ProjectGallery: React.FC<Props> = props => {
         setProjects(projectsData);
       } else {
         setProjects(
-          projectsData.filter((project: Project) =>
-            project.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            project.members.some((nameObj) => nameObj.name.toLowerCase().includes(searchText.toLowerCase()))
+          projectsData.filter(
+            (project: Project) =>
+              project.name.toLowerCase().includes(searchText.toLowerCase()) ||
+              project.members.some(nameObj =>
+                nameObj.name.toLowerCase().includes(searchText.toLowerCase())
+              )
           )
         );
       }
@@ -143,7 +146,9 @@ const ProjectGallery: React.FC<Props> = props => {
 
   return (
     <>
-      <Title level={2}>Project Gallery {props.user.roles.admin && `(${projects.length} total projects)`}</Title>
+      <Title level={2}>
+        Project Gallery {props.user.roles.admin && `(${projects.length} total projects)`}
+      </Title>
       <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
         <Col xs={24} sm={8} md={8}>
           <Search
@@ -228,7 +233,7 @@ const ProjectGallery: React.FC<Props> = props => {
         </>
       ) : (
         <List
-          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
           loading={projectsLoading}
           dataSource={projects}
           renderItem={(project: Project) => (
