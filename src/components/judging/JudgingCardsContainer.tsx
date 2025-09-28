@@ -37,7 +37,6 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
 
     props.data[0].categories.forEach((category: any) => {
-
       if (foundEmerging && category.name === "Best Overall") {
         console.log(`Categories has emerging and found Best Overall - hiding Best overall.`);
         return;
@@ -161,7 +160,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
           okText="Yes"
           cancelText="No"
         >
-          <Button style={{ marginRight: "10px" }}>This Project Is Not Here</Button>
+          <Button style={{ marginRight: "10px" }}>Skip Project</Button>
         </Popconfirm>
       </div>
     </>
