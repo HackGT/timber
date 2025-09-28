@@ -155,7 +155,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
         </Popconfirm>
         <Popconfirm
           placement="right"
-          title="Are you sure that the project is not there?"
+          title="Are you sure that you want to skip?"
           onConfirm={onSkip}
           okText="Yes"
           cancelText="No"
