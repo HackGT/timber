@@ -6,6 +6,7 @@ import { User } from "../../types/User";
 import { TableGroup } from "../../types/TableGroup";
 import { HStack, Stack, Tooltip } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
+import { tableNumberToRoom } from "../../util/util";
 
 interface Props {
   key: number;
@@ -84,8 +85,10 @@ const ProjectCard: React.FC<Props> = props => {
       <p>#{props.project.expo}</p>
       <strong>Location</strong>
       <p>
-        {props.project.tableGroup !== undefined ? props.project.tableGroup.name : "Unknown"}, Table
-        #{props.project.table}
+        {props.project.tableGroup !== undefined
+          ? tableNumberToRoom(props.project.table)
+          : "Unknown"}
+        , Table #{props.project.table}
       </p>
       {props.project.roomUrl && (
         <p>
