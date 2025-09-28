@@ -7,8 +7,8 @@ import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import { useLogin, LoadingScreen, AuthProvider, apiUrl, Service } from "@hex-labs/core";
-
 import theme from "./util/ChakraTheme";
+
 import "./App.less";
 
 import Navigation from "./components/navigation/Navigation";

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxios from "axios-hooks";
-import { Typography, List, Button, Alert, message } from "antd";
+import { Typography, Button, Alert, message } from "antd";
+import { Box } from "@chakra-ui/react";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
@@ -14,7 +15,6 @@ import JudgeAssignmentModal from "./JudgeAssignmentModal";
 import EpicenterProjectBoxes from "./EpicenterProjectBoxes";
 import { TableGroup } from "../../types/TableGroup";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { SimpleGrid } from "@chakra-ui/react";
 
 const { Title } = Typography;
 
@@ -114,23 +114,23 @@ const Epicenter: React.FC = () => {
       {categoryGroups.map((categoryGroup: any) => (
         <>
           <Title level={4}>{categoryGroup.name}</Title>
-          <List
-          pagination={{
-            pageSize: 8,
-          }}
-          grid={{
-            gutter: 16,
-            column: 4,
-            xs: 1,
-            sm: 2,
-            md: 2,
-            lg: 4,
-          }}
-          loading={categoryGroupsLoading}
-          dataSource={categoryGroup.users}
-          renderItem={(user: User) => (
-            <JudgeCard key={user.id} user={user} tableGroup={tableGroupsData} />
-          )} />
+          <Box
+            mb={6}
+            sx={{
+              columnCount: { base: 1, sm: 2, md: 2, lg: 4 },
+              columnGap: "16px",
+              "& > *": {
+                breakInside: "avoid",
+                marginBottom: "16px"
+              }
+            }}
+          >
+            {categoryGroup.users?.map((user: User) => (
+              <Box key={user.id}>
+                <JudgeCard key={user.id} user={user} tableGroup={tableGroupsData} />
+              </Box>
+            ))}
+          </Box>
         </>
       ))}
     </>
