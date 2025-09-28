@@ -12,6 +12,7 @@ import { Project } from "../../types/Project";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { SkippedModal } from "./SkippedModal";
 import JudgingTimer from "./JudgingTimer";
+import { tableNumberToRoom } from "../../util/util";
 
 interface Props {
   user: User;
@@ -48,7 +49,9 @@ const JudgingHome: React.FC<Props> = props => {
     },
   });
 
-  if (!props.user.categoryGroups.filter(categoryGroup => categoryGroup.id === currentHexathon?.id)) {
+  if (
+    !props.user.categoryGroups.filter(categoryGroup => categoryGroup.id === currentHexathon?.id)
+  ) {
     return (
       <p>
         Please ask a HexLabs team member to assign you a category group before you start judging.
@@ -135,7 +138,7 @@ const JudgingHome: React.FC<Props> = props => {
     next = (
       <h3>
         The next project is {nextProjectName} at table number: {nextTableNumber} in table group:{" "}
-        {nextTableGroupName}.
+        {tableNumberToRoom(parseInt(nextTableNumber))}.
       </h3>
     );
   } else {
@@ -173,7 +176,7 @@ const JudgingHome: React.FC<Props> = props => {
             as="h3"
             style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
           >
-            Table Group: {tableGroupName}
+            Table Group: {tableNumberToRoom(data.table)}
           </Heading>
           <Link
             href={data.devpostUrl}

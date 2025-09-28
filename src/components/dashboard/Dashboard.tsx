@@ -7,6 +7,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { tableNumberToRoom } from "../../util/util";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -131,7 +132,9 @@ const Dashboard: React.FC<Props> = props => {
           >
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter((project: any) => project.hexathon.id === currentHexathon?.id)}
+              dataSource={data.filter(
+                (project: any) => project.hexathon.id === currentHexathon?.id
+              )}
               renderItem={(project: any) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>
@@ -145,7 +148,7 @@ const Dashboard: React.FC<Props> = props => {
                         <>
                           <p>
                             <b>Table Group: </b>
-                            {project.tableGroup.name}
+                            {tableNumberToRoom(project.table)}
                           </p>
                           <p>
                             <b>Table Number:</b> {project.table}
@@ -162,7 +165,9 @@ const Dashboard: React.FC<Props> = props => {
           <ConfigProvider renderEmpty={() => <Empty description="You have no past submissions" />}>
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter((project: any) => project.hexathon.id !== currentHexathon?.id)}
+              dataSource={data.filter(
+                (project: any) => project.hexathon.id !== currentHexathon?.id
+              )}
               renderItem={(project: any) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>

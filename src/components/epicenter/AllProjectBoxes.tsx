@@ -1,13 +1,22 @@
 import { Typography } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
-  Box, Button, Tag, TagLabel, Text
-} from '@chakra-ui/react';
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
+  Button,
+  Tag,
+  TagLabel,
+  Text,
+} from "@chakra-ui/react";
 
 import { Ballot } from "../../types/Ballot";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
+import { tableNumberToRoom } from "../../util/util";
 
 const { Title } = Typography;
 
@@ -53,7 +62,7 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-  }
+  };
 
   const tagExpoColors = {
     1: "blue",
@@ -65,21 +74,40 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
   };
   return (
     <>
-      <Accordion w="90%" overflow="auto" maxHeight="400px" border="1px solid #ccc" borderRadius="4px">
+      <Accordion
+        w="90%"
+        overflow="auto"
+        maxHeight="400px"
+        border="1px solid #ccc"
+        borderRadius="4px"
+      >
         {projects.map((project: Project) => (
           <AccordionItem key={project.id}>
             <h2>
               <AccordionButton>
                 <Box as="span" flex="1" w="300px" textAlign="left">
-                  {project.name} {" "}
-                  <Tag size='sm' colorScheme={tagExpoColors[project.expo as keyof typeof tagExpoColors]} borderRadius='full'>
+                  {project.name}{" "}
+                  <Tag
+                    size="sm"
+                    colorScheme={tagExpoColors[project.expo as keyof typeof tagExpoColors]}
+                    borderRadius="full"
+                  >
                     <TagLabel>Expo: {project.expo}</TagLabel>
-                  </Tag> {" "}
-                  <Tag size='sm' colorScheme={tagRoundColors[project.expo as keyof typeof tagRoundColors]} borderRadius='full'>
+                  </Tag>{" "}
+                  <Tag
+                    size="sm"
+                    colorScheme={tagRoundColors[project.expo as keyof typeof tagRoundColors]}
+                    borderRadius="full"
+                  >
                     <TagLabel>Round: {project.round}</TagLabel>
-                  </Tag> {" "}
-                  <Tag size='sm' borderRadius='full'>
-                    <TagLabel>Table: {`${project.tableGroup !== undefined ? project.tableGroup.shortCode : 1} ${project.table}`}</TagLabel>
+                  </Tag>{" "}
+                  <Tag size="sm" borderRadius="full">
+                    <TagLabel>
+                      Table:{" "}
+                      {`${project.tableGroup !== undefined ? project.tableGroup.shortCode : 1} ${
+                        project.table
+                      }`}
+                    </TagLabel>
                   </Tag>
                 </Box>
                 <AccordionIcon />
@@ -88,13 +116,25 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
             <AccordionPanel pb={4}>
               <Box flexDirection="column">
                 <Title level={5}>{project.name}</Title>
-                <a href={project.devpostUrl} target="_blank" rel="noreferrer">{project.devpostUrl}</a>
-                <Text>Table Group: {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}</Text>
+                <a href={project.devpostUrl} target="_blank" rel="noreferrer">
+                  {project.devpostUrl}
+                </a>
+                <Text>
+                  Table Group:
+                  {project.tableGroup !== undefined ? tableNumberToRoom(project.table) : "N/A"}
+                </Text>
                 <Text>Table Number: {project.table}</Text>
                 <Text as="b">Category Scores</Text>
                 {Object.entries(scoreData[project.id] || {}).map(([categoryName, scores]) => {
                   const scoreString = Object.values(scores).join(", ");
-                  return <div><Tag><TagLabel>{categoryName}</TagLabel></Tag> {`${scoreString !== "" ? scoreString : "0"}`}</div>
+                  return (
+                    <div>
+                      <Tag>
+                        <TagLabel>{categoryName}</TagLabel>
+                      </Tag>{" "}
+                      {`${scoreString !== "" ? scoreString : "0"}`}
+                    </div>
+                  );
                 })}
                 {project.roomUrl && (
                   <a href={project.roomUrl} target="_blank" rel="noreferrer">
@@ -114,7 +154,7 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
         ))}
       </div> */}
     </>
-  )
-}
+  );
+};
 
 export default AllProjectBoxes;

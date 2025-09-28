@@ -15,11 +15,12 @@ import {
   VStack,
   Stack,
   Flex,
-  Badge
+  Badge,
 } from "@chakra-ui/react";
 import { Service, apiUrl, handleAxiosError } from "@hex-labs/core";
 import { Divider, Switch } from "antd";
 import useAxios from "axios-hooks";
+import { tableNumberToRoom } from "../../util/util";
 
 type SkipModalProps = {
   isOpen: boolean;
@@ -61,8 +62,11 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
         <ModalCloseButton />
         <ModalHeader>Skipped Projects</ModalHeader>
         <ModalBody>
-          <Flex align='center' gap={2}>
-            <Switch checked={onlyShowCurrExpo} onChange={() => setOnlyShowCurrExpo(!onlyShowCurrExpo)} />
+          <Flex align="center" gap={2}>
+            <Switch
+              checked={onlyShowCurrExpo}
+              onChange={() => setOnlyShowCurrExpo(!onlyShowCurrExpo)}
+            />
             <Text>Show only current expo (current expo: {data?.currentExpo})</Text>
           </Flex>
           <Stack divider={<Divider />} mt={4}>
@@ -84,7 +88,7 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                   </Text>
                   <Text>
                     <strong>Table Group: </strong>
-                    {project.tableGroup.name}
+                    {tableNumberToRoom(project.table)}
                   </Text>
 
                   <Text>

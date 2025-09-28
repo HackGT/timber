@@ -18,7 +18,7 @@ export const FORM_RULES = {
   maxLengthRule: {
     type: "number",
     max: 30,
-    message: 'Project name cannot exceed 30 characters',
+    message: "Project name cannot exceed 30 characters",
   } as Rule & { max?: number },
 };
 
@@ -47,4 +47,22 @@ export const handleAxiosError = (error: Error | AxiosError<any>) => {
     console.error(error);
     message.error("Error: Please ask for help. There was an unknown error.", 2);
   }
+};
+
+export const tableNumberToRoom = (tableNumber: number) => {
+  if (tableNumber >= 1 && tableNumber <= 68) {
+    return "(Klaus Atrium)";
+    // eslint-disable-next-line no-else-return
+  } else if (tableNumber >= 69 && tableNumber <= 110) {
+    // eslint-disable-next-line no-else-return
+    return "(Klaus 1116)";
+  } else if (tableNumber >= 111 && tableNumber <= 123) {
+    // eslint-disable-next-line no-else-return
+    return "(Klaus 2nd Floor)";
+  } else if (tableNumber >= 124 && tableNumber <= 153) {
+    // eslint-disable-next-line no-else-return
+    return "(Klaus 1456)";
+  }
+
+  return "N/A";
 };
