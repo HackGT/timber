@@ -22,7 +22,27 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     const newCriteriaArray: any[] = [];
     const newCategoryToCriteriaMapping: any = {};
 
+    // JANK PATCH FOR HACKGT12:
+    // if one of the categories is Emerging, then we shouldnt show the `Best Overall` grading
+    // thing otherwise it tanks their overall score apparently. we will search through the array first
+    // for some category that has name starting with "Emerging" and if it exists, we should ignore
+    // the category that has name="Best Overall".
+
+    let foundEmerging = false;
+    for (const category of props.data[0].categories) {
+      if (category.name.startsWith("Emerging")) {
+        foundEmerging = true;
+        break;
+      }
+    }
+
     props.data[0].categories.forEach((category: any) => {
+
+      if (foundEmerging && category.name === "Best Overall") {
+        console.log(`Categories has emerging and found Best Overall - hiding Best overall.`);
+        return;
+      }
+
       category.criterias.forEach((criteria: any) => {
         newCriteriaArray.push(criteria);
         if (newCategoryToCriteriaMapping[category.name]) {
