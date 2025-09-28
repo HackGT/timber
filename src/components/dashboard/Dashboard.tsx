@@ -153,6 +153,9 @@ const Dashboard: React.FC<Props> = props => {
                           <p>
                             <b>Table Number:</b> {project.table}
                           </p>
+                          <p>
+                            <b>Expo:</b> {project.expo}
+                          </p>
                         </>
                       )}
                     </Card>
