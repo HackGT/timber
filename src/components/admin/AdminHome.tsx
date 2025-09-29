@@ -90,7 +90,7 @@ const AdminHome: React.FC = () => {
                       {item.categories.map((category: any) => category.name).join(", ")}
                     </div>
                     <div>
-                      <i>Judges: </i>
+                      <i>Judges ({item.users.length}): </i>
                       {item.users.map((user: any) => user.name).join(", ")}
                     </div>
                   </>
