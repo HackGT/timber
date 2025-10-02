@@ -192,7 +192,7 @@ const ProjectGallery: React.FC<Props> = props => {
           {winnerIds.size > 0 ? (
             <>
               <List
-                grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+                grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
                 loading={projectsLoading}
                 dataSource={winnerCards}
                 renderItem={(project: Project) => (
@@ -214,7 +214,7 @@ const ProjectGallery: React.FC<Props> = props => {
             <></>
           )}
           <List
-            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 6 }}
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
             loading={projectsLoading}
             dataSource={regularCards}
             renderItem={(project: Project) => (
@@ -233,7 +233,7 @@ const ProjectGallery: React.FC<Props> = props => {
         </>
       ) : (
         <List
-          grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 4 }}
           loading={projectsLoading}
           dataSource={projects}
           renderItem={(project: Project) => (
