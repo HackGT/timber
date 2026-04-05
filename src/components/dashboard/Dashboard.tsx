@@ -8,19 +8,28 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { tableNumberToRoom } from "../../util/util";
+import { Project } from "../../types/Project";
+import { User } from "../../types/User";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
 
+type DashboardProject = Omit<Project, "hexathon"> & {
+  hexathon: {
+    id: string;
+    name: string;
+  };
+};
+
 interface Props {
-  user: any;
+  user: User;
 }
 
 const Dashboard: React.FC<Props> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ data, loading, error }] = useAxios(
+  const [{ data, loading, error }] = useAxios<DashboardProject[]>(
     {
       method: "GET",
       url: apiUrl(Service.EXPO, "/projects/special/dashboard"),
@@ -42,14 +51,14 @@ const Dashboard: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  const getInfoText = (user: any) => {
+  const getInfoText = (user: User) => {
     const adminBlurb = (
       <Text>
-        Hello {props.user.name}! Thank you for using Expo! As an admin, you have full control over
-        every aspect of the judging and expo process. You will be able to assign tables, judges, and
-        how projects are scored. This also means you have the potential to cause issues if you are
-        not careful. Please make sure you have read through all the user guides before messing with
-        the available tools.
+        Hello {user.name}! Thank you for using Expo! As an admin, you have full control over every
+        aspect of the judging and expo process. You will be able to assign tables, judges, and how
+        projects are scored. This also means you have the potential to cause issues if you are not
+        careful. Please make sure you have read through all the user guides before messing with the
+        available tools.
       </Text>
     );
     const projectsBlurb = (
@@ -132,16 +141,16 @@ const Dashboard: React.FC<Props> = props => {
           >
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter(
-                (project: any) => project.hexathon.id === currentHexathon?.id
-              )}
-              renderItem={(project: any) => (
+              dataSource={
+                data?.filter(project => project.hexathon.id === currentHexathon?.id) ?? []
+              }
+              renderItem={(project: DashboardProject) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>
                     <Card title={project.hexathon.name} hoverable>
                       <Meta
                         title={project.name}
-                        description={project.members.map((item: any) => item.name).join(", ")}
+                        description={project.members.map((item: User) => item.name).join(", ")}
                       />
                       <br />
                       {project.hexathon.id === currentHexathon?.id && configData.revealTableGroups && (
@@ -168,16 +177,16 @@ const Dashboard: React.FC<Props> = props => {
           <ConfigProvider renderEmpty={() => <Empty description="You have no past submissions" />}>
             <List
               grid={{ gutter: 32, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }}
-              dataSource={data.filter(
-                (project: any) => project.hexathon.id !== currentHexathon?.id
-              )}
-              renderItem={(project: any) => (
+              dataSource={
+                data?.filter(project => project.hexathon.id !== currentHexathon?.id) ?? []
+              }
+              renderItem={(project: DashboardProject) => (
                 <List.Item>
                   <Link to={`/projects/${project.id}`}>
                     <Card title={project.hexathon.name} hoverable>
                       <Meta
                         title={project.name}
-                        description={project.members.map((item: any) => item.name).join(", ")}
+                        description={project.members.map((item: User) => item.name).join(", ")}
                       />
                       <br />
                     </Card>
