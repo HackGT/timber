@@ -31,7 +31,7 @@ const { Content } = Layout;
 
 // Initialized the Firebase app through the credentials provided
 export const app = initializeApp({
-  apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "auth.hexlabs.org",
 });
 // Sets the Firebase persistence to in memory since we use cookies for session
