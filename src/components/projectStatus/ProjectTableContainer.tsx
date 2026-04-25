@@ -80,6 +80,28 @@ const ProjectTableContainer: React.FC<Props> = props => {
     }
   };
 
+  const deleteJudge = async (judgeName: string, project: Project) => {
+    const ballotIds = project.ballots
+      .filter((ballot: Ballot) => ballot.user.name === judgeName)
+      .map((ballot: Ballot) => ballot.id);
+  
+    const ids = { ids: ballotIds };
+  
+    try {
+      const response = await axios.delete(apiUrl(Service.EXPO, `/ballots/batch/delete`), { data: ids });
+
+      if (response.data.error) {
+        message.error(response.data.message, 2);
+      } else {
+        message.success(`Successfully deleted scores for judge ${judgeName}`, 2);
+        props.refetch();
+      }
+    } catch (error) {
+      console.error("Error deleting judge:", error);
+      message.error("Error: Please ask for help", 2);
+    }
+  };
+
   const openModal = (values: any) => {
     setModalState({
       visible: true,
@@ -147,11 +169,24 @@ const ProjectTableContainer: React.FC<Props> = props => {
               </Button>
             );
 
+            const deleteJudgeButton = (
+              <Button
+                type="primary"
+                danger
+                onClick={() => {
+                  deleteJudge(e[0], project);
+                }}
+              >
+                Delete Judge
+              </Button>
+            );
+
             return {
               judge: e[0],
               total: e[1],
               editScore: editButton,
               deleteScore: deleteButton,
+              deleteJudge: deleteJudgeButton,
             };
           });
 
@@ -160,6 +195,7 @@ const ProjectTableContainer: React.FC<Props> = props => {
             total: Math.round((total / newData.length) * 10) / 10,
             editScore: <></>,
             deleteScore: <></>,
+            deleteJudge: <></>,
           });
           return newData;
         };
