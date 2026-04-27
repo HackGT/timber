@@ -134,3 +134,5 @@ temp/
 .DS_Store
 
 google-cloud-credentials.json
+yarn.lock
+.env
