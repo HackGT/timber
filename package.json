@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -28,6 +29,7 @@
     "firebase": "^12.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^6.1.1",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {

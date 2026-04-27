@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
 import { ChakraProvider } from "@chakra-ui/react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Layout } from "antd";
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import { useLogin, LoadingScreen, AuthProvider, apiUrl, Service } from "@hex-labs/core";
+import { ErrorBoundary } from "react-error-boundary";
 import theme from "./util/ChakraTheme";
 
 import "antd/dist/antd.css";
@@ -19,6 +20,7 @@ import AdminHome from "./components/admin/AdminHome";
 import Footer from "./components/navigation/Footer";
 import SubmissionFormContainer from "./components/create/SubmissionFormContainer";
 import NotFoundDisplay from "./displays/NotFoundDisplay";
+import ErrorDisplay from "./displays/ErrorDisplay";
 import ProjectDetails from "./components/dashboard/ProjectDetails";
 import Epicenter from "./components/epicenter/Epicenter";
 import CategoryGroup from "./components/categoryGroup/CategoryGroup";
@@ -43,6 +45,7 @@ setPersistence(getAuth(app), inMemoryPersistence);
 axios.defaults.withCredentials = true;
 
 export const App = () => {
+  const location = useLocation();
   const [loading, loggedIn] = useLogin(app);
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -94,6 +97,7 @@ export const App = () => {
           <Layout style={{ minHeight: "100vh" }}>
             <Navigation user={user} />
             <Content style={{ padding: "25px", backgroundColor: "#fff" }}>
+              <ErrorBoundary fallbackRender={({ error }) => <ErrorDisplay error={error as Error} />} resetKeys={[location.pathname]}>
               <Routes>
                 <Route path="/" element={<Dashboard user={user} />} />
                 <Route path="/create" element={<SubmissionFormContainer user={user} />} />
@@ -160,6 +164,7 @@ export const App = () => {
                 />
                 <Route element={<NotFoundDisplay />} />
               </Routes>
+              </ErrorBoundary>
             </Content>
             <Footer />
           </Layout>

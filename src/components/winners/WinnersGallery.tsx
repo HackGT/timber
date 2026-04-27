@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { List, Button, Typography, Divider, Input, Row, Col, Select } from "antd";
 import useAxios from "axios-hooks";
 import axios from "axios";
-import DownloadOutlined from "@ant-design/icons/lib/icons/DownloadOutlined";
+import { DownloadOutlined } from "@ant-design/icons";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import ErrorDisplay from "../../displays/ErrorDisplay";
