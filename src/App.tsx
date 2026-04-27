@@ -9,7 +9,7 @@ import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import { useLogin, LoadingScreen, AuthProvider, apiUrl, Service } from "@hex-labs/core";
 import theme from "./util/ChakraTheme";
 
-import "./App.less";
+import "antd/dist/antd.css";
 
 import Navigation from "./components/navigation/Navigation";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -31,7 +31,7 @@ const { Content } = Layout;
 
 // Initialized the Firebase app through the credentials provided
 export const app = initializeApp({
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "auth.hexlabs.org",
 });
 // Sets the Firebase persistence to in memory since we use cookies for session

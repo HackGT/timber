@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint src/ --fix; stylelint src/**/*.css --fix; prettier src/ --write"
   },
   "dependencies": {
