@@ -7,8 +7,8 @@ many names such as Ballot, Expo, and Timber. Used most recently at HackGT 11.
 
 ### Client
 
-1. `yarn install` in the root directory
-2. `yarn start`
+1. `npm install` in the root directory
+2. `npm run dev`
 
 ### Server
 
@@ -18,10 +18,10 @@ how Timber works behind the scenes. Timber is referred to as 'Expo' in the API r
 naming reference. However, follow the steps below to set up the server within the expo folder in the API repo
 
 ## Server
-1. `yarn install`
+1. `npm install`
 2. `cd services/expo`
-3. `yarn migrate:dev to setup database`
-5. `yarn seed to seed database`
+3. `npm run migrate:dev` to setup database
+4. `npm run seed` to seed database
 
 Now, the job isn't finished yet, because if you try to visit the client, it will have an endless loop
 between [login.hexlabs.org](https://login.hexlabs.org) and the dev site. This is because we haven't
