@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button, Form, Input, message, Modal, Select, Popconfirm, Switch } from "antd";
 import axios from "axios";
 import useAxios from "axios-hooks";
@@ -26,15 +26,19 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
     },
   });
 
+  const originalUserIds = useRef<number[]>([]);
+
   const [form] = Form.useForm();
   useEffect(() => {
     if (props.modalState.initialValues) {
+      originalUserIds.current = props.modalState.initialValues.users.map((u: any) => u.id);
       form.setFieldsValue({
         ...props.modalState.initialValues,
         categories: props.modalState.initialValues?.categories.map((category: any) => category.id),
         users: props.modalState.initialValues?.users.map((user: any) => user.id),
       });
     } else {
+      originalUserIds.current = [];
       form.resetFields();
     }
   }, [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
@@ -60,18 +64,44 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       });
   };
 
+  const syncJudges = async (groupId: number, newUserIds: number[]) => {
+    const toAdd = newUserIds.filter(id => !originalUserIds.current.includes(id));
+    const toRemove = originalUserIds.current.filter(id => !newUserIds.includes(id));
+
+    const requests = [
+      ...toAdd.map(userId => ({ userId, promise: axios.post(apiUrl(Service.EXPO, `/category-groups/${groupId}/judges`), { userId }) })),
+      ...toRemove.map(userId => ({ userId, promise: axios.delete(apiUrl(Service.EXPO, `/category-groups/${groupId}/judges/${userId}`)) })),
+    ];
+
+    const results = await Promise.allSettled(requests.map(r => r.promise));
+
+    const failedNames = results
+      .map((result, i) => ({ result, userId: requests[i].userId }))
+      .filter(({ result }) => result.status === "rejected")
+      .map(({ result, userId }) => {
+        const name = userData.find((u: any) => u.id === userId)?.name ?? `User ${userId}`;
+        const reason = (result as PromiseRejectedResult).reason?.response?.data?.message ?? "unknown error";
+        return `${name} (${reason})`;
+      });
+
+    if (failedNames.length > 0) {
+      message.error(`Failed to update judges: ${failedNames.join(", ")}`, 5);
+    }
+  };
+
   const onSubmit = async () => {
     try {
-      const values = await form.validateFields();
+      const { users: newUserIds = [], ...groupValues } = await form.validateFields();
       const hide = message.loading("Loading...", 0);
 
       if (props.modalState.initialValues) {
         axios
           .patch(
             apiUrl(Service.EXPO, `/category-groups/${props.modalState.initialValues.id}`),
-            values
+            groupValues
           )
-          .then(res => {
+          .then(async res => {
+            await syncJudges(props.modalState.initialValues.id, newUserIds);
             hide();
             message.success("Category group successfully updated", 2);
             props.setModalState({ visible: false, initialValues: null });
@@ -83,8 +113,9 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
           });
       } else {
         axios
-          .post(apiUrl(Service.EXPO, `/category-groups`), values)
-          .then(res => {
+          .post(apiUrl(Service.EXPO, `/category-groups`), groupValues)
+          .then(async res => {
+            await syncJudges(res.data.id, newUserIds);
             hide();
             message.success("Category group successfully created", 2);
             props.setModalState({ visible: false, initialValues: null });
@@ -123,7 +154,7 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
       cancelText="Cancel"
       footer={[
         props.modalState.initialValues && (
-          <Popconfirm
+          <Popconfirm key="delete"
             title="Are you sure you want to delete this category group?"
             onConfirm={onDelete}
             okText="Yes"
