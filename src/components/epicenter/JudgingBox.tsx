@@ -7,7 +7,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
-import { handleAxiosError, tableNumberToRoom } from "../../util/util";
+import { handleAxiosError } from "../../util/util";
 import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -88,7 +88,7 @@ const JudgingBox: React.FC<Props> = props => {
       </a>
       <Text>
         Table Group:{" "}
-        {props.tableGroup !== undefined ? tableNumberToRoom(props.project.table) : "N/A"}
+        {props.tableGroup !== undefined ? props.tableGroup.name : "N/A"}
       </Text>
       <Text>Table Number: {props.project.table}</Text>
       <div>
@@ -173,7 +173,7 @@ const JudgingBox: React.FC<Props> = props => {
                   </Badge>
 
                   <Badge colorScheme="blue">
-                    {props.tableGroup !== undefined ? tableNumberToRoom(props.project.table) : 1}{" "}
+                    {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1}{" "}
                     {props.project.table}
                   </Badge>
                 </Flex>
