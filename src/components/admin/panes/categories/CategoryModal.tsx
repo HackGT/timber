@@ -130,7 +130,6 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           <Switch />
         </Form.Item>
         <Form.Item
-
           name="judgedExternally"
           label={
             <QuestionIconLabel
@@ -142,7 +141,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
         >
           <Switch />
         </Form.Item>
-        <Form.Item>
+        <Form.Item
           name="type"
           label={
             <QuestionIconLabel
@@ -152,7 +151,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           }
         >
           <Select>
-            {Object.values(CategoryType).map((catType) => (
+            {Object.values(CategoryType).map(catType => (
               <Option key={catType} value={catType}>
                 {catType}
               </Option>

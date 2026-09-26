@@ -47,7 +47,7 @@ const CategoryGroupProjectScoring: React.FC<Props> = ({ user }) => {
   useEffect(() => {
     if (!selectedGroupId) {
       setProjects([]);
-      return;
+      return undefined;
     }
 
     let active = true;
