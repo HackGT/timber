@@ -6,6 +6,8 @@ import {
   ContainerOutlined,
   FolderOutlined,
   TableOutlined,
+  TeamOutlined,
+  DashboardOutlined,
 } from "@ant-design/icons";
 
 import AdminContentList from "./AdminContentList";
@@ -13,12 +15,14 @@ import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
 import TableGroupsModal from "./panes/tableGroups/TableGroupsModal";
+import JudgeDistributionPane from "./panes/judgeDistribution/JudgeDistributionPane";
+import JudgingOverviewPane from "./panes/judgingOverview/JudgingOverviewPane";
 
 const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
 
 const AdminHome: React.FC = () => {
-  const paneKeys = ["config", "categories", "categorygroups", "tablegroups"];
+  const paneKeys = ["config", "categories", "categorygroups", "tablegroups", "judgedistribution", "judgingoverview"];
   const { activePane } = useParams<any>();
   const navigate = useNavigate();
 
@@ -129,6 +133,12 @@ const AdminHome: React.FC = () => {
         />
       );
       break;
+    case "judgedistribution":
+      content = <JudgeDistributionPane />;
+      break;
+    case "judgingoverview":
+      content = <JudgingOverviewPane />;
+      break;
   }
 
   const handleMenuClick = (event: any) => {
@@ -164,6 +174,12 @@ const AdminHome: React.FC = () => {
             </Menu.Item>
             <Menu.Item key="tablegroups" icon={<TableOutlined />}>
               Table Groups
+            </Menu.Item>
+            <Menu.Item key="judgedistribution" icon={<TeamOutlined />}>
+              Judge Distribution
+            </Menu.Item>
+            <Menu.Item key="judgingoverview" icon={<DashboardOutlined />}>
+              Judging Overview
             </Menu.Item>
           </Menu>
         </Sider>
