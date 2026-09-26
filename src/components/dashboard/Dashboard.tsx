@@ -112,9 +112,16 @@ const Dashboard: React.FC<Props> = props => {
       dashboardBody = participantBody;
     }
 
+    const currentCategoryGroup = user.categoryGroups?.find(
+      (categoryGroup: any) => categoryGroup.hexathon === currentHexathon?.id
+    );
+
     return (
       <div>
         <Title>Welcome To Expo!</Title>
+        {user.isJudging && currentCategoryGroup && (
+          <Title level={4}>Your category group: {currentCategoryGroup.name}</Title>
+        )}
         {dashboardBody}
         <br />
       </div>
