@@ -15,9 +15,13 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
   useEffect(() => {
     if (props.modalState.initialValues) {
-      form.setFieldsValue(props.modalState.initialValues);
+      form.setFieldsValue({
+        ...props.modalState.initialValues,
+        isJudging: props.modalState.initialValues.isJudging !== false,
+      });
     } else {
       form.resetFields();
+      form.setFieldsValue({ isJudging: true });
     }
   }, [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
 
@@ -117,6 +121,18 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
             <QuestionIconLabel
               label="Is Default"
               helpText="Set switch to yes if every project submitted to this hackathon is automatically judged for this category."
+            />
+          }
+          valuePropName="checked"
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          name="isJudging"
+          label={
+            <QuestionIconLabel
+              label="Requires Judging"
+              helpText="Turn this off when final scores will be entered directly instead of being collected from judges."
             />
           }
           valuePropName="checked"
