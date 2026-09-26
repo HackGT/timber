@@ -129,7 +129,7 @@ const CategoryGroupProjectScoring: React.FC<Props> = ({ user }) => {
         userId: +user.id,
       });
       message.success(`Scores saved for ${project.name}`);
-    } catch (requestError) {
+    } catch (requestError: any) {
       handleAxiosError(requestError);
     } finally {
       setSavingProjectId(null);
