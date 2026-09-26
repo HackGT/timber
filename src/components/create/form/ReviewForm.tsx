@@ -150,6 +150,22 @@ const ReviewForm: React.FC<Props> = props => {
 
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
+            <Form.Item name="preferredRoom" label="Preferred Room">
+              <Input disabled />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item name="preferredTable" label="Preferred Table">
+              <InputNumber disabled style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
             <Form.Item>
               <Button style={{ marginRight: "10px" }} onClick={() => props.prevStep()}>
                 Back
