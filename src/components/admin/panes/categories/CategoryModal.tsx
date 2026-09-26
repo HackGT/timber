@@ -141,7 +141,8 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           valuePropName="checked"
         >
           <Switch />
-
+        </Form.Item>
+        <Form.Item>
           name="type"
           label={
             <QuestionIconLabel
