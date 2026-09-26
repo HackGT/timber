@@ -1,7 +1,15 @@
 import React from "react";
 import useAxios from "axios-hooks";
 import { Popover, Typography } from "antd";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Flex,
+  StackDivider,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import ErrorDisplay from "../../../../displays/ErrorDisplay";
@@ -41,12 +49,9 @@ const TableMap: React.FC = () => {
   categoryGroupsData.forEach((categoryGroup: any) =>
     categoryGroup.users?.forEach((judge: User) =>
       judge.assignments.forEach((assignment: Assignment) => {
-        if (!judgesByProject.has(assignment.project.id)) {
-          judgesByProject.set(assignment.project.id, new Map());
-        }
-        judgesByProject
-          .get(assignment.project.id)!
-          .set(assignment.id, { judge, status: assignment.status });
+        const judges = judgesByProject.get(assignment.project.id) ?? new Map();
+        judges.set(assignment.id, { judge, status: assignment.status });
+        judgesByProject.set(assignment.project.id, judges);
       })
     )
   );
@@ -54,7 +59,7 @@ const TableMap: React.FC = () => {
   const renderInfo = (project: Project) => {
     const judges = Array.from(judgesByProject.get(project.id)?.values() ?? []);
     return (
-      <Box maxW="260px">
+      <Box key={project.id} maxW="260px">
         <Text fontWeight="bold">
           #{project.id} {project.name}
         </Text>
@@ -76,10 +81,15 @@ const TableMap: React.FC = () => {
     <Box mt={8}>
       <Title level={3}>Table Map</Title>
       {tableGroupsData.map((tableGroup: TableGroup) => {
-        const projectsByTable = new Map<number, Project>();
+        const projectsByTable = new Map<number, Project[]>();
         projectsData
           .filter((project: Project) => project.tableGroup?.id === tableGroup.id)
-          .forEach((project: Project) => projectsByTable.set(project.table, project));
+          .forEach((project: Project) =>
+            projectsByTable.set(project.table, [
+              ...(projectsByTable.get(project.table) ?? []),
+              project,
+            ])
+          );
         const tableCount = Math.max(tableGroup.tableCapacity, ...Array.from(projectsByTable.keys()));
 
         return (
@@ -89,7 +99,10 @@ const TableMap: React.FC = () => {
             </Title>
             <Flex wrap="wrap" gap={1}>
               {Array.from({ length: tableCount }, (_, i) => i + 1).map(table => {
-                const project = projectsByTable.get(table);
+                const projects = projectsByTable.get(table) ?? [];
+                const occupied = projects.length > 0;
+                let bg = occupied ? "green.400" : "white";
+                if (projects.length > 1) bg = "red.500";
                 const square = (
                   <Flex
                     key={table}
@@ -99,15 +112,31 @@ const TableMap: React.FC = () => {
                     justify="center"
                     fontSize="xs"
                     borderRadius="sm"
-                    cursor={project ? "pointer" : "default"}
-                    bg={project ? "green.400" : "white"}
-                    color={project ? "white" : "gray.700"}
+                    cursor={occupied ? "pointer" : "default"}
+                    bg={bg}
+                    color={occupied ? "white" : "gray.700"}
                   >
                     {table}
                   </Flex>
                 );
-                return project ? (
-                  <Popover key={table} content={renderInfo(project)} title={`Table ${table}`}>
+                return occupied ? (
+                  <Popover
+                    key={table}
+                    content={(
+                      <>
+                        {projects.length > 1 && (
+                          <Alert status="error" mb={3} py={1} fontSize="sm" borderRadius="md">
+                            <AlertIcon boxSize={4} />
+                            {projects.length} projects are assigned to this table
+                          </Alert>
+                        )}
+                        <VStack divider={<StackDivider />} align="stretch" spacing={3}>
+                          {projects.map(renderInfo)}
+                        </VStack>
+                      </>
+                    )}
+                    title={`Table ${table}`}
+                  >
                     {square}
                   </Popover>
                 ) : (
