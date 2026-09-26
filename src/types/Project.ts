@@ -13,6 +13,8 @@ export type Project = {
   expo: number;
   round: number;
   table: number;
+  preferredRoom?: string;
+  preferredTable?: number;
   categories: Category[];
   assignment: Assignment[];
   ballots: Ballot[];

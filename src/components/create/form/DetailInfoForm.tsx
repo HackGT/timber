@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Alert, Button, Col, Form, Input, message, Row, Typography } from "antd";
+import { Alert, Button, Col, Form, Input, InputNumber, message, Row, Typography } from "antd";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import { FORM_LAYOUT, FORM_RULES, handleAxiosError } from "../../../util/util";
@@ -81,6 +81,30 @@ const DetailInfoForm: React.FC<Props> = props => {
               label="GitHub Url"
             >
               <Input placeholder="https://github.com/HackGT/timber" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item
+              name="preferredRoom"
+              label="Preferred Room (optional)"
+              extra="Tell us which room your team would prefer for expo placement."
+            >
+              <Input placeholder="Klaus Atrium" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row justify="center">
+          <Col {...FORM_LAYOUT.full}>
+            <Form.Item
+              name="preferredTable"
+              label="Preferred Table (optional)"
+              extra="You may provide a preferred table number as well. Preferences are not guaranteed."
+            >
+              <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>
