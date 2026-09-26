@@ -13,6 +13,7 @@ import ConfigEditPane from "./panes/config/ConfigEditPane";
 import CategoryGroupFormModal from "./panes/categorygroups/CategoryGroupFormModal";
 import CategoryFormModal from "./panes/categories/CategoryModal";
 import TableGroupsModal from "./panes/tableGroups/TableGroupsModal";
+import TableMap from "./panes/tableGroups/TableMap";
 
 const { Title, Text } = Typography;
 const { Sider, Content } = Layout;
@@ -107,26 +108,29 @@ const AdminHome: React.FC = () => {
       break;
     case "tablegroups":
       content = (
-        <AdminContentList
-          queryUrl="/table-groups"
-          title="Table Groups"
-          sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
-          modal={TableGroupsModal}
-          searchFilterField="name"
-          userRoleFilterField="general"
-          renderItem={(item, index, openModal) => (
-            <List.Item style={{ backgroundColor: "white" }}>
-              <List.Item.Meta
-                title={<strong>{item.name}</strong>}
-                description={`[${item.shortCode}] - ${item.color}`}
-                avatar={<TableOutlined />}
-              />
-              <Button onClick={() => openModal(item)}>Edit</Button>
-            </List.Item>
-          )}
-          key="tablegroups"
-          listBordered
-        />
+        <>
+          <AdminContentList
+            queryUrl="/table-groups"
+            title="Table Groups"
+            sortData={data => data.concat().sort((a: any, b: any) => b.name - a.name)}
+            modal={TableGroupsModal}
+            searchFilterField="name"
+            userRoleFilterField="general"
+            renderItem={(item, index, openModal) => (
+              <List.Item style={{ backgroundColor: "white" }}>
+                <List.Item.Meta
+                  title={<strong>{item.name}</strong>}
+                  description={`[${item.shortCode}] - ${item.color}`}
+                  avatar={<TableOutlined />}
+                />
+                <Button onClick={() => openModal(item)}>Edit</Button>
+              </List.Item>
+            )}
+            key="tablegroups"
+            listBordered
+          />
+          <TableMap />
+        </>
       );
       break;
   }

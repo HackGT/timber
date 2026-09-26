@@ -164,6 +164,7 @@ const Dashboard: React.FC<Props> = props => {
               )}
             />
           </ConfigProvider>
+          {/*
           <Title level={2}>Past Submissions</Title>
           <ConfigProvider renderEmpty={() => <Empty description="You have no past submissions" />}>
             <List
@@ -186,6 +187,7 @@ const Dashboard: React.FC<Props> = props => {
               )}
             />
           </ConfigProvider>
+          */}
         </div>
       )}
     </div>

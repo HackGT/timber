@@ -12,4 +12,12 @@ export type Category = {
   projects: Project[];
   criterias: Criteria[];
   categoryGroups: CategoryGroup[];
+  type: CategoryType;
+};
+
+export enum CategoryType {
+  general = "general",
+  sponsor = "sponsor",
+  autoConsider = "autoConsider",
+  other = "other",
 };
