@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, message, Modal, Popconfirm, Switch } from "antd";
+import { Button, Form, Input, message, Modal, Popconfirm, Select, Switch } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -8,8 +8,10 @@ import { FORM_RULES, handleAxiosError } from "../../../../util/util";
 import { FormModalProps } from "../../../../util/FormModalProps";
 import QuestionIconLabel from "../../../../util/QuestionIconLabel";
 import CriteriaModalCard from "./CriteriaModalCard";
+import { CategoryType } from "../../../../types/Category";
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const CategoryFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
@@ -116,12 +118,29 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           label={
             <QuestionIconLabel
               label="Is Default"
-              helpText="Set switch to yes if every project submitted to this hackathon is automatically judged for this category."
+              helpText="Set switch to yes if every project submitted to this hackathon is automatically judged for this category. Use this for Best overall and MLH since they apply to every project."
             />
           }
           valuePropName="checked"
         >
           <Switch />
+        </Form.Item>
+        <Form.Item
+          name="type"
+          label={
+            <QuestionIconLabel
+              label="Category Type"
+              helpText="The type of this category group. This is for enforcing the submission rules, e.g. HackGT13: can submit to 2 tracks, but they can't both be general."
+            />
+          }
+        >
+          <Select>
+            {Object.values(CategoryType).map((catType) => (
+              <Option key={catType} value={catType}>
+                {catType}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.List name="criterias">
           {(fields, { add, remove }) => (
