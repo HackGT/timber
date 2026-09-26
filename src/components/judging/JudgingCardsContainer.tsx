@@ -37,7 +37,7 @@ const JudgingCardsContainer: React.FC<Props> = props => {
     }
 
     props.data[0].categories
-      .filter((category: any) => category.isJudging !== false)
+      .filter((category: any) => category.judgedExternally !== true)
       .forEach((category: any) => {
         if (foundEmerging && category.name === "Best Overall") {
           console.log(`Categories has emerging and found Best Overall - hiding Best overall.`);
