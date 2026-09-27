@@ -85,18 +85,15 @@ const JudgingHome: React.FC<Props> = props => {
 
   if (data.length === 0) {
     return (
-      <>
-        <CategoryGroupProjectScoring user={props.user} />
-        <Box>
-          {skippedProjects.length > 0 && (
-            <Button onClick={onOpen} colorScheme="purple">
-              View Skipped
-            </Button>
-          )}
-          <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
-          <p>You have no projects queued!</p>
-        </Box>
-      </>
+      <Box>
+        {skippedProjects.length > 0 && (
+          <Button onClick={onOpen} colorScheme="purple">
+            View Skipped
+          </Button>
+        )}
+        <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
+        <p>You have no projects queued!</p>
+      </Box>
     );
   }
   let tableGroupName = "";
@@ -150,7 +147,6 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
-      <CategoryGroupProjectScoring user={props.user} />
       <Box display="flex" justifyContent="space-between">
         <Box>
           <HStack spacing={1}>
