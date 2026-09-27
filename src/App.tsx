@@ -97,10 +97,6 @@ export const App = () => {
               <Routes>
                 <Route path="/" element={<Dashboard user={user} />} />
                 <Route path="/create" element={<SubmissionFormContainer user={user} />} />
-                <Route
-                  path="/projects/:projectId/edit"
-                  element={<SubmissionFormContainer user={user} />}
-                />
 
                 <Route
                   path="/category-group/:categoryGroupId"

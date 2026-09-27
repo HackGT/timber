@@ -13,26 +13,14 @@ interface Props {
   updateData: React.Dispatch<any>;
   nextStep: () => void;
   prevStep: () => void;
-  projectId?: string;
 }
 
 const ReviewForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
-    const submission = {
-      members: props.data.members,
-      prizes: props.data.prizes,
-      devpostUrl: props.data.devpostUrl,
-      name: props.data.name,
-      description: props.data.description,
-      githubUrl: props.data.githubUrl,
-    };
 
-    const request = props.projectId
-      ? axios.patch(apiUrl(Service.EXPO, `/projects/${props.projectId}`), submission)
-      : axios.post(apiUrl(Service.EXPO, "/projects"), { submission: props.data });
-
-    request
+    axios
+      .post(apiUrl(Service.EXPO, "/projects"), { submission: props.data })
       .then(res => {
         hide();
         props.nextStep();
@@ -61,16 +49,16 @@ const ReviewForm: React.FC<Props> = props => {
         style={{ marginBottom: "15px" }}
         message={
           <strong>
-            {props.projectId
-              ? "Review your updated submission before saving."
-              : "All information you submit in this form is FINAL, including registering for sponsor challenges."}
+            All information you submit in this form is FINAL, including registering for sponsor
+            challenges. There will be no changes made after you submit your project.
           </strong>
         }
       />
       <Title level={2}>Review Submission</Title>
       <Text>
-        Please look over your submission details. By submitting this form, you are agreeing to the
-        project guidelines and cheating guidelines we have set{" "}
+        Please look over your submission details. You will not be able to change them after you
+        submit. By submitting this form, you are agreeing to the project guidelines and cheating
+        guidelines we have set{" "}
         <a href="https://live.2020.hack.gt/prizes/" rel="noreferrer" target="_blank">
           here
         </a>
@@ -167,7 +155,7 @@ const ReviewForm: React.FC<Props> = props => {
                 Back
               </Button>
               <Button type="primary" htmlType="submit">
-                {props.projectId ? "Save Changes" : "Submit"}
+                Submit
               </Button>
             </Form.Item>
           </Col>
