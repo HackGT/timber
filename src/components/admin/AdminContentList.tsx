@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, List, Typography, Input } from "antd";
-import { Alert, AlertIcon, Box, Flex } from "@chakra-ui/react";
+import { Button, List, Typography, Input, Select } from "antd";
+import { Alert, AlertIcon, Box, Flex, HStack, Link } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -10,8 +10,10 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
+
 const { Title } = Typography;
 const { Search } = Input;
+const { Option } = Select;
 
 interface Props {
   title: string;
@@ -35,6 +37,8 @@ const AdminContentList: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
   const [searchText, setSearchText] = useState("");
+
+  const [selectedGroupForExport, setSelectedGroupForExport] = useState<string | null>(null);
 
   const [{ loading, data, error }, refetch] = useAxios({
     method: "GET",
@@ -82,6 +86,7 @@ const AdminContentList: React.FC<Props> = props => {
             Overall” or “T-Mobile Winner” or “Best Design”. Categories belong to category groups for
             judging organization purposes.
           </Alert>
+
         </Box>
       )}
       {props.title === "Category Groups" && (
@@ -94,6 +99,27 @@ const AdminContentList: React.FC<Props> = props => {
             project. A category group would be created to handle this grouping and would be assigned
             to the respective judge.
           </Alert>
+          <HStack width="100%" alignItems="center" marginTop={2}>
+            <Select
+              style={{ flexGrow: 1, maxWidth: "300px" }}
+              placeholder="Export Projects"
+              value={selectedGroupForExport}
+              onChange={value => setSelectedGroupForExport(value)}
+            >
+              {updatedData.map((category: any) => (
+                <Option key={category.id} value={category.id}>
+                  {category.name}
+                </Option>
+              ))}
+            </Select>
+            {selectedGroupForExport && (
+              <Link
+              href={apiUrl(Service.EXPO, `/category-groups/${selectedGroupForExport}/generate-csv`)}
+              target="_blank">
+                <Button>Export Projects</Button>
+              </Link>
+            )}
+          </HStack>
         </Box>
       )}
       <Search
