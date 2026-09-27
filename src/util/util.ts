@@ -69,11 +69,15 @@ export function HG13_TMP_spoofTableNumber(
     return String(tableNumber);
   }
 
-  if (room.includes("atrium")) {
+  // in order of fallbacks
+  if (room === "Klaus Atrium") {
     return `A${table}`;
   }
   if (room.includes("1116")) {
     return `B${table}`;
+  }
+  if (room === "Klaus Atrium 2") {
+    return `A${table + 86}`;
   }
   if (room.includes("1456")) {
     return `C${table}`;
