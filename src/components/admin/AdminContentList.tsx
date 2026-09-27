@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, List, Typography, Input } from "antd";
+import { Button, List, Typography, Input, Select } from "antd";
 import { Alert, AlertIcon, Box, Flex } from "@chakra-ui/react";
 import { ListGridType } from "antd/lib/list";
 import useAxios from "axios-hooks";
@@ -12,6 +12,7 @@ import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Title } = Typography;
 const { Search } = Input;
+const { Option } = Select;
 
 interface Props {
   title: string;
@@ -35,6 +36,7 @@ const AdminContentList: React.FC<Props> = props => {
     initialValues: null,
   } as ModalState);
   const [searchText, setSearchText] = useState("");
+  const [selectedCategoryGroup, setSelectedCategoryGroup] = useState<string | undefined>(undefined);
 
   const [{ loading, data, error }, refetch] = useAxios({
     method: "GET",
@@ -43,6 +45,21 @@ const AdminContentList: React.FC<Props> = props => {
       hexathon: currentHexathon?.id,
     },
   });
+
+  const [{ data: rawCategoryGroups, loading: categoryGroupsLoading }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.EXPO, "/category-groups"),
+    params: {
+      hexathon: currentHexathon?.id,
+    },
+  });
+
+  let categoryGroupsData: any[] = [];
+  if (Array.isArray(rawCategoryGroups)) {
+    categoryGroupsData = rawCategoryGroups;
+  } else if (Array.isArray(rawCategoryGroups?.categoryGroups)) {
+    categoryGroupsData = rawCategoryGroups.categoryGroups;
+  }
 
   const openModal = (values: any) => {
     setModalState({
@@ -59,11 +76,14 @@ const AdminContentList: React.FC<Props> = props => {
     return <ErrorDisplay error={error} />;
   }
 
-  const updatedData = data
+  const updatedData = Array.isArray(data)
     ? props
         .sortData(data)
         .filter((item: any) =>
-          item[props.searchFilterField].toLowerCase().includes(searchText.toLowerCase())
+          item[props.searchFilterField]?.toLowerCase().includes(searchText.toLowerCase())
+        )
+        .filter((item: any) =>
+          selectedCategoryGroup ? item.categoryGroupId === selectedCategoryGroup : true
         )
     : [];
 
@@ -82,6 +102,21 @@ const AdminContentList: React.FC<Props> = props => {
             Overall” or “T-Mobile Winner” or “Best Design”. Categories belong to category groups for
             judging organization purposes.
           </Alert>
+
+          <Select // ENDPOINT
+            allowClear
+            placeholder="Filter by Category Group"
+            style={{ width: "300px", marginTop: "10px" }}
+            value={selectedCategoryGroup}
+            onChange={value => setSelectedCategoryGroup(value)}
+            loading={categoryGroupsLoading}
+          >
+            {categoryGroupsData.map((group: any) => (
+              <Option key={group.id} value={group.id}>
+                {group.name}
+              </Option>
+            ))}
+          </Select>
         </Box>
       )}
       {props.title === "Category Groups" && (
