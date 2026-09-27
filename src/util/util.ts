@@ -54,6 +54,34 @@ export const handleAxiosError = (error: Error | AxiosError<any>) => {
  * 
  * hackgt13 temp
  */
-export function HG13_TMP_spoofTableNumber(tableNum: number, roomName: string): string {
-  return "";
+export function HG13_TMP_spoofTableNumber(
+  tableNumber: number | string | undefined | null,
+  roomName: string | undefined | null
+): string {
+  if (tableNumber === undefined || tableNumber === null || tableNumber === "") {
+    return "N/A";
+  }
+
+  const table = Number(tableNumber);
+  const room = (roomName ?? "").toLowerCase();
+
+  if (Number.isNaN(table)) {
+    return String(tableNumber);
+  }
+
+  if (room.includes("atrium")) {
+    return `A${table}`;
+  }
+  if (room.includes("1116")) {
+    return `B${table}`;
+  }
+  if (room.includes("1456")) {
+    return `C${table}`;
+  }
+  // 1447 shares code C with 1456, continuing after 1456's 25 tables
+  if (room.includes("1447")) {
+    return `C${table + 25}`;
+  }
+
+  return String(table);
 }

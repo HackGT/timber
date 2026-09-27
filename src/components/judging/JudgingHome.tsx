@@ -13,6 +13,7 @@ import { Project } from "../../types/Project";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { SkippedModal } from "./SkippedModal";
 import JudgingTimer from "./JudgingTimer";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 
 interface Props {
   user: User;
@@ -137,7 +138,8 @@ const JudgingHome: React.FC<Props> = props => {
   if (nextProjectID) {
     next = (
       <h3>
-        The next project is {nextProjectName} at table number: {nextTableNumber} in table group:{" "}
+        The next project is {nextProjectName} at table number:{" "}
+        {HG13_TMP_spoofTableNumber(nextTableNumber, nextTableGroupName)} in table group:{" "}
         {nextTableGroupName || "N/A"}.
       </h3>
     );
@@ -163,7 +165,7 @@ const JudgingHome: React.FC<Props> = props => {
             as="h3"
             style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
           >
-            Table Number: {data.table}
+            Table Number: {HG13_TMP_spoofTableNumber(data.table, tableGroupName)}
           </Heading>
           <Heading
             as="h3"

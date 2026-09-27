@@ -6,6 +6,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 
 const { Title, Text } = Typography;
 
@@ -58,7 +59,7 @@ const ProjectDetails: React.FC = props => {
               {projectData.tableGroup.name}
             </Descriptions.Item>
             <Descriptions.Item label={<Label name="Table Number" />}>
-              {projectData.table}
+              {HG13_TMP_spoofTableNumber(projectData.table, projectData.tableGroup?.name)}
             </Descriptions.Item>
           </>
         )}

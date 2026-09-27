@@ -20,6 +20,7 @@ import { Project } from "../../../../types/Project";
 import { TableGroup } from "../../../../types/TableGroup";
 import { User } from "../../../../types/User";
 import { useCurrentHexathon } from "../../../../contexts/CurrentHexathonContext";
+import { HG13_TMP_spoofTableNumber } from "../../../../util/util";
 
 const { Title } = Typography;
 
@@ -128,7 +129,7 @@ const TableMap: React.FC = () => {
                     bg={bg}
                     color={color}
                   >
-                    {table}
+                    {HG13_TMP_spoofTableNumber(table, tableGroup.name)}
                   </Flex>
                 );
                 return occupied ? (
@@ -147,7 +148,7 @@ const TableMap: React.FC = () => {
                         </VStack>
                       </>
                     )}
-                    title={`Table ${table}`}
+                    title={`Table ${HG13_TMP_spoofTableNumber(table, tableGroup.name)}`}
                   >
                     {square}
                   </Popover>

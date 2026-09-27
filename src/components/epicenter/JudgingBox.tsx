@@ -7,7 +7,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { Ballot } from "../../types/Ballot";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
-import { handleAxiosError } from "../../util/util";
+import { handleAxiosError, HG13_TMP_spoofTableNumber } from "../../util/util";
 import { Category } from "../../types/Category";
 import { TableGroup } from "../../types/TableGroup"; // NEW CHANGE 1
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -90,7 +90,9 @@ const JudgingBox: React.FC<Props> = props => {
         Table Group:{" "}
         {props.tableGroup !== undefined ? props.tableGroup.name : "N/A"}
       </Text>
-      <Text>Table Number: {props.project.table}</Text>
+      <Text>
+        Table Number: {HG13_TMP_spoofTableNumber(props.project.table, props.tableGroup?.name)}
+      </Text>
       <div>
         {props.project.categories.map(category => (
           <Tag>{category.name}</Tag>
@@ -173,8 +175,7 @@ const JudgingBox: React.FC<Props> = props => {
                   </Badge>
 
                   <Badge colorScheme="blue">
-                    {props.tableGroup !== undefined ? props.tableGroup.shortCode : 1}{" "}
-                    {props.project.table}
+                    {HG13_TMP_spoofTableNumber(props.project.table, props.tableGroup?.name)}
                   </Badge>
                 </Flex>
               </Flex>

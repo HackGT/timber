@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import useAxios from "axios-hooks";
 import {
   Button,
   Card,
@@ -18,8 +19,10 @@ import ErrorDisplay from "../../displays/ErrorDisplay";
 import { Category } from "../../types/Category";
 import { CategoryGroup } from "../../types/CategoryGroup";
 import { Project } from "../../types/Project";
-import { handleAxiosError } from "../../util/util";
+import { handleAxiosError, HG13_TMP_spoofTableNumber } from "../../util/util";
 import { User } from "../../types/User";
+import { TableGroup } from "../../types/TableGroup";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
 const { Paragraph, Text, Title } = Typography;
 const { Search } = Input;
@@ -39,6 +42,15 @@ const CategoryGroupProjectScoring: React.FC<Props> = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [savingProjectId, setSavingProjectId] = useState<number | null>(null);
+  const { currentHexathon } = useCurrentHexathon();
+  const [{ data: tableGroupsData }] = useAxios<TableGroup[]>({
+    url: apiUrl(Service.EXPO, "/table-groups"),
+    params: { hexathon: currentHexathon?.id },
+  });
+
+  const getTableGroupName = (project: Project) =>
+    project.tableGroup?.name ??
+    tableGroupsData?.find(tableGroup => tableGroup.id === project.tableGroupId)?.name;
 
   const selectedGroup = categoryGroups.find(
     (categoryGroup: CategoryGroup) => categoryGroup.id === selectedGroupId
@@ -205,7 +217,7 @@ const CategoryGroupProjectScoring: React.FC<Props> = ({ user }) => {
               style={{ marginBottom: 16 }}
             >
               <Text type="secondary">
-                Table {project.table} | Expo {project.expo} | Round {project.round}
+                Table {HG13_TMP_spoofTableNumber(project.table, getTableGroupName(project))} | Expo {project.expo} | Round {project.round}
               </Text>
               {project.devpostUrl && (
                 <div>

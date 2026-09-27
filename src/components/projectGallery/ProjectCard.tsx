@@ -4,6 +4,7 @@ import { Card, Tag, Button } from "antd";
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 import { TableGroup } from "../../types/TableGroup";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 import { HStack, Stack, Tooltip } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
 
@@ -85,7 +86,7 @@ const ProjectCard: React.FC<Props> = props => {
       <strong>Location</strong>
       <p>
         {props.project.tableGroup !== undefined ? props.project.tableGroup.name : "Unknown"}
-        , Table #{props.project.table}
+        , Table #{HG13_TMP_spoofTableNumber(props.project.table, props.project.tableGroup?.name)}
       </p>
       {props.project.roomUrl && (
         <p>
