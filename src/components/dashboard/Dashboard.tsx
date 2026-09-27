@@ -1,7 +1,7 @@
 import React from "react";
 import { ConfigProvider, List, Empty, Card, Typography, Button } from "antd";
 import useAxios from "axios-hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import LoadingDisplay from "../../displays/LoadingDisplay";
@@ -17,6 +17,7 @@ interface Props {
 }
 
 const Dashboard: React.FC<Props> = props => {
+  const navigate = useNavigate();
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
@@ -154,8 +155,10 @@ const Dashboard: React.FC<Props> = props => {
                         type="primary"
                         size="small"
                         style={{ marginTop: "12px" }}
-                        onClick={event => event.preventDefault()}
-                        href={`/projects/${project.id}/edit`}
+                        onClick={event => {
+                          event.stopPropagation();
+                          navigate(`/projects/${project.id}/edit`);
+                        }}
                       >
                         Edit Submission
                       </Button>

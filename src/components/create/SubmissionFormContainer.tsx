@@ -35,9 +35,12 @@ const SubmissionFormContainer: React.FC<Props> = props => {
   useEffect(() => {
     if (projectData) {
       setFormData({
-        ...projectData,
         members: projectData.members.map((member: any) => ({ email: member.email })),
         prizes: projectData.categories?.map((category: any) => category.id) || [],
+        devpostUrl: projectData.devpostUrl,
+        name: projectData.name,
+        description: projectData.description,
+        githubUrl: projectData.githubUrl,
       });
     }
   }, [projectData]);

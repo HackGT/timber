@@ -29,7 +29,7 @@ const ReviewForm: React.FC<Props> = props => {
     };
 
     const request = props.projectId
-      ? axios.patch(apiUrl(Service.EXPO, `/projects/${props.projectId}`), submission)
+      ? axios.patch(apiUrl(Service.EXPO, `/projects/${props.projectId}/submission`), submission)
       : axios.post(apiUrl(Service.EXPO, "/projects"), { submission: props.data });
 
     request
