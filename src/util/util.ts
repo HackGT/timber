@@ -74,7 +74,7 @@ export function HG13_TMP_spoofTableNumber(
     return `A${table}`;
   }
   if (room.includes("1116")) {
-    return `B${table}`;
+    return `B${table-86}`;
   }
   if (room === "Klaus Atrium 2") {
     return `A${table + 86}`;
