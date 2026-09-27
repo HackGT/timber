@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Steps, Typography } from "antd";
 import useAxios from "axios-hooks";
 import { apiUrl, Service } from "@hex-labs/core";
-import { useParams } from "react-router-dom";
 
 import TeamInfoForm from "./form/TeamInfoForm";
 import PrizeInfoForm from "./form/PrizeInfoForm";
@@ -22,8 +21,6 @@ interface Props {
 }
 
 const SubmissionFormContainer: React.FC<Props> = props => {
-  const { projectId } = useParams<{ projectId?: string }>();
-  const isEditing = Boolean(projectId);
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<any>({});
 
@@ -45,12 +42,12 @@ const SubmissionFormContainer: React.FC<Props> = props => {
     }
   }, [projectData]);
 
-  if (loading || projectLoading) {
+  if (loading) {
     return <LoadingDisplay />;
   }
 
-  if (error || projectError) {
-    return <ErrorDisplay error={error || projectError} />;
+  if (error) {
+    return <ErrorDisplay error={error} />;
   }
 
   const nextStep = () => {
@@ -118,7 +115,6 @@ const SubmissionFormContainer: React.FC<Props> = props => {
             data={formData}
             nextStep={nextStep}
             prevStep={prevStep}
-            projectId={projectId}
           />
         );
       case 5:
@@ -137,7 +133,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
         width: "100%",
       }}
     >
-      {data.isProjectSubmissionOpen || isEditing ? (
+      {data.isProjectSubmissionOpen ? (
         <div>
           <div>{renderComponent()}</div>
           <Steps current={current} style={{ marginBottom: "16px" }}>

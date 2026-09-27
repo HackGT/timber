@@ -13,7 +13,6 @@ interface Props {
   updateData: React.Dispatch<any>;
   nextStep: () => void;
   prevStep: () => void;
-  projectId?: string;
 }
 
 const ReviewForm: React.FC<Props> = props => {
@@ -61,20 +60,15 @@ const ReviewForm: React.FC<Props> = props => {
         style={{ marginBottom: "15px" }}
         message={
           <strong>
-            {props.projectId
-              ? "Review your updated submission before saving."
-              : "All information you submit in this form is FINAL, including registering for sponsor challenges."}
+            All information you submit in this form is FINAL, including registering for sponsor
+            challenges. There will be no changes made after you submit your project.
           </strong>
         }
       />
       <Title level={2}>Review Submission</Title>
       <Text>
-        Please look over your submission details. By submitting this form, you are agreeing to the
-        project guidelines and cheating guidelines we have set{" "}
-        <a href="https://live.2020.hack.gt/prizes/" rel="noreferrer" target="_blank">
-          here
-        </a>
-        .
+        Please look over your submission details. You will not be able to change them after you
+        submit.
       </Text>
       <Form
         name="review"
@@ -167,7 +161,7 @@ const ReviewForm: React.FC<Props> = props => {
                 Back
               </Button>
               <Button type="primary" htmlType="submit">
-                {props.projectId ? "Save Changes" : "Submit"}
+                Submit
               </Button>
             </Form.Item>
           </Col>
