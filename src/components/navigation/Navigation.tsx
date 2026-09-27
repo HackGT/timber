@@ -66,8 +66,6 @@ const Navigation: React.FC<Props> = props => {
     });
     return sponsorCategoryId;
   };
-  const sponsorCategoryGroupId = findSponsorCategoryGroupId();
-  routes[3].setLink(`/category-group/${sponsorCategoryGroupId}`)
 
   const filteredRoutes = routes.filter((page: Page) => page.isAllowed(props.user));
 
