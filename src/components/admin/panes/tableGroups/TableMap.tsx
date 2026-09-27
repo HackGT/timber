@@ -61,7 +61,7 @@ const TableMap: React.FC = () => {
     return (
       <Box key={project.id} maxW="260px">
         <Text fontWeight="bold">
-          #{project.id} {project.name}
+          #{project.id} {project.name} · Expo {project.expo}
         </Text>
         <Text fontSize="sm">{project.members?.map(member => member.name).join(", ")}</Text>
         <Text fontSize="sm" mt={2} fontWeight="semibold">
@@ -101,8 +101,20 @@ const TableMap: React.FC = () => {
               {Array.from({ length: tableCount }, (_, i) => i + 1).map(table => {
                 const projects = projectsByTable.get(table) ?? [];
                 const occupied = projects.length > 0;
-                let bg = occupied ? "green.400" : "white";
-                if (projects.length > 1) bg = "red.500";
+                const expos = new Set(projects.map(project => project.expo));
+                const conflict = expos.size < projects.length;
+                let bg = "white";
+                let color = "gray.700";
+                if (conflict) {
+                  bg = "red.500";
+                  color = "white";
+                } else if (projects.length > 1) {
+                  bg = "green.500";
+                  color = "white";
+                } else if (occupied) {
+                  bg = "green.200";
+                  color = "green.900";
+                }
                 const square = (
                   <Flex
                     key={table}
@@ -114,7 +126,7 @@ const TableMap: React.FC = () => {
                     borderRadius="sm"
                     cursor={occupied ? "pointer" : "default"}
                     bg={bg}
-                    color={occupied ? "white" : "gray.700"}
+                    color={color}
                   >
                     {table}
                   </Flex>
@@ -124,10 +136,10 @@ const TableMap: React.FC = () => {
                     key={table}
                     content={(
                       <>
-                        {projects.length > 1 && (
+                        {conflict && (
                           <Alert status="error" mb={3} py={1} fontSize="sm" borderRadius="md">
                             <AlertIcon boxSize={4} />
-                            {projects.length} projects are assigned to this table
+                            Multiple projects are assigned to this table in the same expo
                           </Alert>
                         )}
                         <VStack divider={<StackDivider />} align="stretch" spacing={3}>
