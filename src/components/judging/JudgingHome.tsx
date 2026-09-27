@@ -6,6 +6,7 @@ import { useDisclosure, Box, Button, Heading, Link, HStack } from "@chakra-ui/re
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import JudgingCardsContainer from "./JudgingCardsContainer";
+import CategoryGroupProjectScoring from "./CategoryGroupProjectScoring";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";
@@ -84,15 +85,18 @@ const JudgingHome: React.FC<Props> = props => {
 
   if (data.length === 0) {
     return (
-      <Box>
-        {skippedProjects.length > 0 && (
-          <Button onClick={onOpen} colorScheme="purple">
-            View Skipped
-          </Button>
-        )}
-        <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
-        <p>You have no projects queued!</p>
-      </Box>
+      <>
+        <CategoryGroupProjectScoring user={props.user} />
+        <Box>
+          {skippedProjects.length > 0 && (
+            <Button onClick={onOpen} colorScheme="purple">
+              View Skipped
+            </Button>
+          )}
+          <SkippedModal isOpen={isOpen} onClose={onClose} projects={skippedProjects} />
+          <p>You have no projects queued!</p>
+        </Box>
+      </>
     );
   }
   let tableGroupName = "";
@@ -146,6 +150,7 @@ const JudgingHome: React.FC<Props> = props => {
 
   return (
     <>
+      <CategoryGroupProjectScoring user={props.user} />
       <Box display="flex" justifyContent="space-between">
         <Box>
           <HStack spacing={1}>

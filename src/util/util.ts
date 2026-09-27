@@ -48,3 +48,12 @@ export const handleAxiosError = (error: Error | AxiosError<any>) => {
     message.error("Error: Please ask for help. There was an unknown error.", 2);
   }
 };
+
+/**
+ * add a prefix letter to table number depending on room
+ * 
+ * hackgt13 temp
+ */
+export function HG13_TMP_spoofTableNumber(tableNum: number, roomName: string): string {
+  return "";
+}

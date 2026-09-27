@@ -36,21 +36,23 @@ const JudgingCardsContainer: React.FC<Props> = props => {
       }
     }
 
-    props.data[0].categories.forEach((category: any) => {
-      if (foundEmerging && category.name === "Best Overall") {
-        console.log(`Categories has emerging and found Best Overall - hiding Best overall.`);
-        return;
-      }
-
-      category.criterias.forEach((criteria: any) => {
-        newCriteriaArray.push(criteria);
-        if (newCategoryToCriteriaMapping[category.name]) {
-          newCategoryToCriteriaMapping[category.name].push(criteria);
-        } else {
-          newCategoryToCriteriaMapping[category.name] = [criteria];
+    props.data[0].categories
+      .filter((category: any) => category.judgedExternally !== true)
+      .forEach((category: any) => {
+        if (foundEmerging && category.name === "Best Overall") {
+          console.log(`Categories has emerging and found Best Overall - hiding Best overall.`);
+          return;
         }
+
+        category.criterias.forEach((criteria: any) => {
+          newCriteriaArray.push(criteria);
+          if (newCategoryToCriteriaMapping[category.name]) {
+            newCategoryToCriteriaMapping[category.name].push(criteria);
+          } else {
+            newCategoryToCriteriaMapping[category.name] = [criteria];
+          }
+        });
       });
-    });
 
     const mapping: any = {};
     newCriteriaArray.forEach((criteria: Criteria) => {

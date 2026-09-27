@@ -57,12 +57,7 @@ const ReviewForm: React.FC<Props> = props => {
       <Title level={2}>Review Submission</Title>
       <Text>
         Please look over your submission details. You will not be able to change them after you
-        submit. By submitting this form, you are agreeing to the project guidelines and cheating
-        guidelines we have set{" "}
-        <a href="https://live.2020.hack.gt/prizes/" rel="noreferrer" target="_blank">
-          here
-        </a>
-        .
+        submit.
       </Text>
       <Form
         name="review"
