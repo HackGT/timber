@@ -7,6 +7,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -170,7 +171,8 @@ const Dashboard: React.FC<Props> = props => {
                             {project.tableGroup?.name ?? "N/A"}
                           </p>
                           <p>
-                            <b>Table Number:</b> {project.table}
+                            <b>Table Number:</b>{" "}
+                            {HG13_TMP_spoofTableNumber(project.table, project.tableGroup?.name)}
                           </p>
                           <p>
                             <b>Expo:</b> {project.expo}

@@ -21,6 +21,8 @@ import { Service, apiUrl, handleAxiosError } from "@hex-labs/core";
 import { Divider, Switch } from "antd";
 import useAxios from "axios-hooks";
 
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
+
 type SkipModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -83,7 +85,7 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                   </Text>
                   <Text>
                     <strong>Table Number: </strong>
-                    {project.table}
+                    {HG13_TMP_spoofTableNumber(project.table, project.tableGroup?.name)}
                   </Text>
                   <Text>
                     <strong>Table Group: </strong>

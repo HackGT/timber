@@ -15,6 +15,7 @@ import LoadingDisplay from "../../displays/LoadingDisplay";
 import { TableGroup } from "../../types/TableGroup";
 import { Category } from "../../types/Category";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 
 const { Title } = Typography;
 
@@ -177,7 +178,8 @@ const ProjectTableContainer: React.FC<Props> = props => {
             </Title>
             <p>
               {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}, Table #
-              {project.table}, Expo #{project.expo}
+              {HG13_TMP_spoofTableNumber(project.table, project.tableGroup?.name)}, Expo #
+              {project.expo}
             </p>
             {allCategories.map((category: Category) => (
               <>

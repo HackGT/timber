@@ -16,6 +16,7 @@ import {
 import { Ballot } from "../../types/Ballot";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
+import { HG13_TMP_spoofTableNumber } from "../../util/util";
 
 const { Title } = Typography;
 
@@ -102,10 +103,7 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
                   </Tag>{" "}
                   <Tag size="sm" borderRadius="full">
                     <TagLabel>
-                      Table:{" "}
-                      {`${project.tableGroup !== undefined ? project.tableGroup.shortCode : 1} ${
-                        project.table
-                      }`}
+                      Table: {HG13_TMP_spoofTableNumber(project.table, project.tableGroup?.name)}
                     </TagLabel>
                   </Tag>
                 </Box>
@@ -122,7 +120,9 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
                   Table Group:
                   {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}
                 </Text>
-                <Text>Table Number: {project.table}</Text>
+                <Text>
+                  Table Number: {HG13_TMP_spoofTableNumber(project.table, project.tableGroup?.name)}
+                </Text>
                 <Text as="b">Category Scores</Text>
                 {Object.entries(scoreData[project.id] || {}).map(([categoryName, scores]) => {
                   const scoreString = Object.values(scores).join(", ");
