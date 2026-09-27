@@ -14,14 +14,9 @@ const CategoryGroupFormModal: React.FC<FormModalProps> = props => {
   const CurrentHexathonContext = useCurrentHexathon();
   const { currentHexathon } = CurrentHexathonContext;
 
-  const [{ loading: userLoading, data: userData, error: userError }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.EXPO, "/users"),
-    params: {
-      hexathon: currentHexathon?.id,
-      isJudging: true,
-    },
-  });
+  const [{ loading: userLoading, data: userData, error: userError }] = useAxios(
+    apiUrl(Service.EXPO, "/users")
+  );
 
   const [{ loading: categoriesLoading, data: categoriesData, error: categoriesError }] = useAxios({
     method: "GET",

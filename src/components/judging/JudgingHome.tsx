@@ -6,7 +6,6 @@ import { useDisclosure, Box, Button, Heading, Link, HStack } from "@chakra-ui/re
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import JudgingCardsContainer from "./JudgingCardsContainer";
-import CategoryGroupProjectScoring from "./CategoryGroupProjectScoring";
 import { User } from "../../types/User";
 import { Assignment } from "../../types/Assignment";
 import { Project } from "../../types/Project";

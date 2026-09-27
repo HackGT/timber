@@ -17,13 +17,9 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
   const [form] = Form.useForm();
   useEffect(() => {
     if (props.modalState.initialValues) {
-      form.setFieldsValue({
-        ...props.modalState.initialValues,
-        judgedExternally: props.modalState.initialValues.judgedExternally === true,
-      });
+      form.setFieldsValue(props.modalState.initialValues);
     } else {
       form.resetFields();
-      form.setFieldsValue({ judgedExternally: false });
     }
   }, [form, props.modalState.initialValues]); // github.com/ant-design/ant-design/issues/22372
 
@@ -130,18 +126,6 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           <Switch />
         </Form.Item>
         <Form.Item
-          name="judgedExternally"
-          label={
-            <QuestionIconLabel
-              label="Judged Externally"
-              helpText="Turn this on when final scores will be entered directly instead of being collected from judges."
-            />
-          }
-          valuePropName="checked"
-        >
-          <Switch />
-        </Form.Item>
-        <Form.Item
           name="type"
           label={
             <QuestionIconLabel
@@ -151,7 +135,7 @@ const CategoryFormModal: React.FC<FormModalProps> = props => {
           }
         >
           <Select>
-            {Object.values(CategoryType).map(catType => (
+            {Object.values(CategoryType).map((catType) => (
               <Option key={catType} value={catType}>
                 {catType}
               </Option>
