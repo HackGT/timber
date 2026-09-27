@@ -155,6 +155,7 @@ const Dashboard: React.FC<Props> = props => {
                         size="small"
                         style={{ marginTop: "12px" }}
                         onClick={event => {
+                          event.preventDefault();
                           event.stopPropagation();
                           navigate(`/projects/${project.id}/edit`);
                         }}
