@@ -6,6 +6,7 @@ export type Category = {
   id: number;
   name: string;
   isDefault: boolean;
+  judgedExternally: boolean;
   description: string;
   hexathon: string;
   projects: Project[];
