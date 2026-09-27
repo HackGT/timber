@@ -36,10 +36,12 @@ const PrizeInfoForm: React.FC<Props> = props => {
     message.error("Please complete the required fields.", 2);
   };
 
-  const prizeOptions = props.data.eligiblePrizes.map((prize: any) => ({
-    label: prize.name,
-    value: prize.id,
-  }));
+  const prizeOptions = props.data.eligiblePrizes
+    .filter((prize: any) => prize.type !== "autoConsider")
+    .map((prize: any) => ({
+      label: prize.name,
+      value: prize.id,
+    }));
 
   const formInitialValue = props.data;
 
