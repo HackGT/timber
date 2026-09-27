@@ -7,7 +7,6 @@ import { apiUrl, Service } from "@hex-labs/core";
 import LoadingDisplay from "../../displays/LoadingDisplay";
 import ErrorDisplay from "../../displays/ErrorDisplay";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { tableNumberToRoom } from "../../util/util";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -155,7 +154,7 @@ const Dashboard: React.FC<Props> = props => {
                         <>
                           <p>
                             <b>Table Group: </b>
-                            {tableNumberToRoom(project.table)}
+                            {project.tableGroup?.name ?? "N/A"}
                           </p>
                           <p>
                             <b>Table Number:</b> {project.table}

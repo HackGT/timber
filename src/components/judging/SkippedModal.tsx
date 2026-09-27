@@ -20,7 +20,6 @@ import {
 import { Service, apiUrl, handleAxiosError } from "@hex-labs/core";
 import { Divider, Switch } from "antd";
 import useAxios from "axios-hooks";
-import { tableNumberToRoom } from "../../util/util";
 
 type SkipModalProps = {
   isOpen: boolean;
@@ -88,7 +87,7 @@ export const SkippedModal = ({ isOpen, onClose, projects }: SkipModalProps) => {
                   </Text>
                   <Text>
                     <strong>Table Group: </strong>
-                    {tableNumberToRoom(project.table)}
+                    {project.tableGroup?.name ?? "N/A"}
                   </Text>
 
                   <Text>

@@ -16,7 +16,6 @@ import {
 import { Ballot } from "../../types/Ballot";
 import { Category } from "../../types/Category";
 import { Project } from "../../types/Project";
-import { tableNumberToRoom } from "../../util/util";
 
 const { Title } = Typography;
 
@@ -121,7 +120,7 @@ const AllProjectBoxes: React.FC<Props> = ({ projects }) => {
                 </a>
                 <Text>
                   Table Group:
-                  {project.tableGroup !== undefined ? tableNumberToRoom(project.table) : "N/A"}
+                  {project.tableGroup !== undefined ? project.tableGroup.name : "N/A"}
                 </Text>
                 <Text>Table Number: {project.table}</Text>
                 <Text as="b">Category Scores</Text>

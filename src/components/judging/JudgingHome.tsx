@@ -13,7 +13,6 @@ import { Project } from "../../types/Project";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import { SkippedModal } from "./SkippedModal";
 import JudgingTimer from "./JudgingTimer";
-import { tableNumberToRoom } from "../../util/util";
 
 interface Props {
   user: User;
@@ -142,7 +141,7 @@ const JudgingHome: React.FC<Props> = props => {
     next = (
       <h3>
         The next project is {nextProjectName} at table number: {nextTableNumber} in table group:{" "}
-        {tableNumberToRoom(parseInt(nextTableNumber))}.
+        {nextTableGroupName || "N/A"}.
       </h3>
     );
   } else {
@@ -181,7 +180,7 @@ const JudgingHome: React.FC<Props> = props => {
             as="h3"
             style={{ paddingBottom: "10px", fontSize: "20px", fontWeight: "normal" }}
           >
-            Table Group: {tableNumberToRoom(data.table)}
+            Table Group: {tableGroupName || "N/A"}
           </Heading>
           <Link
             href={data.devpostUrl}
