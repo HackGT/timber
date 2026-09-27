@@ -1,5 +1,5 @@
 import React from "react";
-import { ConfigProvider, List, Empty, Card, Typography } from "antd";
+import { ConfigProvider, List, Empty, Card, Typography, Button } from "antd";
 import useAxios from "axios-hooks";
 import { Link } from "react-router-dom";
 import { apiUrl, Service } from "@hex-labs/core";
@@ -150,6 +150,15 @@ const Dashboard: React.FC<Props> = props => {
                         title={project.name}
                         description={project.members.map((item: any) => item.name).join(", ")}
                       />
+                      <Button
+                        type="primary"
+                        size="small"
+                        style={{ marginTop: "12px" }}
+                        onClick={event => event.preventDefault()}
+                        href={`/projects/${project.id}/edit`}
+                      >
+                        Edit Submission
+                      </Button>
                       <br />
                       {project.hexathon.id === currentHexathon?.id && configData.revealTableGroups && (
                         <>
