@@ -66,3 +66,12 @@ export const tableNumberToRoom = (tableNumber: number) => {
 
   return "N/A";
 };
+
+/**
+ * add a prefix letter to table number depending on room
+ * 
+ * hackgt13 temp
+ */
+export function HG13_TMP_spoofTableNumber(tableNum: number, roomName: string): string {
+  return "";
+}
