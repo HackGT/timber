@@ -12,6 +12,7 @@ interface Props {
   updateData: React.Dispatch<any>;
   nextStep: () => void;
   prevStep: () => void;
+  projectId?: string;
 }
 
 const DevpostInfoForm: React.FC<Props> = props => {
@@ -20,7 +21,10 @@ const DevpostInfoForm: React.FC<Props> = props => {
 
     hide();
     axios
-      .post(apiUrl(Service.EXPO, "/projects/submission/devpost-validation"), values)
+      .post(apiUrl(Service.EXPO, "/projects/submission/devpost-validation"), {
+        ...values,
+        projectId: props.projectId,
+      })
       .then(res => {
         hide();
         props.updateData(values);
