@@ -20,7 +20,6 @@ const ReviewForm: React.FC<Props> = props => {
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     const submission = {
-      members: props.data.members,
       prizes: props.data.prizes,
       devpostUrl: props.data.devpostUrl,
       name: props.data.name,
@@ -68,10 +67,7 @@ const ReviewForm: React.FC<Props> = props => {
         }
       />
       <Title level={2}>Review Submission</Title>
-      <Text>
-        Please look over your submission details. By submitting this form, you are agreeing to the
-        project guidelines and cheating guidelines we have set{" "}
-      </Text>
+      <Text>Please look over your submission details.</Text>
       <Form
         name="review"
         onFinish={onFinish}

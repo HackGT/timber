@@ -29,7 +29,8 @@ const SubmissionFormContainer: React.FC<Props> = props => {
 
   const [{ data, loading, error }] = useAxios(apiUrl(Service.EXPO, "/config"));
   const [{ data: projectData, loading: projectLoading, error: projectError }] = useAxios(
-    projectId ? apiUrl(Service.EXPO, `/projects/${projectId}`) : null
+    apiUrl(Service.EXPO, `/projects/${projectId}`),
+    { manual: !projectId }
   );
 
   useEffect(() => {
@@ -82,6 +83,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
             data={formData}
             user={props.user}
             nextStep={nextStep}
+            projectId={projectId}
           />
         );
       case 1:
@@ -100,6 +102,7 @@ const SubmissionFormContainer: React.FC<Props> = props => {
             data={formData}
             nextStep={nextStep}
             prevStep={prevStep}
+            projectId={projectId}
           />
         );
       case 3:

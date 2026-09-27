@@ -14,9 +14,12 @@ interface Props {
   updateData: React.Dispatch<any>;
   user: User;
   nextStep: () => void;
+  projectId?: string;
 }
 
 const TeamInfoForm: React.FC<Props> = props => {
+  const isEditing = Boolean(props.projectId);
+
   const onFinish = async (values: any) => {
     const hide = message.loading("Loading...", 0);
     const newValues = {
@@ -24,7 +27,10 @@ const TeamInfoForm: React.FC<Props> = props => {
     };
 
     axios
-      .post(apiUrl(Service.EXPO, "/projects/submission/team-validation"), newValues)
+      .post(apiUrl(Service.EXPO, "/projects/submission/team-validation"), {
+        ...newValues,
+        projectId: props.projectId,
+      })
       .then(res => {
         hide();
         props.updateData({
@@ -71,8 +77,9 @@ const TeamInfoForm: React.FC<Props> = props => {
       />
       <Title level={2}>Team Info</Title>
       <Text>
-        Please list all the emails of all your team members below. Make sure the emails used are the
-        ones that they were accepted for through registration.
+        {isEditing
+          ? "Team members can't be changed after submission."
+          : "Please list all the emails of all your team members below. Make sure the emails used are the ones that they were accepted for through registration."}
       </Text>
       <Form
         name="team"
@@ -97,9 +104,9 @@ const TeamInfoForm: React.FC<Props> = props => {
                     >
                       <Input
                         placeholder="hello@gmail.com"
-                        disabled={index === 0}
+                        disabled={isEditing || index === 0}
                         suffix={
-                          fields.length > 1 && index !== 0 ? (
+                          !isEditing && fields.length > 1 && index !== 0 ? (
                             <Button
                               type="text"
                               size="small"
@@ -116,7 +123,7 @@ const TeamInfoForm: React.FC<Props> = props => {
                 </Row>
               ))}
               {/* Max team size is 4 */}
-              {fields.length < 4 ? (
+              {!isEditing && fields.length < 4 ? (
                 <Row justify="center">
                   <Col {...FORM_LAYOUT.full}>
                     <Form.Item>
