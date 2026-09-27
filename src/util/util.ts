@@ -63,7 +63,7 @@ export function HG13_TMP_spoofTableNumber(
   }
 
   const table = Number(tableNumber);
-  const room = (roomName ?? "").toLowerCase();
+  const room = roomName ?? "";
 
   if (Number.isNaN(table)) {
     return String(tableNumber);
