@@ -41,6 +41,24 @@ const PrizeInfoForm: React.FC<Props> = props => {
     value: prize.id,
   }));
 
+  const prizeById: Record<number, any> = {};
+  for (const prize of props.data.eligiblePrizes) {
+    prizeById[prize.id] = prize;
+  }
+
+  const validatePrizes = (_: any, selectedIds: number[]) => {
+    if (!selectedIds || selectedIds.length === 0) return Promise.resolve();
+    const generalCount = selectedIds.filter(id => prizeById[id]?.type === "general").length;
+    const sponsorCount = selectedIds.filter(id => prizeById[id]?.type === "sponsor").length;
+    if (generalCount > 1) {
+      return Promise.reject(new Error("You may select at most 1 general prize."));
+    }
+    if (sponsorCount > 2) {
+      return Promise.reject(new Error("You may select at most 2 sponsor prizes."));
+    }
+    return Promise.resolve();
+  };
+
   const formInitialValue = props.data;
 
   return (
@@ -73,7 +91,12 @@ const PrizeInfoForm: React.FC<Props> = props => {
       >
         <Row justify="center">
           <Col {...FORM_LAYOUT.full}>
-            <Form.Item name="prizes" label="Prizes" initialValue={[]}>
+            <Form.Item
+              name="prizes"
+              label="Prizes"
+              initialValue={[]}
+              rules={[{ validator: validatePrizes }]}
+            >
               <Select
                 placeholder="Select prizes"
                 mode="multiple"
