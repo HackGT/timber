@@ -26,7 +26,6 @@ export const routes = [
   new Page("Home", "/", user => true),
   new Page("Create Submission", "/create", user => true),
   new Page("Project Gallery", "/projectgallery", user => true),
-  //new Page("Sponsor Page", `/category-group`, user => user.isSponsor),
   new Page("Judging", "/judging", user => user.isJudging),
   new Page("Admin", "/admin", user => user.roles.admin),
   new Page("Epicenter", "/epicenter", user => user.roles.admin),
